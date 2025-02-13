@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { width: 300px; margin: 100px auto; }
+        input { display: block; width: 100%; padding: 10px; margin: 10px 0; }
+        button { width: 100%; padding: 10px; margin-top: 10px; border: none; }
+        .register-btn { background: #28A745; color: white; }
+        .back-btn { background: #007BFF; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Register</h2>
+        <input type="text" id="reg-username" placeholder="Username">
+        <input type="password" id="reg-password" placeholder="Password">
+        <button class="register-btn" onclick="register()">Register</button>
+        <button class="back-btn" onclick="goBack()">Back to Login</button>
+        <p id="reg-message" style="color: red;"></p>
+    </div>
+
+    <script>
+        // Function to handle registration
+        function register() {
+            const username = document.getElementById("reg-username").value;
+            const password = document.getElementById("reg-password").value;
+
+            fetch('https://cs4800-studydecks-deployment.onrender.com/api/createAccount', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: username, password: password }),
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to register');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                if (data.success) {
+                    // Redirect to login page after successful registration
+                    window.location.href = "index.html";
+                } else {
+                    document.getElementById("reg-message").textContent = data.error; // Display error message
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Function to go back to the login page
+        function goBack() {
+            window.location.href = "index.html"; // Redirect to login page
+        }
+    </script>
+
+</body>
+</html>
