@@ -270,4 +270,10 @@ public class ApiController {
         session.invalidate();
         return ResponseEntity.ok(Map.of("success", "Logged out"));
     }
+
+    @PostMapping(value = "/hello")
+    public ResponseEntity<?> firstApi(HttpSession session) {
+        return ResponseEntity.ok(Map.of("success", "Hello this is Joseph Pedroza first HTTP API"));
+    }
+
 }
