@@ -277,4 +277,9 @@ public class ApiController {
         return ResponseEntity.ok(Map.of("success", "Hello this is Joseph Pedroza first HTTP API"));
     }
 
+    @GetMapping(value = "/A3Q3" )
+    public ResponseEntity<?> A3Q3(HttpSession session) {
+        return ResponseEntity.ok(Map.of("success", "this returns a 200 OK"));
+    }
+
 }
