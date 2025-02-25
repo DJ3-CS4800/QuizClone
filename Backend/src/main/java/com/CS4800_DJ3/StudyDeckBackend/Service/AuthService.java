@@ -30,6 +30,7 @@ public class AuthService {
         Account account = accountRepo.findByUsername(username);
 
         // Check if account exists and password is correct
+        if (account == null || !account.checkPassword(password)){
             return ResponseEntity.ok(Map.of("error","Incorrect username or password."));
         }
 
