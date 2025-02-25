@@ -19,6 +19,13 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
     Account findByUsername(String username);
 
     /**
+     * SQL Query to find an account by userID
+     * @param userID: user account ID
+     */
+    @Query(value = "SELECT * FROM account WHERE userID = ?1", nativeQuery = true)
+    Account findByUserID(Long userID);
+
+    /**
      * SQL Query to add a new account
      * @param username: user account username
      * @param password: user account password

@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 
 public interface StudyDeckRepo extends JpaRepository<StudyDeck, Long> {
     
+
     /**
      * SQL Query to find a StudyDeck by deckID
      * @param deckID: the deckID of the StudyDeck
@@ -59,6 +60,7 @@ public interface StudyDeckRepo extends JpaRepository<StudyDeck, Long> {
     @Query(value = "UPDATE study_deck SET deck_name = ?2 WHERE deck_id = ?1", nativeQuery = true)
     void updateName(long deckID, String name);
 
+
     /**
      * SQL Query to update the public status of a StudyDeck
      * @param deckID: the deckID of the StudyDeck
@@ -67,5 +69,4 @@ public interface StudyDeckRepo extends JpaRepository<StudyDeck, Long> {
     @Modifying
     @Query(value = "UPDATE study_deck SET is_public = ?2 WHERE deck_id = ?1", nativeQuery = true)
     void updatePublic(long deckID, boolean isPublic);
-
 }

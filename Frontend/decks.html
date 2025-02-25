@@ -63,7 +63,7 @@
         });
 
         function fetchDeckList() {
-            fetch("https://cs4800-studydecks-deployment.onrender.com/api/allDecks", {
+            fetch("http://localhost:8080/api/allDecks", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include"
@@ -97,7 +97,7 @@
         }
 
         function fetchDeckContent(deckID) {
-            fetch("https://cs4800-studydecks-deployment.onrender.com/api/deck", {
+            fetch("http://localhost:8080/api/deck", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ deckID }),
@@ -136,7 +136,7 @@
         }
 
         function logout() {
-            fetch("https://cs4800-studydecks-deployment.onrender.com/api/logout", {
+            fetch("http://localhost:8080/api/logout", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include"
@@ -195,7 +195,7 @@
                 answer: card.answerInput.value.trim()
             })).filter(card => card.question && card.answer); // Remove empty cards
         
-            fetch("https://cs4800-studydecks-deployment.onrender.com/api/createDeck", {
+            fetch("http://localhost:8080/api/createDeck", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ deckName: deckName, public: isPublic, content: deckContent }),
@@ -226,7 +226,7 @@
                 }
             ];
 
-            fetch("https://cs4800-studydecks-deployment.onrender.com/api/updateDeck", {
+            fetch("http://localhost:8080/api/updateDeck", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ deckName: "TestTestTest", deckID: 1, content: deckContent, isPublic: true }),

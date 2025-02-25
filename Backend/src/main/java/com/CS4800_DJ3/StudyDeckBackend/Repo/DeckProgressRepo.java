@@ -15,4 +15,15 @@ public interface DeckProgressRepo extends JpaRepository<DeckProgress, Long> {
      */
     @Query(value = "SELECT * FROM deck_progress WHERE user_id = ?1 AND deck_id = ?2", nativeQuery = true)
     DeckProgress findByUserIDAndDeckID(long userID, long deckID);
+
+
+    /**
+     * SQL Query to delete a deck progress by user id and deck id
+     * @param userID: user id
+     * @param deckID: deck id
+     * @return DeckProgress: deck progress with the given user id and deck id
+     */
+
+    @Query(value = "DELETE FROM deck_progress WHERE user_id = ?1 AND deck_id = ?2", nativeQuery = true)
+    void deleteByUserIDAndDeckID(long userID, long deckID);
 } 

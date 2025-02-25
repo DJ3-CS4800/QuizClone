@@ -5,7 +5,6 @@ import java.util.List;
 public class StudyDeckEditRequest {
     String deckName; 
     boolean isPublic;
-    long deckID;
     List<FlashCard> content;
 
     public String getDeckName() {
@@ -16,20 +15,12 @@ public class StudyDeckEditRequest {
         this.deckName = deckName;
     }
 
-    public boolean isPublic() {
+    public boolean getIsPublic() {
         return isPublic;
     }
 
-    public void isPublic(boolean isPublic) {
+    public void setIsPublic(boolean isPublic) {
         this.isPublic = isPublic;
-    }
-
-    public long getDeckID() {
-        return deckID;
-    }
-
-    public void setDeckID(long deckID) {
-        this.deckID = deckID;
     }
 
     public List<FlashCard> getContent() {

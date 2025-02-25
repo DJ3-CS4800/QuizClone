@@ -22,6 +22,9 @@ public class DeckProgress {
     @Column(name = "user_id")
     private long userID;
 
+    @Column(name = "userName")
+    private String userName;
+
     @Column(name = "content_with_progress", columnDefinition = "JSON")
     @Convert(converter = FlashCardWithProgressConverter.class)
     @org.hibernate.annotations.ColumnTransformer(
@@ -57,11 +60,19 @@ public class DeckProgress {
         this.userID = userID;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public List<FlashCardWithProgress> getContentWithProgress() {
         return contentWithProgress;
     }
 
-    public void setCcontentWithProgress(List<FlashCardWithProgress> contentWithProgress) {
+    public void setContentWithProgress(List<FlashCardWithProgress> contentWithProgress) {
         this.contentWithProgress = contentWithProgress;
     }
 }

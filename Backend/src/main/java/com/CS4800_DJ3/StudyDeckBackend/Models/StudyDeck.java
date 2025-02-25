@@ -25,6 +25,10 @@ public class StudyDeck {
     @Column(name = "owner_id")
     private long ownerID;
 
+    // userName of the owner
+    @Column(name = "owner_name")
+    private String ownerName;
+
     // is the deck public, if not only the owner can see it
     @Column(name = "is_public")
     private boolean isPublic;
@@ -71,6 +75,14 @@ public class StudyDeck {
 
     public void setOwnerID(long ownerID) {
         this.ownerID = ownerID;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
     }
 
     public boolean isPublic() {
