@@ -30,7 +30,6 @@ public class AuthService {
         Account account = accountRepo.findByUsername(username);
 
         // Check if account exists and password is correct
-        if (account == null || !account.checkPassword(password)){
             return ResponseEntity.ok(Map.of("error","Incorrect username or password."));
         }
 
@@ -70,6 +69,12 @@ public class AuthService {
     public ResponseEntity<?> deleteAccount(AccountRequest accountRequest, HttpSession session) {
         String username = accountRequest.getUsername();
         String password = accountRequest.getPassword();
+
+        // Get userID from session
+        Long userID = (Long) session.getAttribute("userID");
+        if (userID == null) {
+            return ResponseEntity.status(401).body("User not logged in.");
+        }
 
         // Check if username and password are provided
         if (username == null || password == null) {

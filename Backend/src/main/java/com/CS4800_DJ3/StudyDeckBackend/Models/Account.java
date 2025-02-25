@@ -1,7 +1,6 @@
 package com.CS4800_DJ3.StudyDeckBackend.Models;
 
 import jakarta.persistence.*;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
 @Table(name = "account")
@@ -19,15 +18,6 @@ public class Account {
     private String password;
 
 
-    public void setPassword(String rawPassword) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        this.password = encoder.encode(rawPassword);
-    }
-
-    public boolean checkPassword(String rawPassword) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder.matches(rawPassword, this.password);
-    }
 
 
     // Getters and Setters
