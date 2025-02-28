@@ -30,6 +30,7 @@ public class AuthController {
         return authService.login(accountRequest, session);
     }
     
+    
     /**
      * Create a new account 
      * @param AccountRequest: request body containing username and password
@@ -42,19 +43,7 @@ public class AuthController {
 
 
     /**
-     * Delete an account
-     * @param accountRequest: request body containing username and password
-     * @param session: session object to store user information
-     * @return response entity containing success or error message
-     */
-    @PostMapping(value = "/deleteAccount")
-    public ResponseEntity<?> deleteAccount(@RequestBody AccountRequest accountRequest, HttpSession session) {
-        return authService.deleteAccount(accountRequest, session);
-    }
-
-
-    /**
-     * Logout the user
+     * Invalidate the session to log out the user
      * @param session: session object to store user information
      * @return response entity containing success or error message
      */
@@ -62,4 +51,5 @@ public class AuthController {
     public ResponseEntity<?> logout(HttpSession session) {
         return authService.logout(session);
     }
+
 }
