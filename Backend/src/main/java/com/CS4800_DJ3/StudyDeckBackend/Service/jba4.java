@@ -4,6 +4,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+
 
 import java.io.IOException;
 
@@ -36,5 +38,16 @@ public class jba4 {
         }
 
     }
+public static void main1 (String [] args)
+{
+    DescriptiveStatistics stats = new DescriptiveStatistics();
+    double [] array = {1, 2, 3};
+    for(int i = 0; i < 3; i++)
+    {
+        stats.addValue(array[i]);
+    }
+    System.out.println("Mean " + stats.getMean());
+}
+
 
 }
