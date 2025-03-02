@@ -18,6 +18,7 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
     @Query(value = "SELECT * FROM account WHERE username = ?1", nativeQuery = true)
     Account findByUsername(String username);
 
+
     /**
      * SQL Query to find an account by userID
      * @param userID: user account ID
@@ -25,6 +26,16 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
     @Query(value = "SELECT * FROM account WHERE userID = ?1", nativeQuery = true)
     Account findByUserID(Long userID);
 
+
+    /**
+     * SQL Query to find an account by email
+     * @param email: user account email
+     * @return Account: account with the given email
+     */
+    @Query(value = "SELECT * FROM account WHERE email = ?1", nativeQuery = true)
+    Account findByEmail(String email);
+
+    
     /**
      * SQL Query to add a new account
      * @param username: user account username
@@ -32,6 +43,6 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
      */
     @Transactional
     @Modifying
-    @Query(value = "INSERT INTO account (username, password) VALUES (?1, ?2)", nativeQuery = true)
-    void addAccount(String username, String password);
+    @Query(value = "INSERT INTO account (username, password, email) VALUES (?1, ?2, ?3)", nativeQuery = true)
+    void addAccount(String username, String password, String email);
 }

@@ -18,7 +18,7 @@ public class DeckProgressService {
     private DeckProgressRepo deckProgressRepo;
 
     // Copy a study deck to a new deck progress object and save it to the database
-    public DeckProgress copyStudyDeckToProgress(long deckID, long userID, String userName, StudyDeck studyDeck) {
+    public DeckProgress copyStudyDeckToProgress(long deckID, long userID, StudyDeck studyDeck) {
         List<FlashCardWithProgress> flashCardsWithProgress = studyDeck.getContent().stream()
                 .map(flashCard -> new FlashCardWithProgress(flashCard.getQuestion(), 
                     flashCard.getAnswer(), 0.0))
@@ -27,7 +27,6 @@ public class DeckProgressService {
         DeckProgress deckProgress = new DeckProgress();
         deckProgress.setDeckID(deckID);
         deckProgress.setUserID(userID);
-        deckProgress.setUserName(userName);
         deckProgress.setContentWithProgress(flashCardsWithProgress);
 
         deckProgressRepo.save(deckProgress);
@@ -36,7 +35,7 @@ public class DeckProgressService {
     }
 
     // Copy a study deck to a new deck progress object without saving it to the database
-    public DeckProgress copyStudyDeckToProgressWithoutDB(long deckID, String userName, StudyDeck studyDeck) {
+    public DeckProgress copyStudyDeckToProgressWithoutDB(long deckID, StudyDeck studyDeck) {
         List<FlashCardWithProgress> flashCardsWithProgress = studyDeck.getContent().stream()
                 .map(flashCard -> new FlashCardWithProgress(flashCard.getQuestion(), 
                     flashCard.getAnswer(), 0.0))
@@ -44,7 +43,6 @@ public class DeckProgressService {
 
         DeckProgress deckProgress = new DeckProgress();
         deckProgress.setDeckID(deckID);
-        deckProgress.setUserName(userName);
         deckProgress.setContentWithProgress(flashCardsWithProgress);
 
         return deckProgress;

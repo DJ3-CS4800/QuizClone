@@ -1,14 +1,15 @@
 package com.CS4800_DJ3.StudyDeckBackend.Converter;
 
+import java.util.List;
+
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCard;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCard;
 
-import jakarta.persistence.*;
-
-import java.util.List;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 @Converter
 public class FlashCardConverter implements AttributeConverter<List<FlashCard>, String> {
