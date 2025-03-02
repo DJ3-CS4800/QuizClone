@@ -1,0 +1,84 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #f4f7f9;
+    color: #333;
+}
+
+/* Dashboard Container */
+.dashboard {
+    padding-top: 70px;
+    /* To avoid overlap with a fixed navbar if present */
+    min-height: 100vh;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+    text-align: center;
+    padding: 1rem 0;
+    background: #161a30;
+    color: #e0f7fa;
+}
+
+.dashboard-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+/* Dashboard Grid Layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+/* Dashboard Card Styles */
+.dashboard-card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.dashboard-card h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    color: #161a30;
+}
+
+.dashboard-card p {
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Hover effects */
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+
+    .dashboard-card h2 {
+        font-size: 1.6rem;
+    }
+
+    .dashboard-card p {
+        font-size: 0.9rem;
+    }
+}

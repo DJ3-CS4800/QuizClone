@@ -1,0 +1,115 @@
+/* Reset default margin/padding on html and body */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Navbar Container */
+.navbar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #161a30;
+    /* Dark background */
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    /* Minimal horizontal padding */
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+/* Logo Styling */
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #e0f7fa;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.logo:hover {
+    color: #00bcd4;
+}
+
+/* Navigation Links Container */
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navigation Link Styling */
+.nav-links li a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    transition: background 0.3s, color 0.3s;
+}
+
+.nav-links li a:hover {
+    background: #00bcd4;
+    color: #161a30;
+}
+
+/* Mobile Responsive Navbar */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.5rem 1rem;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        padding-top: 1rem;
+        display: none;
+        /* Hidden by default */
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-links li {
+        width: 100%;
+        text-align: left;
+    }
+
+    .nav-links li a {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .nav-toggle {
+        display: block;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #ffffff;
+        margin-top: 0.2rem;
+        align-self: flex-end;
+    }
+}
+
+@media (min-width: 769px) {
+    .nav-toggle {
+        display: none;
+    }
+}
+
+.logo {
+    width: 100px;
+    height: auto;
+}
