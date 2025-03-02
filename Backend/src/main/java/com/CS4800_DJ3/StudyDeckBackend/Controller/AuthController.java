@@ -30,17 +30,6 @@ public class AuthController {
         return authService.login(accountRequest, session);
     }
     
-    
-    /**
-     * Create a new account 
-     * @param AccountRequest: request body containing username and password
-     * @return response entity containing success or error message
-     */
-    @PostMapping(value = "/register")
-    public ResponseEntity<?> register(@RequestBody AccountRequest accountRequest) {
-        return authService.register(accountRequest);
-    }
-
 
     /**
      * Invalidate the session to log out the user

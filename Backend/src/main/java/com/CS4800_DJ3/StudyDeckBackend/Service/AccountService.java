@@ -16,6 +16,36 @@ public class AccountService {
     @Autowired
     private AccountRepo accountRepo;
 
+    public ResponseEntity<?> createAccount(AccountRequest accountRequest) {
+        String username = accountRequest.getUsername();
+        String password = accountRequest.getPassword();
+        String email = accountRequest.getEmail();
+
+        // Check if username and password are provided
+        if (username == null || password == null || email == null) {
+            return ResponseEntity.status(401).body("Username, password, and email are required.");
+        }
+
+        // Check if account already exists
+        if (accountRepo.findByUsername(username) != null) {
+            return ResponseEntity.status(401).body("An Account with that username already exists.");
+        }
+
+        // Check if email is already in use
+        if (accountRepo.findByEmail(email) != null) {
+            return ResponseEntity.status(401).body("An Account with that email already exists.");
+        }
+
+        // Create new account and save to database
+        Account newAccount = new Account();
+        newAccount.setUsername(username);
+        newAccount.setPassword(password);
+        newAccount.setEmail(email);
+
+        accountRepo.addAccount(newAccount.getUsername(), newAccount.getPassword(), newAccount.getEmail());
+
+        return ResponseEntity.status(200).body("Account created successfully.");
+    }
     
     public ResponseEntity<?> deleteAccount(AccountRequest accountRequest, HttpSession session) {
         String username = accountRequest.getUsername();

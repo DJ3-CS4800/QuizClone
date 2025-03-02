@@ -20,9 +20,22 @@ public class AccountController {
     private AccountService accountService;
 
     /**
+     * Create a new account
+     * 
+     * @param AccountRequest: request body containing username and password
+     * @return response entity containing success or error message
+     */
+    @PostMapping(value = "/register")
+    public ResponseEntity<?> register(@RequestBody AccountRequest accountRequest) {
+        return accountService.createAccount(accountRequest);
+    }
+
+    
+    /**
      * Delete an account
+     * 
      * @param accountRequest: request body containing username and password
-     * @param session: session object to store user information
+     * @param session:        session object to store user information
      * @return response entity containing success or error message
      */
     @PostMapping(value = "/deleteAccount")
