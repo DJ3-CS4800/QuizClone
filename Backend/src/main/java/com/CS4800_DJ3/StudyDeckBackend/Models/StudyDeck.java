@@ -4,7 +4,7 @@ import java.sql.Date;
 import java.util.List;
 
 import com.CS4800_DJ3.StudyDeckBackend.Converter.FlashCardConverter;
-import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCard;
+import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCardDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -54,7 +54,7 @@ public class StudyDeck {
     @org.hibernate.annotations.ColumnTransformer(
     read = "content::json",
     write = "?::json")
-    private List<FlashCard> content;
+    private List<FlashCardDTO> content;
 
 
     // getters and setters
@@ -74,11 +74,11 @@ public class StudyDeck {
         this.deckName = deckName;
     }
 
-    public List<FlashCard> getContent() {
+    public List<FlashCardDTO> getContent() {
         return content;
     }
 
-    public void setContent(List<FlashCard> content) {
+    public void setContent(List<FlashCardDTO> content) {
         this.content = content;
     }
 

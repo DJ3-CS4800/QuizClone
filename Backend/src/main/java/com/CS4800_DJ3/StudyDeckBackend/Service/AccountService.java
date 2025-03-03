@@ -1,12 +1,16 @@
 package com.CS4800_DJ3.StudyDeckBackend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.CS4800_DJ3.StudyDeckBackend.DTO.AccountRequest;
+import com.CS4800_DJ3.StudyDeckBackend.DTO.AccountCreateRequestDTO;
+import com.CS4800_DJ3.StudyDeckBackend.DTO.AccountRequestDTO;
+import com.CS4800_DJ3.StudyDeckBackend.DTO.ApiResponseDTO;
 import com.CS4800_DJ3.StudyDeckBackend.Models.Account;
 import com.CS4800_DJ3.StudyDeckBackend.Repo.AccountRepo;
+import com.CS4800_DJ3.StudyDeckBackend.Util.ResponseUtil;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -15,25 +19,26 @@ public class AccountService {
     
     @Autowired
     private AccountRepo accountRepo;
+    
 
-    public ResponseEntity<?> createAccount(AccountRequest accountRequest) {
+    public ResponseEntity<ApiResponseDTO> createAccount(AccountCreateRequestDTO accountRequest) {
         String username = accountRequest.getUsername();
         String password = accountRequest.getPassword();
         String email = accountRequest.getEmail();
 
         // Check if username and password are provided
         if (username == null || password == null || email == null) {
-            return ResponseEntity.status(401).body("Username, password, and email are required.");
+            return ResponseUtil.messsage(HttpStatus.BAD_REQUEST, "Username, password, and email are required.");
         }
 
         // Check if account already exists
         if (accountRepo.findByUsername(username) != null) {
-            return ResponseEntity.status(401).body("An Account with that username already exists.");
+            return ResponseUtil.messsage(HttpStatus.BAD_REQUEST, "An Account with that username already exists.");
         }
 
         // Check if email is already in use
         if (accountRepo.findByEmail(email) != null) {
-            return ResponseEntity.status(401).body("An Account with that email already exists.");
+            return ResponseUtil.messsage(HttpStatus.BAD_REQUEST, "An Account with that email already exists.");
         }
 
         // Create new account and save to database
@@ -44,29 +49,30 @@ public class AccountService {
 
         accountRepo.addAccount(newAccount.getUsername(), newAccount.getPassword(), newAccount.getEmail());
 
-        return ResponseEntity.status(200).body("Account created successfully.");
+        return ResponseUtil.messsage(HttpStatus.OK, "Account created successfully.");
     }
     
-    public ResponseEntity<?> deleteAccount(AccountRequest accountRequest, HttpSession session) {
+
+    public ResponseEntity<ApiResponseDTO> deleteAccount(AccountRequestDTO accountRequest, HttpSession session) {
         String username = accountRequest.getUsername();
         String password = accountRequest.getPassword();
 
         // Get userID from session
         Long userID = (Long) session.getAttribute("userID");
         if (userID == null) {
-            return ResponseEntity.status(401).body("User not logged in.");
+            return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
         }
 
         // Check if username and password are provided
         if (username == null || password == null) {
-            return ResponseEntity.status(401).body("Username and password are required.");
+            return ResponseUtil.messsage(HttpStatus.BAD_REQUEST, "Username and password are required.");
         }
 
         Account account = accountRepo.findByUsername(username);
 
         // Check if account exists and password is correct
         if (account == null || !account.checkPassword(password)){
-            return ResponseEntity.status(401).body("Incorrect username or password.");
+            return ResponseUtil.messsage(HttpStatus.BAD_REQUEST, "Incorrect username or password.");
         }
 
         // Delete the account from the database
@@ -75,6 +81,6 @@ public class AccountService {
         // Invalidate the session to log out the user
         session.invalidate();
 
-        return ResponseEntity.status(200).body("Account deleted successfully.");
+        return ResponseUtil.messsage(HttpStatus.OK, "Account deleted successfully.");
     }
 }

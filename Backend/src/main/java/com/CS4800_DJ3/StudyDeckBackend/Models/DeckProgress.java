@@ -4,7 +4,7 @@ import java.sql.Date;
 import java.util.List;
 
 import com.CS4800_DJ3.StudyDeckBackend.Converter.FlashCardWithProgressConverter;
-import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCardWithProgress;
+import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCardWithProgressDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -44,7 +44,7 @@ public class DeckProgress {
     @org.hibernate.annotations.ColumnTransformer(
     read = "content::json",
     write = "?::json")
-    private List<FlashCardWithProgress> contentWithProgress;
+    private List<FlashCardWithProgressDTO> contentWithProgress;
 
 
     // getters and setters
@@ -80,11 +80,11 @@ public class DeckProgress {
         this.lastOpened = lastOpened;
     }
 
-    public List<FlashCardWithProgress> getContentWithProgress() {
+    public List<FlashCardWithProgressDTO> getContentWithProgress() {
         return contentWithProgress;
     }
 
-    public void setContentWithProgress(List<FlashCardWithProgress> contentWithProgress) {
+    public void setContentWithProgress(List<FlashCardWithProgressDTO> contentWithProgress) {
         this.contentWithProgress = contentWithProgress;
     }
 }

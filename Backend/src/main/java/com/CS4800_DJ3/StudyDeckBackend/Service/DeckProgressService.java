@@ -1,6 +1,6 @@
 package com.CS4800_DJ3.StudyDeckBackend.Service;
 
-import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCardWithProgress;
+import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCardWithProgressDTO;
 import com.CS4800_DJ3.StudyDeckBackend.Models.StudyDeck;
 import com.CS4800_DJ3.StudyDeckBackend.Models.DeckProgress;
 import com.CS4800_DJ3.StudyDeckBackend.Repo.DeckProgressRepo;
@@ -19,8 +19,8 @@ public class DeckProgressService {
 
     // Copy a study deck to a new deck progress object and save it to the database
     public DeckProgress copyStudyDeckToProgress(long deckID, long userID, StudyDeck studyDeck) {
-        List<FlashCardWithProgress> flashCardsWithProgress = studyDeck.getContent().stream()
-                .map(flashCard -> new FlashCardWithProgress(flashCard.getQuestion(), 
+        List<FlashCardWithProgressDTO> flashCardsWithProgress = studyDeck.getContent().stream()
+                .map(flashCard -> new FlashCardWithProgressDTO(flashCard.getQuestion(), 
                     flashCard.getAnswer(), 0.0))
                 .collect(Collectors.toList());
 
@@ -36,8 +36,8 @@ public class DeckProgressService {
 
     // Copy a study deck to a new deck progress object without saving it to the database
     public DeckProgress copyStudyDeckToProgressWithoutDB(long deckID, StudyDeck studyDeck) {
-        List<FlashCardWithProgress> flashCardsWithProgress = studyDeck.getContent().stream()
-                .map(flashCard -> new FlashCardWithProgress(flashCard.getQuestion(), 
+        List<FlashCardWithProgressDTO> flashCardsWithProgress = studyDeck.getContent().stream()
+                .map(flashCard -> new FlashCardWithProgressDTO(flashCard.getQuestion(), 
                     flashCard.getAnswer(), 0.0))
                 .collect(Collectors.toList());
 

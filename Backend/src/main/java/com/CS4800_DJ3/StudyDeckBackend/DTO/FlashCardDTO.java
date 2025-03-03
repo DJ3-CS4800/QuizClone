@@ -1,12 +1,12 @@
 package com.CS4800_DJ3.StudyDeckBackend.DTO;
 
-public class FlashCard {
+public class FlashCardDTO {
     private String question;
     private String answer;
 
-    public FlashCard() {}
+    public FlashCardDTO() {}
 
-    public FlashCard(String question, String answer) {
+    public FlashCardDTO(String question, String answer) {
         this.question = question;
         this.answer = answer;
     }

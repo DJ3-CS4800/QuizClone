@@ -1,13 +1,13 @@
 package com.CS4800_DJ3.StudyDeckBackend.DTO;
 
-public class AccountRequest {
+public class AccountCreateRequestDTO {
     private String username;
     private String password;
     private String email;
 
-    public AccountRequest() {}
+    public AccountCreateRequestDTO() {}
 
-    public AccountRequest(String username, String password, String email) {
+    public AccountCreateRequestDTO(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
