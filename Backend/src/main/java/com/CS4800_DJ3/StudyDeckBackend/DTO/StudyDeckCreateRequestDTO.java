@@ -2,10 +2,10 @@ package com.CS4800_DJ3.StudyDeckBackend.DTO;
 
 import java.util.List;
 
-public class StudyDeckEditRequest {
+public class StudyDeckCreateRequestDTO {
     String deckName; 
     boolean isPublic;
-    List<FlashCard> content;
+    List<FlashCardDTO> content;
 
     public String getDeckName() {
         return deckName;
@@ -15,20 +15,19 @@ public class StudyDeckEditRequest {
         this.deckName = deckName;
     }
 
-    public boolean getIsPublic() {
+    public boolean isPublic() {
         return isPublic;
     }
 
-    public void setIsPublic(boolean isPublic) {
+    public void isPublic(boolean isPublic) {
         this.isPublic = isPublic;
     }
 
-    public List<FlashCard> getContent() {
+    public List<FlashCardDTO> getContent() {
         return content;
     }
 
-    public void setContent(List<FlashCard> content) {
+    public void setContent(List<FlashCardDTO> content) {
         this.content = content;
     }
-    
 }

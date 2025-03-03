@@ -7,17 +7,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCard;
-import com.CS4800_DJ3.StudyDeckBackend.DTO.StudyDeckCreateRequest;
-import com.CS4800_DJ3.StudyDeckBackend.DTO.StudyDeckEditRequest;
+import com.CS4800_DJ3.StudyDeckBackend.DTO.ApiResponseDTO;
+import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCardDTO;
+import com.CS4800_DJ3.StudyDeckBackend.DTO.StudyDeckCreateRequestDTO;
+import com.CS4800_DJ3.StudyDeckBackend.DTO.StudyDeckEditRequestDTO;
 import com.CS4800_DJ3.StudyDeckBackend.Models.DeckProgress;
 import com.CS4800_DJ3.StudyDeckBackend.Models.StudyDeck;
 import com.CS4800_DJ3.StudyDeckBackend.Repo.DeckProgressRepo;
 import com.CS4800_DJ3.StudyDeckBackend.Repo.StudyDeckRepo;
+import com.CS4800_DJ3.StudyDeckBackend.Util.ResponseUtil;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -38,23 +41,25 @@ public class DeckService {
     @Autowired
     private StudyDeckRepo studyDeckRepo;
 
+
     public ResponseEntity<?> getAllDecks(HttpSession session) {
         Long userID = (Long) session.getAttribute("userID");
 
         if (userID == null)
-            return ResponseEntity.ok(Map.of("error", "User not logged in"));
+            return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
 
         List<StudyDeck> studyDeckList = studyDeckRepo.findAllByOwnerID(userID);
 
         return ResponseEntity.ok(Map.of("studyDeckList", studyDeckList));
     }
 
+
     public ResponseEntity<?> getDeck(long deckID, HttpSession session) {
         Long currUserID = (Long) session.getAttribute("userID");
         StudyDeck studyDeck = studyDeckRepo.findByDeckID(deckID);
         Boolean isOwner = (currUserID != null && studyDeck.getOwnerID() == currUserID);
-        DeckProgress deckProgress = 
-            (currUserID != null) ? deckProgressRepo.findByUserIDAndDeckID(currUserID, deckID) : null;
+        DeckProgress deckProgress = (currUserID != null) ? deckProgressRepo.findByUserIDAndDeckID(currUserID, deckID)
+                : null;
 
         // Check if deck exists
         if (studyDeck == null) {
@@ -63,30 +68,25 @@ public class DeckService {
                 deckProgressRepo.deleteByUserIDAndDeckID(deckID, deckID);
             }
 
-            return ResponseEntity.ok(Map.of("error", "Deck does not exist"));
+            return ResponseUtil.messsage(HttpStatus.NOT_FOUND, "Deck does not exist.");
         }
 
         // Check if deck is public or not, if not public, other users cannot access it
         if (!studyDeck.isPublic()) {
             if (currUserID == null || !(studyDeck.getOwnerID() == currUserID)) {
-                return ResponseEntity.ok(
-                        Map.of(
-                                "error",
-                                "Deck is set to private, if you are the owner, please login to access it"));
+                return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "Deck is not public.");
             }
         }
 
         // Check if deckProgress exists, if not, create it
         if (deckProgress == null) {
             if (currUserID != null) {
-                deckProgress = 
-                    deckProgressService.copyStudyDeckToProgress(
+                deckProgress = deckProgressService.copyStudyDeckToProgress(
                         deckID,
                         currUserID,
                         studyDeck);
             } else {
-                deckProgress = 
-                    deckProgressService.copyStudyDeckToProgressWithoutDB(
+                deckProgress = deckProgressService.copyStudyDeckToProgressWithoutDB(
                         deckID,
                         studyDeck);
             }
@@ -100,12 +100,13 @@ public class DeckService {
                 "trackProgress", currUserID != null));
     }
 
-    public ResponseEntity<?> createDeck(StudyDeckCreateRequest studyDeckCreateRequest, HttpSession session) {
+
+    public ResponseEntity<ApiResponseDTO> createDeck(StudyDeckCreateRequestDTO studyDeckCreateRequest, HttpSession session) {
         Long userID = (Long) session.getAttribute("userID");
         String userName = (String) session.getAttribute("username");
 
         if (userID == null)
-            return ResponseEntity.ok(Map.of("error", "User not logged in"));
+            return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
 
         // Create new study deck
         StudyDeck studyDeck = new StudyDeck();
@@ -116,11 +117,11 @@ public class DeckService {
         studyDeck.setCreatedAt(new Date(Calendar.getInstance().getTime().getTime()));
         studyDeck.setUpdatedAt(new Date(Calendar.getInstance().getTime().getTime()));
 
-        List<FlashCard> content = new ArrayList<>();
+        List<FlashCardDTO> content = new ArrayList<>();
 
         // Add flashcards to the study deck
-        for (FlashCard request : studyDeckCreateRequest.getContent()) {
-            FlashCard newCard = new FlashCard();
+        for (FlashCardDTO request : studyDeckCreateRequest.getContent()) {
+            FlashCardDTO newCard = new FlashCardDTO();
             newCard.setQuestion(request.getQuestion());
             newCard.setAnswer(request.getAnswer());
 
@@ -129,30 +130,29 @@ public class DeckService {
         studyDeck.setContent(content);
         studyDeckRepo.save(studyDeck);
 
-        return ResponseEntity.ok(Map.of("success", "Deck created"));
+        return ResponseUtil.messsage(HttpStatus.OK, "Deck created successfully.");
     }
 
+
     @Transactional
-    public ResponseEntity<?> updateDeck(StudyDeckEditRequest studyDeckEditRequest, Long deckID, HttpSession session) {
-        List<FlashCard> content = new ArrayList<>();
+    public ResponseEntity<ApiResponseDTO> updateDeck(StudyDeckEditRequestDTO studyDeckEditRequest, Long deckID, HttpSession session) {
+        List<FlashCardDTO> content = new ArrayList<>();
         Long userID = (Long) session.getAttribute("userID");
         Boolean anyChange = false;
 
         if (userID == null)
-            return ResponseEntity.ok(
-                    Map.of("error", "User not logged in"));
+            return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
 
         StudyDeck studyDeck = studyDeckRepo.findByDeckID(deckID);
 
         if (studyDeck == null)
-            return ResponseEntity.ok(
-                    Map.of("error", "Deck does not exist"));
+            return ResponseUtil.messsage(HttpStatus.NOT_FOUND, "Deck does not exist.");
 
         if (studyDeck.getOwnerID() != userID)
-            return ResponseEntity.ok(
-                    Map.of("error", "You do not own this deck"));
+            return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "You do not own this deck");
 
-        // Check if user is trying to change any of the following: public, deck name, or content
+        // Check if user is trying to change any of the following: public, deck name, or
+        // content
         if (studyDeck.isPublic() != studyDeckEditRequest.getIsPublic()) {
             studyDeck.setPublic(studyDeckEditRequest.getIsPublic());
             anyChange = true;
@@ -163,8 +163,8 @@ public class DeckService {
             anyChange = true;
         }
 
-        for (FlashCard request : studyDeckEditRequest.getContent()) {
-            FlashCard newCard = new FlashCard();
+        for (FlashCardDTO request : studyDeckEditRequest.getContent()) {
+            FlashCardDTO newCard = new FlashCardDTO();
             newCard.setQuestion(request.getQuestion());
             newCard.setAnswer(request.getAnswer());
             content.add(newCard);
@@ -181,26 +181,27 @@ public class DeckService {
 
         entityManager.merge(studyDeck);
 
-        return ResponseEntity.ok(Map.of("success", "Deck updated"));
+        return ResponseUtil.messsage(HttpStatus.OK, "Deck updated successfully.");
     }
 
-    public ResponseEntity<?> deleteDeck(long deckID, HttpSession session) {
+
+    public ResponseEntity<ApiResponseDTO> deleteDeck(long deckID, HttpSession session) {
         Long userID = (Long) session.getAttribute("userID");
 
         if (userID == null)
-            return ResponseEntity.ok(Map.of("error", "User not logged in"));
+            return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
 
         StudyDeck studyDeck = studyDeckRepo.findByDeckID(deckID);
 
         if (studyDeck == null)
-            return ResponseEntity.ok(Map.of("error", "Deck does not exist"));
+            return ResponseUtil.messsage(HttpStatus.NOT_FOUND, "Deck does not exist.");
 
         if (studyDeck.getOwnerID() != userID)
-            return ResponseEntity.ok(Map.of("error", "You do not own this deck"));
+            return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "You do not own this deck.");
 
         studyDeckRepo.delete(studyDeck);
 
-        return ResponseEntity.ok(Map.of("success", "Deck deleted"));
+        return ResponseUtil.messsage(HttpStatus.OK, "Deck deleted successfully.");
     }
 
 }

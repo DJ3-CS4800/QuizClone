@@ -10,7 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCard;
+import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCardDTO;
 import com.CS4800_DJ3.StudyDeckBackend.Models.StudyDeck;
 import com.CS4800_DJ3.StudyDeckBackend.Repo.StudyDeckRepo;
 
@@ -31,10 +31,10 @@ public class addData {
         deck.setOwnerID(1);
         deck.setPublic(true);
 
-        List<FlashCard> flashcards = List.of(
-            new FlashCard("What is 10 x 10?", "100"),
-            new FlashCard("What is 23 + 58?", "81"),
-            new FlashCard("What is 55 - 33?", "22")
+        List<FlashCardDTO> flashcards = List.of(
+            new FlashCardDTO("What is 10 x 10?", "100"),
+            new FlashCardDTO("What is 23 + 58?", "81"),
+            new FlashCardDTO("What is 55 - 33?", "22")
         );
 
 
@@ -50,10 +50,10 @@ public class addData {
         deck.setOwnerID(1);
         deck.setPublic(false);
 
-        List<FlashCard> flashcards = List.of(
-            new FlashCard("What is 800 - 28 x 3?", "716"),
-            new FlashCard("What is 2^10?", "1024"),
-            new FlashCard("What is 3.14 x 10^2?", "314")
+        List<FlashCardDTO> flashcards = List.of(
+            new FlashCardDTO("What is 800 - 28 x 3?", "716"),
+            new FlashCardDTO("What is 2^10?", "1024"),
+            new FlashCardDTO("What is 3.14 x 10^2?", "314")
         );
 
         deck.setContent(flashcards);
