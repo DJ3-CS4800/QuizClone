@@ -1,0 +1,151 @@
+.deck-container {
+    display: flex;
+    height: 100vh;
+    background-color: #fdfaff;
+}
+
+/* Top Bar */
+.deck-header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    background-color: #f5f0ff;
+    padding: 0.5rem 1rem;
+    z-index: 10;
+}
+
+.back-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.deck-title {
+    flex: 1;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.settings-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+/* Main Content (Study/Test UI) */
+.deck-content {
+    flex: 1;
+    margin-top: 3rem;
+    /* so content is below header */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.progress-circle {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 60px;
+    height: 60px;
+    background: #ddd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-view {
+    width: 400px;
+    height: 200px;
+    background-color: #eee;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.deck-navigation {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.mode-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Deck Tools (Right Panel) */
+.deck-tools {
+    width: 200px;
+    background: #f5f0ff;
+    border-left: 1px solid #ccc;
+    padding: 1rem;
+}
+
+.deck-tools h3 {
+    margin-bottom: 0.5rem;
+}
+
+.deck-tools ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 1rem;
+}
+
+/* Creation Mode (If mode=create) */
+.card-input-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-input-row input {
+    flex: 1;
+    padding: 0.5rem;
+}
+
+/* Footer for create mode */
+.deck-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: #f5f0ff;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    border-top: 1px solid #ccc;
+}
+
+.deck-footer button {
+    border: none;
+    background: #65558f;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* Adjust for smaller screens */
+@media (max-width: 768px) {
+    .deck-tools {
+        display: none;
+    }
+
+    .deck-content {
+        margin-top: 3rem;
+    }
+}

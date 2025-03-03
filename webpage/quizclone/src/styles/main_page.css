@@ -1,0 +1,280 @@
+.main-container {
+    min-height: 100vh;
+    background-color: #f5f0ff;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #f5f0ff;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.menu-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.search-bar {
+    flex: 1;
+    background-color: #e8def8;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #65558f;
+    border-radius: 4px;
+}
+
+.user-info {
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+/* Deck Grid */
+.deck-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.deck-card {
+    width: 160px;
+    height: 240px;
+    background-color: #d9d9d9;
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease;
+}
+
+.deck-card:hover {
+    transform: translateY(-2px);
+}
+
+.add-card {
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-card:hover {
+    background-color: #e6e6e6;
+}
+
+.add-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: #b0b0b0;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+/* Create Deck Card */
+.create-deck-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow: hidden;
+    /* ensures no content spills out */
+    position: relative;
+}
+
+.create-deck-card .error {
+    color: red;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.deck-name-input {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    margin-bottom: 0.5rem;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Scrollable area for multiple cards in the form */
+.deck-form-scroll {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 0.5rem;
+}
+
+.card-item {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-input {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.add-question-btn,
+.create-deck-btn {
+    padding: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #65558f;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-bottom: 0.5rem;
+}
+
+.add-question-btn:hover,
+.create-deck-btn:hover {
+    background-color: #4f4572;
+}
+
+/* Existing Deck Cards */
+.deck-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.deck-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.favorite-button,
+.edit-button,
+.delete-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+}
+
+.deck-description {
+    flex: 1;
+    margin: 0;
+    font-size: 0.875rem;
+    color: #555;
+}
+
+.deck-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+}
+
+.progress-circle {
+    width: 36px;
+    height: 36px;
+}
+
+.progress-circle svg {
+    transform: rotate(-90deg);
+}
+
+.progress-text {
+    font-size: 0.75rem;
+    color: #65558f;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    background-color: #e8def8;
+    padding: 0.75rem;
+    margin: 1rem;
+    border-radius: 2rem;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem 1.5rem;
+    border-radius: 1.5rem;
+    color: #000000;
+}
+
+.nav-item.active {
+    background-color: rgba(101, 85, 143, 0.2);
+}
+
+.nav-item span {
+    font-size: 0.75rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .deck-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 0.5rem;
+    }
+
+    .nav-item {
+        padding: 0.5rem 1rem;
+    }
+
+    .deck-card {
+        width: 140px;
+        height: 220px;
+    }
+}

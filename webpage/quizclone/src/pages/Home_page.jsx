@@ -5,8 +5,8 @@ import "../styles/login.css";
 import "../styles/footer.css";
 import "../styles/sections.css";
 import "../styles/buttons.css";
-import logoImage from "../images/quizclone logo.png";
-
+// Import the logo image if needed (for navbar)
+// import logoImage from "../assets/logo.png";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -27,8 +27,9 @@ const Home = () => {
         navigate("/register");
     };
 
+    // Updated: Quickstart now navigates to "/main" instead of "/deck"
     const handleQuickstart = () => {
-        navigate("/deck");
+        navigate("/main");
     };
 
     useEffect(() => {
@@ -45,14 +46,6 @@ const Home = () => {
 
     return (
         <div className="home-page">
-            {/* NAVIGATION BAR */}
-            <nav className="navbar">
-                <img src={logoImage} alt="Logo" className="logo" />
-                <div className="nav-toggle" onClick={() => setMenuOpen(!menuOpen)}>
-                    ☰
-                </div>
-            </nav>
-
 
             {/* LOGIN SECTION WITH FULL BACKGROUND IMAGE AND COLOR OVERLAY */}
             <section id="login" className="login-section">
@@ -104,18 +97,20 @@ const Home = () => {
                 <div className="footer-column">
                     <h3>About</h3>
                     <p>
-                        Just some students trying to study
+                        We are a dedicated team committed to enhancing your study experience with innovative tools.
                     </p>
                 </div>
                 <div className="footer-column">
                     <h3>Services</h3>
                     <p>
-                        Our platform offers interactive flashcards and progress tracking for free.
+                        Our platform offers interactive flashcards, progress tracking, and personalized study sessions.
                     </p>
                 </div>
                 <div className="footer-column">
                     <h3>Contact</h3>
-                    <p>please do not contact us =D</p>
+                    <p>
+                        Email us at support@example.com or call (123) 456-7890.
+                    </p>
                 </div>
             </footer>
 

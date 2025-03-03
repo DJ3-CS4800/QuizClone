@@ -1,74 +1,79 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/main.css";
+import "../styles/main_page.css";
 
-const MainPage = () => {
+// Simulate existing decks or fetch from backend
+const initialDecks = [
+    // Example deck data
+    // { id: 1, name: "Deck 1", description: "Some description", progress: 20, favorite: false },
+];
+
+function MainPage() {
     const navigate = useNavigate();
+    const [decks, setDecks] = useState(initialDecks);
 
-    // Navigation handlers for each dashboard feature
-    const handleStudyMode = () => {
-        navigate("/deck");
+    // Example: fetch decks from backend on mount
+    useEffect(() => {
+        // fetch("http://localhost:8080/api/allDecks")
+        //   .then(res => res.json())
+        //   .then(data => setDecks(data.studyDeckList))
+        //   .catch(err => console.error(err));
+    }, []);
+
+    // Navigate to Deck page for creation
+    const handleAddSet = () => {
+        navigate("/deck?mode=create");
     };
 
-    const handleCreateDeck = () => {
-        // navigate to deck creation page (if implemented)
-        navigate("/create-deck");
-    };
+    // When returning from Deck page, it might pass newly created deck info
+    // In a real app, you might fetch again or use a global store (redux/context).
+    // For simplicity, assume the newly created deck is appended to state via a custom event or after navigation.
 
-    const handleProgress = () => {
-        // navigate to progress summary page (if implemented)
-        navigate("/progress");
-    };
-
-    const handleMatchMode = () => {
-        // navigate to match mode page (if implemented)
-        navigate("/match");
-    };
-
-    const handleTestMode = () => {
-        // navigate to test mode page (if implemented)
-        navigate("/test");
-    };
-
-    const handleSettings = () => {
-        // navigate to settings page (if implemented)
-        navigate("/settings");
+    // Open existing deck in deck page
+    const openDeck = (deckId) => {
+        navigate(`/deck/${deckId}`);
     };
 
     return (
-        <div className="dashboard">
-            <header className="dashboard-header">
-                <h1>Dashboard</h1>
+        <div className="main-container">
+            {/* Top Bar */}
+            <header className="header">
+                <div className="search-bar">
+                    <input type="text" placeholder="Search decks..." />
+                </div>
+                <div className="user-section">User Account ID</div>
             </header>
 
-            <section className="dashboard-grid">
-                <div className="dashboard-card" onClick={handleStudyMode}>
-                    <h2>Study Mode</h2>
-                    <p>Start your study session.</p>
+            <h1 className="title">Dashboard</h1>
+            <p className="subtitle">Manage your decks or create a new one.</p>
+
+            <main className="deck-grid">
+                {/* "Add Set" card -> navigates to deck creation */}
+                <div className="deck-card add-card" onClick={handleAddSet}>
+                    <span className="plus-icon">+</span>
+                    <span>add set</span>
                 </div>
-                <div className="dashboard-card" onClick={handleCreateDeck}>
-                    <h2>Create Deck</h2>
-                    <p>Design your own study cards.</p>
-                </div>
-                <div className="dashboard-card" onClick={handleProgress}>
-                    <h2>Progress</h2>
-                    <p>View your study statistics.</p>
-                </div>
-                <div className="dashboard-card" onClick={handleMatchMode}>
-                    <h2>Match Mode</h2>
-                    <p>Play matching games.</p>
-                </div>
-                <div className="dashboard-card" onClick={handleTestMode}>
-                    <h2>Test Mode</h2>
-                    <p>Take a quiz to test your knowledge.</p>
-                </div>
-                <div className="dashboard-card" onClick={handleSettings}>
-                    <h2>Settings</h2>
-                    <p>Customize your experience.</p>
-                </div>
-            </section>
+
+                {/* Existing decks displayed here */}
+                {decks.map(deck => (
+                    <div key={deck.id} className="deck-card" onClick={() => openDeck(deck.id)}>
+                        <h3>{deck.name}</h3>
+                        <p>{deck.description || "No description"}</p>
+                        <div className="progress-circle">
+                            {deck.progress}%
+                        </div>
+                    </div>
+                ))}
+            </main>
+
+            {/* Bottom Nav */}
+            <footer className="bottom-nav">
+                <button>Explore</button>
+                <button>Saved</button>
+                <button>Updates</button>
+            </footer>
         </div>
     );
-};
+}
 
 export default MainPage;
