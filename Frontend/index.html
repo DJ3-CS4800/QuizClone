@@ -1,68 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        .container { width: 300px; margin: 100px auto; }
-        input { display: block; width: 100%; padding: 10px; margin: 10px 0; }
-        button { width: 100%; padding: 10px; margin-top: 10px; border: none; }
-        .login-btn { background: #007BFF; color: white; }
-        .register-btn { background: #28A745; color: white; }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <h2>Login</h2>
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
-        <button class="login-btn" onclick="login()">Login</button>
-        <button class="register-btn" onclick="redirectToRegister()">Register</button>
-        <p id="error-message" style="color: red;"></p>
-    </div>
-
-    <script>
-        // Function to handle login
-        function login() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-
-            fetch('https://cs4800-studydecks-deployment.onrender.com/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username: username, password: password }),
-                credentials: 'include'
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to log in');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-                if (data.success) {
-                    localStorage.setItem("user", username); // Save user info
-                    window.location.href = "decks.html"; // Redirect to deck page
-                } else {
-                    document.getElementById("error-message").textContent = data.error;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-
-        // Redirect to the registration page
-        function redirectToRegister() {
-            window.location.href = "register.html"; // Change to your register page URL
-        }
-    </script>
-
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
