@@ -102,8 +102,8 @@ public class StudyDeck {
         return isPublic;
     }
 
-    public void setPublic(boolean aPublic) {
-        isPublic = aPublic;
+    public void setPublic(boolean Public) {
+        isPublic = Public;
     }
 
     public Date getCreatedAt() {

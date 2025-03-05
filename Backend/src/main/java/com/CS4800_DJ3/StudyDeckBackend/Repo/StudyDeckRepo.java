@@ -23,11 +23,11 @@ public interface StudyDeckRepo extends JpaRepository<StudyDeck, Long> {
 
 
     /**
-     * SQL Query to find all StudyDecks by ownerID
+     * SQL Query to find all StudyDecks by ownerID, sort by deckID descending
      * @param ownerID: the ownerID of the StudyDeck
      * @return: List of StudyDecks with the given ownerID
      */
-    @Query(value = "SELECT * FROM study_deck WHERE owner_id = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM study_deck WHERE owner_id = ?1 ORDER BY deck_id DESC", nativeQuery = true)
     List<StudyDeck> findAllByOwnerID(long ownerID);
 
 

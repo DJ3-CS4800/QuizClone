@@ -1,16 +1,26 @@
 package com.CS4800_DJ3.StudyDeckBackend.DTO;
 
 public class FlashCardWithProgressDTO {
+    private long cardID;
     private String question;
     private String answer;
     private double understandingLevel;
 
     public FlashCardWithProgressDTO() {}
 
-    public FlashCardWithProgressDTO(String question, String answer, double understandingLevel) {
+    public FlashCardWithProgressDTO(long cardID, String question, String answer, double understandingLevel) {
+        this.cardID = cardID;
         this.question = question;
         this.answer = answer;
         this.understandingLevel = understandingLevel;
+    }
+
+    public long getCardID() { 
+        return cardID; 
+    }
+
+    public void setCardID(long cardID) { 
+        this.cardID = cardID; 
     }
 
     public String getQuestion() { 
