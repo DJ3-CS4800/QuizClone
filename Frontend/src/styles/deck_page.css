@@ -12,23 +12,42 @@
 .deck-header {
     width: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: center; /* Center content */
+    position: relative; /* Allows absolute positioning for the back button */
     padding: 10px;
     background-color: #f4f4f4;
     border-bottom: 2px solid #ccc;
 }
 
+/* Deck title: Centered */
 .deck-title {
     font-size: 24px;
     font-weight: bold;
+    flex-grow: 1;
+    text-align: center;
 }
 
-.back-button, .settings-button {
-    background: none;
+/* Back button: Smaller size, left-aligned */
+.back-button {
+    background: #80669d;
     border: none;
-    font-size: 18px;
+    font-size: 16px;
     cursor: pointer;
+    padding: 5px 10px;
+    width: max-content; /* Prevents stretching */
+    position: absolute;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 5px; /* Rounded edges */
+    transition: background 0.3s ease; /* Smooth transition */
+    color: black;
+}
+
+.back-button:hover {
+    background: purple;
+    color: whitesmoke;
 }
 
 /* Deck Creation Mode */
@@ -94,4 +113,18 @@
     border: none;
     cursor: pointer;
     border-radius: 4px;
+}
+
+/* Public checkbox: Right-aligned */
+.public-checkbox {
+    position: absolute;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+
+.public-checkbox input {
+    margin-left: 5px;
 }
