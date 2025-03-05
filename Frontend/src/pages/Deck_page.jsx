@@ -88,11 +88,12 @@ function DeckPage() {
     if (mode === "create") {
         return (
             <div className="deck-container create-mode">
+                 <h1 className="deck-title">Deck Creation</h1>
                 {/* Top Bar with "Back" */}
-                    <header className="deck-header">
                     <button onClick={() => navigate("/main")} className="back-button">
                         Back
                     </button>
+                    <label className="DeckName">
                     <input
                         type="text"
                         placeholder="Deck Name"
@@ -100,6 +101,7 @@ function DeckPage() {
                         className="deck-name-input"
                         onChange={(e) => setDeckName(e.target.value)}
                     />
+                    </label>
                     <label className="public-checkbox">
                         <input
                             type="checkbox"
@@ -108,10 +110,9 @@ function DeckPage() {
                         />
                         Public
                     </label>
-                </header>
 
                 <main className="deck-content">
-                    <h2 className="deck-title">Deck Creation</h2>
+                   
                     {cards.map((card, index) => (
     <div key={index} className={`card-input-row card-${index}`}>
         <input

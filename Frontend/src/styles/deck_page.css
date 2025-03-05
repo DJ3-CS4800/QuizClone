@@ -6,6 +6,10 @@
     justify-content: center;
     padding: 20px;
     font-family: Arial, sans-serif;
+    color: White;
+    font-weight: bold;
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Header Styles */
@@ -16,16 +20,16 @@
     justify-content: center; /* Center content */
     position: relative; /* Allows absolute positioning for the back button */
     padding: 10px;
-    background-color: #f4f4f4;
     border-bottom: 2px solid #ccc;
 }
 
 /* Deck title: Centered */
 .deck-title {
-    font-size: 24px;
+    font-size: 50px;
     font-weight: bold;
     flex-grow: 1;
     text-align: center;
+    top: 12px
 }
 
 /* Back button: Smaller size, left-aligned */
@@ -37,7 +41,8 @@
     padding: 5px 10px;
     width: max-content; /* Prevents stretching */
     position: absolute;
-    left: 10px;
+    left: 11px;
+    top: 0px;
     display: flex;
     align-items: center;
     border-radius: 5px; /* Rounded edges */
@@ -59,6 +64,17 @@
     gap: 10px;
 }
 
+.delete-card-button {
+    color: white;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    background-color: #ED0800;
+}
+
+.delete-card-button:hover {
+    background: rgb(211, 4, 4);
+}
 .card-input-row {
     display: flex;
     gap: 10px;
@@ -71,8 +87,16 @@
     border-radius: 4px;
 }
 
-.add-card-button, .create-deck-button {
+.add-card-button{
     padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.create-deck-button {
+    padding: 10px 255px;
     background-color: #007bff;
     color: white;
     border: none;
@@ -128,3 +152,25 @@
 .public-checkbox input {
     margin-left: 5px;
 }
+
+/* Apply background gradient */
+body {
+    background-color: #ad5389;
+    background-image: linear-gradient(225deg, #ad5389 0%, #3c1053 50%, #2B86C5 100%);
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Adjust Deck Name Input */
+.deck-name-input {
+    width: 100%; /* Adjust width to full width */
+    max-width: 999px; /* Increase max width */
+    padding: 10px;
+    font-size: 20px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    bottom: 10px;
+    position: relative;
+}
+
