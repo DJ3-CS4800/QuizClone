@@ -113,31 +113,45 @@ function DeckPage() {
                 <main className="deck-content">
                     <h2 className="deck-title">Deck Creation</h2>
                     {cards.map((card, index) => (
-                        <div key={index} className={`card-input-row card-${index}`}>
-                            <input
-                                type="text"
-                                placeholder="Question"
-                                value={card.question}
-                                className={`card-question-input card-${index}-question`}
-                                onChange={(e) => {
-                                    const updated = [...cards];
-                                    updated[index].question = e.target.value;
-                                    setCards(updated);
-                                }}
-                            />
-                            <input
-                                type="text"
-                                placeholder="Answer"
-                                value={card.answer}
-                                className={`card-answer-input card-${index}-answer`}
-                                onChange={(e) => {
-                                    const updated = [...cards];
-                                    updated[index].answer = e.target.value;
-                                    setCards(updated);
-                                }}
-                            />
-                        </div>
-                    ))}
+    <div key={index} className={`card-input-row card-${index}`}>
+        <input
+            type="text"
+            placeholder="Question"
+            value={card.question}
+            className={`card-question-input card-${index}-question`}
+            onChange={(e) => {
+                const updated = [...cards];
+                updated[index].question = e.target.value;
+                setCards(updated);
+            }}
+        />
+        <input
+            type="text"
+            placeholder="Answer"
+            value={card.answer}
+            className={`card-answer-input card-${index}-answer`}
+            onChange={(e) => {
+                const updated = [...cards];
+                updated[index].answer = e.target.value;
+                setCards(updated);
+            }}
+        />
+        <button
+            onClick={() => {
+                if (cards.length > 1) {
+                    const updated = cards.filter((_, i) => i !== index);
+                    setCards(updated);
+                } else {
+                    alert("Must have at least one card.");
+                }
+            }}
+            className="delete-card-button"
+        >
+            Delete
+        </button>
+    </div>
+))}
+
                     <button onClick={() => setCards([...cards, { question: "", answer: "" }])} className="add-card-button">
                         Add Card
                     </button>
