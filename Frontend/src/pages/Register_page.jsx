@@ -15,6 +15,10 @@ const RegisterPage = () => {
         }
     };
 
+    const handleCancel= () => {
+            navigate("/");     
+    };
+
     return (
         <div className="register-page">
             <h2>Create an Account!</h2>
@@ -39,7 +43,7 @@ const RegisterPage = () => {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
-
+                    <button className="Cancel-button" onClick={handleCancel}>Cancel</button>
                 <button className="Register-button" onClick={handleBackToLogin}>Register</button>
         </div>
         </div>
