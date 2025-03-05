@@ -57,9 +57,7 @@ public class DeckService {
     public ResponseEntity<?> getDeck(long deckID, HttpSession session) {
         Long currUserID = (Long) session.getAttribute("userID");
         StudyDeck studyDeck = studyDeckRepo.findByDeckID(deckID);
-        Boolean isOwner = (currUserID != null && studyDeck.getOwnerID() == currUserID);
-        DeckProgress deckProgress = (currUserID != null) ? deckProgressRepo.findByUserIDAndDeckID(currUserID, deckID)
-                : null;
+        DeckProgress deckProgress = (currUserID != null) ? deckProgressRepo.findByUserIDAndDeckID(currUserID, deckID): null;
 
         // Check if deck exists
         if (studyDeck == null) {
@@ -70,6 +68,8 @@ public class DeckService {
 
             return ResponseUtil.messsage(HttpStatus.NOT_FOUND, "Deck does not exist.");
         }
+
+        Boolean isOwner = (currUserID != null && studyDeck.getOwnerID() == currUserID);
 
         // Check if deck is public or not, if not public, other users cannot access it
         if (!studyDeck.isPublic()) {
@@ -118,10 +118,12 @@ public class DeckService {
         studyDeck.setUpdatedAt(new Date(Calendar.getInstance().getTime().getTime()));
 
         List<FlashCardDTO> content = new ArrayList<>();
+        int Count = 0;
 
         // Add flashcards to the study deck
         for (FlashCardDTO request : studyDeckCreateRequest.getContent()) {
             FlashCardDTO newCard = new FlashCardDTO();
+            newCard.setCardID(Count++);
             newCard.setQuestion(request.getQuestion());
             newCard.setAnswer(request.getAnswer());
 
@@ -172,6 +174,7 @@ public class DeckService {
 
         if (!studyDeck.getContent().equals(content)) {
             studyDeck.setContent(content);
+            deckProgressService.updateAllStudyDeckToProgress(studyDeck);
             anyChange = true;
         }
 
@@ -200,6 +203,7 @@ public class DeckService {
             return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "You do not own this deck.");
 
         studyDeckRepo.delete(studyDeck);
+        deckProgressService.removeAllStudyDeckToProgress(studyDeck);
 
         return ResponseUtil.messsage(HttpStatus.OK, "Deck deleted successfully.");
     }

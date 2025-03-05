@@ -19,7 +19,7 @@ public class StudyDeckCreateRequestDTO {
         return isPublic;
     }
 
-    public void isPublic(boolean isPublic) {
+    public void setIsPublic(boolean isPublic) {
         this.isPublic = isPublic;
     }
 
