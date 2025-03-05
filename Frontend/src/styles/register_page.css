@@ -58,23 +58,23 @@ button {
 }
 
 .Register-button {
-    background: #4CAF50;
+    background: #4681f4;
     color: white;
     font-weight: bold;
     transition: 0.3s;
 }
 
 .Register-button:hover {
-    background: #45a049;
+    background: #33b249;
 }
 
 .Cancel-button {
-    background: #f44336;
+    background: #4681f4;
     color: white;
     font-weight: bold;
     transition: 0.3s;
 }
 
 .Cancel-button:hover {
-    background: #d32f2f;
+    background: #ED0800;
 }

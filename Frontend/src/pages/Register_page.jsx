@@ -6,12 +6,13 @@ const RegisterPage = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [username, setUsername] = useState("");
     
     const handleBackToLogin = () => {
         if (email && password) {
             navigate("/");
         } else {
-            alert("Please enter your email and password.");
+            alert("Please fill out all feilds.");
         }
     };
 
@@ -21,9 +22,17 @@ const RegisterPage = () => {
 
     return (
         <div className="register-page">
-            <h2>Create an Account!</h2>
             <div className="login-box">
                     <h2>Register</h2>
+                    <div className="input-group">
+                        <label>Username</label>
+                        <input
+                            type="username"
+                            placeholder="Enter your username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </div>
                     <div className="input-group">
                         <label>Email</label>
                         <input
@@ -33,7 +42,6 @@ const RegisterPage = () => {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
-
                     <div className="input-group">
                         <label>Password</label>
                         <input
@@ -43,8 +51,8 @@ const RegisterPage = () => {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
+                    <button className="Register-button" onClick={handleBackToLogin}>Register</button>
                     <button className="Cancel-button" onClick={handleCancel}>Cancel</button>
-                <button className="Register-button" onClick={handleBackToLogin}>Register</button>
         </div>
         </div>
 

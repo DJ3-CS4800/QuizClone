@@ -10,16 +10,23 @@ import "../styles/buttons.css";
 
 const Home = () => {
     const navigate = useNavigate();
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showTopBtn, setShowTopBtn] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
 
     const handleLogin = () => {
-        if (email && password) {
+        if (email && password && username) {
             navigate("/main");
-        } else {
-            alert("Please enter your email and password.");
+        } else if (!username) {
+            alert("Please enter your username.");
+        }
+        else if (!email) {
+            alert("Please enter your email address.");
+        }
+        else {
+            alert("Please enter your password.");
         }
     };
 
@@ -58,8 +65,17 @@ const Home = () => {
                 </div>
 
                 {/* Centered Login Box */}
+                <h2>Login</h2>
                 <div className="login-box">
-                    <h2>Login</h2>
+                    <div className="input-group">
+                        <label>Username</label>
+                        <input
+                              type="text"
+                              placeholder="Enter your Username"
+                              value={username} 
+                              onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </div>
                     <div className="input-group">
                         <label>Email</label>
                         <input
