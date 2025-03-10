@@ -1,5 +1,7 @@
 package com.CS4800_DJ3.StudyDeckBackend.Service;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,8 +48,9 @@ public class AccountService {
         newAccount.setUsername(username);
         newAccount.setPassword(password);
         newAccount.setEmail(email);
+        newAccount.setUserID(UUID.randomUUID());
 
-        accountRepo.addAccount(newAccount.getUsername(), newAccount.getPassword(), newAccount.getEmail());
+        accountRepo.save(newAccount);
 
         return ResponseUtil.messsage(HttpStatus.OK, "Account created successfully.");
     }
@@ -58,7 +61,7 @@ public class AccountService {
         String password = accountRequest.getPassword();
 
         // Get userID from session
-        Long userID = (Long) session.getAttribute("userID");
+        UUID userID = (UUID) session.getAttribute("userID");
         if (userID == null) {
             return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
         }

@@ -1,7 +1,7 @@
 package com.CS4800_DJ3.StudyDeckBackend.Models;
 
-import java.sql.Date;
 import java.util.List;
+import java.util.UUID;
 
 import com.CS4800_DJ3.StudyDeckBackend.Converter.FlashCardWithProgressConverter;
 import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCardWithProgressDTO;
@@ -28,15 +28,11 @@ public class DeckProgress {
 
     // id of the deck with progress
     @Column(name = "deck_id")
-    private long deckID;
+    private UUID deckID;
 
     // id of the user with progress
     @Column(name = "user_id")
-    private long userID;
-
-    // last opened date
-    @Column(name = "last_opened")
-    private Date lastOpened;
+    private UUID userID;
 
     // content of the deck with progress
     @Column(name = "content_with_progress", columnDefinition = "JSON")
@@ -56,28 +52,20 @@ public class DeckProgress {
         this.progressID = progressID;
     }
 
-    public long getDeckID() {
+    public UUID getDeckID() {
         return deckID;
     }
 
-    public void setDeckID(long deckID) {
+    public void setDeckID(UUID deckID) {
         this.deckID = deckID;
     }
 
-    public long getUserID() {
+    public UUID getUserID() {
         return userID;
     }
 
-    public void setUserID(long userID) {
+    public void setUserID(UUID userID) {
         this.userID = userID;
-    }
-
-    public Date getLastOpened() {
-        return lastOpened;
-    }
-
-    public void setLastOpened(Date lastOpened) {
-        this.lastOpened = lastOpened;
     }
 
     public List<FlashCardWithProgressDTO> getContentWithProgress() {

@@ -1,5 +1,7 @@
 package com.CS4800_DJ3.StudyDeckBackend.Controller;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +71,7 @@ public class DeckController {
         @ApiResponse(responseCode = "404", description = "Not found - Deck not found"),
     })
     @GetMapping(value = "/{deckID}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getDeck(@PathVariable long deckID, HttpSession session) {
+    public ResponseEntity<?> getDeck(@PathVariable UUID deckID, HttpSession session) {
         return deckService.getDeck(deckID, session);
     }
 
@@ -85,7 +87,7 @@ public class DeckController {
         @ApiResponse(responseCode = "404", description = "Not found - Deck not found"),
     })
     public ResponseEntity<ApiResponseDTO> editDeck(
-        @PathVariable long deckID, 
+        @PathVariable UUID deckID, 
         @RequestBody StudyDeckEditRequestDTO studyDeckEditRequest, 
         HttpSession session) {
         return deckService.updateDeck(studyDeckEditRequest, deckID, session);
@@ -102,7 +104,7 @@ public class DeckController {
         @ApiResponse(responseCode = "401", description = "Unauthorized - user not logged in or not owner of deck"),
         @ApiResponse(responseCode = "404", description = "Not found - Deck not found"),
     })
-    public ResponseEntity<ApiResponseDTO> deleteDeck(@PathVariable long deckID, HttpSession session) {
+    public ResponseEntity<ApiResponseDTO> deleteDeck(@PathVariable UUID deckID, HttpSession session) {
         return deckService.deleteDeck(deckID, session);
     }
 }

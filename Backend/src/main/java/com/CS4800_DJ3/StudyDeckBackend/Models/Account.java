@@ -1,5 +1,7 @@
 package com.CS4800_DJ3.StudyDeckBackend.Models;
 
+import java.util.UUID;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import jakarta.persistence.Column;
@@ -12,22 +14,29 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "account")
 public class Account {
-    
-    @Id
-    @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userID;
 
+    // ID of the account
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    // UUID of the user for public
+    @Column(name = "user_id")
+    private UUID userID;
+
+    // username of the user
     @Column(name = "username")
     private String username;
 
+    // password of the user
     @Column(name = "password")
     private String password;
 
+    // email of the user
     @Column(name = "email")
     private String email;
 
-    
     // password encryption
     public void setPassword(String rawPassword) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -39,13 +48,21 @@ public class Account {
         return encoder.matches(rawPassword, this.password);
     }
 
-
     // Getters and Setters
-    public long getUserID() {
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public UUID getUserID() {
         return userID;
     }
 
-    public void setUserID(long userID) {
+    public void setUserID(UUID userID) {
         this.userID = userID;
     }
 

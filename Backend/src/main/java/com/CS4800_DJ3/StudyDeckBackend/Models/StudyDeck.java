@@ -2,6 +2,7 @@ package com.CS4800_DJ3.StudyDeckBackend.Models;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.UUID;
 
 import com.CS4800_DJ3.StudyDeckBackend.Converter.FlashCardConverter;
 import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCardDTO;
@@ -20,9 +21,13 @@ public class StudyDeck {
 
     // id of the deck
     @Id
-    @Column(name = "deck_id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long deckID;
+    private long id;
+
+    // UUID of the deck for public
+    @Column(name = "deck_id")
+    private UUID deckID;
 
     //  name of the deck
     @Column(name = "deck_name")
@@ -30,7 +35,7 @@ public class StudyDeck {
 
     // id of the owner
     @Column(name = "owner_id")
-    private long ownerID;
+    private UUID ownerID;
 
     // userName of the owner
     @Column(name = "owner_name")
@@ -58,11 +63,11 @@ public class StudyDeck {
 
 
     // getters and setters
-    public long getDeckID() {
+    public UUID getDeckID() {
         return deckID;
     }
 
-    public void setDeckID(long deckID) {
+    public void setDeckID(UUID deckID) {
         this.deckID = deckID;
     }
 
@@ -82,11 +87,11 @@ public class StudyDeck {
         this.content = content;
     }
 
-    public long getOwnerID() {
+    public UUID getOwnerID() {
         return ownerID;
     }
 
-    public void setOwnerID(long ownerID) {
+    public void setOwnerID(UUID ownerID) {
         this.ownerID = ownerID;
     }
 

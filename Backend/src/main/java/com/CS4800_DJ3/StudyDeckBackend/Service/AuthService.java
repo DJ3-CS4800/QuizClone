@@ -20,7 +20,8 @@ public class AuthService {
     private AccountRepo accountRepo;
 
 
-    public ResponseEntity<ApiResponseDTO> login(AccountRequestDTO accountRequest, HttpSession session) {
+    public ResponseEntity<ApiResponseDTO> login(
+            AccountRequestDTO accountRequest, HttpSession session) {
         String username = accountRequest.getUsername();
         String password = accountRequest.getPassword();
 

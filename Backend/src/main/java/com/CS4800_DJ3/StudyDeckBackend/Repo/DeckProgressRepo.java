@@ -1,6 +1,7 @@
 package com.CS4800_DJ3.StudyDeckBackend.Repo;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +17,7 @@ public interface DeckProgressRepo extends JpaRepository<DeckProgress, Long> {
      * @return DeckProgress: deck progress with the given user id and deck id
      */
     @Query(value = "SELECT * FROM deck_progress WHERE user_id = ?1 AND deck_id = ?2", nativeQuery = true)
-    DeckProgress findByUserIDAndDeckID(long userID, long deckID);
+    DeckProgress findByUserIDAndDeckID(UUID userID, UUID deckID);
 
 
     /**
@@ -26,7 +27,7 @@ public interface DeckProgressRepo extends JpaRepository<DeckProgress, Long> {
      * @return DeckProgress: deck progress with the given user id and deck id
      */
     @Query(value = "DELETE FROM deck_progress WHERE user_id = ?1 AND deck_id = ?2", nativeQuery = true)
-    void deleteByUserIDAndDeckID(long userID, long deckID);
+    void deleteByUserIDAndDeckID(UUID userID, UUID deckID);
 
 
     /**
@@ -35,5 +36,5 @@ public interface DeckProgressRepo extends JpaRepository<DeckProgress, Long> {
      * @return DeckProgress: deck progress with the given deck id
      */
     @Query(value = "SELECT * FROM deck_progress WHERE deck_id = ?1", nativeQuery = true)
-    List<DeckProgress> findAllByDeckID(long deckID);
+    List<DeckProgress> findAllByDeckID(UUID deckID);
 } 

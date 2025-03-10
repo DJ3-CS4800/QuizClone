@@ -1,5 +1,7 @@
 package com.CS4800_DJ3.StudyDeckBackend.Controller;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,10 +35,11 @@ public class DeckProgressController {
         @ApiResponse(responseCode = "404", description = "Deck progress not found"),
     })
     public ResponseEntity<?> updateDeckProgress(
-            @PathVariable long deckID,  
+            @PathVariable UUID deckID,  
             @RequestBody StudyDeckProgressEditRequestDTO contentWithProgressEditRequest,
             HttpSession session) {
-        return deckProgressService.updateDeckProgress(contentWithProgressEditRequest, deckID, session);
+        return deckProgressService.updateDeckProgress(
+            contentWithProgressEditRequest, deckID, session);
     }
 
 }

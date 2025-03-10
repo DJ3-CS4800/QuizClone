@@ -15,7 +15,7 @@ public class StudyDeckCreateRequestDTO {
         this.deckName = deckName;
     }
 
-    public boolean isPublic() {
+    public boolean getIsPublic() {
         return isPublic;
     }
 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,7 +44,7 @@ public class DeckService {
 
 
     public ResponseEntity<?> getAllDecks(HttpSession session) {
-        Long userID = (Long) session.getAttribute("userID");
+        UUID userID = (UUID) session.getAttribute("userID");
 
         if (userID == null)
             return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
@@ -54,18 +55,14 @@ public class DeckService {
     }
 
 
-    public ResponseEntity<?> getDeck(long deckID, HttpSession session) {
-        Long currUserID = (Long) session.getAttribute("userID");
+    public ResponseEntity<?> getDeck(UUID deckID, HttpSession session) {
+        UUID currUserID = (UUID) session.getAttribute("userID");
         StudyDeck studyDeck = studyDeckRepo.findByDeckID(deckID);
-        DeckProgress deckProgress = (currUserID != null) ? deckProgressRepo.findByUserIDAndDeckID(currUserID, deckID): null;
+        DeckProgress deckProgress = (currUserID != null) ? 
+            deckProgressRepo.findByUserIDAndDeckID(currUserID, deckID): null;
 
         // Check if deck exists
         if (studyDeck == null) {
-            // If deck does not exist, delete progress if exists
-            if (!(deckProgress == null)) {
-                deckProgressRepo.deleteByUserIDAndDeckID(deckID, deckID);
-            }
-
             return ResponseUtil.messsage(HttpStatus.NOT_FOUND, "Deck does not exist.");
         }
 
@@ -102,7 +99,7 @@ public class DeckService {
 
 
     public ResponseEntity<ApiResponseDTO> createDeck(StudyDeckCreateRequestDTO studyDeckCreateRequest, HttpSession session) {
-        Long userID = (Long) session.getAttribute("userID");
+        UUID userID = (UUID) session.getAttribute("userID");
         String userName = (String) session.getAttribute("username");
 
         if (userID == null)
@@ -110,10 +107,12 @@ public class DeckService {
 
         // Create new study deck
         StudyDeck studyDeck = new StudyDeck();
+        studyDeck.setDeckID(UUID.randomUUID());
         studyDeck.setOwnerID(userID);
         studyDeck.setOwnerName(userName);
         studyDeck.setDeckName(studyDeckCreateRequest.getDeckName());
-        studyDeck.setPublic(studyDeckCreateRequest.isPublic());
+        studyDeck.setPublic(studyDeckCreateRequest.getIsPublic());
+        
         studyDeck.setCreatedAt(new Date(Calendar.getInstance().getTime().getTime()));
         studyDeck.setUpdatedAt(new Date(Calendar.getInstance().getTime().getTime()));
 
@@ -137,10 +136,11 @@ public class DeckService {
 
 
     @Transactional
-    public ResponseEntity<ApiResponseDTO> updateDeck(StudyDeckEditRequestDTO studyDeckEditRequest, Long deckID, HttpSession session) {
+    public ResponseEntity<ApiResponseDTO> updateDeck(StudyDeckEditRequestDTO studyDeckEditRequest, UUID deckID, HttpSession session) {
         List<FlashCardDTO> content = new ArrayList<>();
-        Long userID = (Long) session.getAttribute("userID");
+        UUID userID = (UUID) session.getAttribute("userID");
         Boolean anyChange = false;
+        
 
         if (userID == null)
             return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
@@ -150,7 +150,7 @@ public class DeckService {
         if (studyDeck == null)
             return ResponseUtil.messsage(HttpStatus.NOT_FOUND, "Deck does not exist.");
 
-        if (studyDeck.getOwnerID() != userID)
+        if (!studyDeck.getOwnerID().equals(userID))
             return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "You do not own this deck");
 
         // Check if user is trying to change any of the following: public, deck name, or
@@ -165,8 +165,10 @@ public class DeckService {
             anyChange = true;
         }
 
+        int Count = 0;
         for (FlashCardDTO request : studyDeckEditRequest.getContent()) {
             FlashCardDTO newCard = new FlashCardDTO();
+            newCard.setCardID(Count++);
             newCard.setQuestion(request.getQuestion());
             newCard.setAnswer(request.getAnswer());
             content.add(newCard);
@@ -188,8 +190,8 @@ public class DeckService {
     }
 
 
-    public ResponseEntity<ApiResponseDTO> deleteDeck(long deckID, HttpSession session) {
-        Long userID = (Long) session.getAttribute("userID");
+    public ResponseEntity<ApiResponseDTO> deleteDeck(UUID deckID, HttpSession session) {
+        UUID userID = (UUID) session.getAttribute("userID");
 
         if (userID == null)
             return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");

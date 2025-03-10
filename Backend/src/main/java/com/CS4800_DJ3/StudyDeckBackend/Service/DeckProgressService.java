@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,11 +29,11 @@ public class DeckProgressService {
     private DeckProgressRepo deckProgressRepo;
 
     public ResponseEntity<ApiResponseDTO> updateDeckProgress(
-        StudyDeckProgressEditRequestDTO studyDeckProgressEditRequest, 
-        long deckID,
-        HttpSession session) {
+            StudyDeckProgressEditRequestDTO studyDeckProgressEditRequest, 
+            UUID deckID,
+            HttpSession session) {
         
-        Long userID = (Long) session.getAttribute("userID");
+        UUID userID = (UUID) session.getAttribute("userID");
         if (userID == null)
             return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
 
@@ -59,7 +60,7 @@ public class DeckProgressService {
 
 
     // Copy a study deck to a new deck progress object and save it to the database
-    public DeckProgress copyStudyDeckToProgress(long deckID, long userID, StudyDeck studyDeck) {
+    public DeckProgress copyStudyDeckToProgress(UUID deckID, UUID userID, StudyDeck studyDeck) {
         List<FlashCardWithProgressDTO> flashCardsWithProgress = studyDeck.getContent().stream()
                 .map(flashCard -> new FlashCardWithProgressDTO(
                     flashCard.getCardID(),
@@ -80,7 +81,7 @@ public class DeckProgressService {
 
 
     // Copy a study deck to a new deck progress object without saving it to the database
-    public DeckProgress copyStudyDeckToProgressWithoutDB(long deckID, StudyDeck studyDeck) {
+    public DeckProgress copyStudyDeckToProgressWithoutDB(UUID deckID, StudyDeck studyDeck) {
         List<FlashCardWithProgressDTO> flashCardsWithProgress = studyDeck.getContent().stream()
                 .map(flashCard -> new FlashCardWithProgressDTO(
                     flashCard.getCardID(),
