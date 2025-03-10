@@ -7,7 +7,7 @@ function DeckPage() {
     const location = useLocation();
     const params = useParams();
 
-        // If "mode=create" -> new deck, else if there's a deckId in URL -> edit/study that deck
+    // If "mode=create" -> new deck, else if there's a deckId in URL -> edit/study that deck
 
     const [mode, setMode] = useState("study");
     const [deckName, setDeckName] = useState("");
@@ -40,7 +40,7 @@ function DeckPage() {
             alert("Deck name required");
             return;
         }
-                // Filter out empty question/answer pairs
+        // Filter out empty question/answer pairs
 
         const validCards = cards.filter(c => c.question.trim() && c.answer.trim());
         const deckData = {
@@ -61,7 +61,7 @@ function DeckPage() {
                 alert(data.error);
             } else {
                 alert("Deck created!");
-                                // Navigate back to main with new deck data
+                // Navigate back to main with new deck data
                 navigate("/main");
             }
         } catch (err) {
@@ -88,12 +88,12 @@ function DeckPage() {
     if (mode === "create") {
         return (
             <div className="deck-container create-mode">
-                 <h1 className="deck-title">Deck Creation</h1>
+                <h1 className="deck-title">Deck Creation</h1>
                 {/* Top Bar with "Back" */}
-                    <button onClick={() => navigate("/main")} className="back-button">
-                        Back
-                    </button>
-                    <label className="DeckName">
+                <button onClick={() => navigate("/main")} className="back-button">
+                    Back
+                </button>
+                <label className="DeckName">
                     <input
                         type="text"
                         placeholder="Deck Name"
@@ -101,57 +101,78 @@ function DeckPage() {
                         className="deck-name-input"
                         onChange={(e) => setDeckName(e.target.value)}
                     />
-                    </label>
-                    <label className="public-checkbox">
-                        <input
-                            type="checkbox"
-                            checked={isPublic}
-                            onChange={(e) => setIsPublic(e.target.checked)}
-                        />
-                        Public
-                    </label>
+                </label>
+                <label className="public-checkbox">
+                    <input
+                        type="checkbox"
+                        checked={isPublic}
+                        onChange={(e) => setIsPublic(e.target.checked)}
+                    />
+                    Public
+                </label>
 
                 <main className="deck-content">
-                   
+
+                    {/* Big Card displaying the current card's Question and Answer */}
+                    <div className="big-card">
+                        <h2 className="big-card-question">
+                            {cards[currentCardIndex]?.question || "Blank"}
+                        </h2>
+                        <p className="big-card-answer">
+                            {cards[currentCardIndex]?.answer || "Blank"}
+                        </p>
+                    </div>
+
+                    {/* Thin line divider between the big card and the additional content */}
+                    <div className="card-divider"></div>
+
+
                     {cards.map((card, index) => (
-    <div key={index} className={`card-input-row card-${index}`}>
-        <input
-            type="text"
-            placeholder="Question"
-            value={card.question}
-            className={`card-question-input card-${index}-question`}
-            onChange={(e) => {
-                const updated = [...cards];
-                updated[index].question = e.target.value;
-                setCards(updated);
-            }}
-        />
-        <input
-            type="text"
-            placeholder="Answer"
-            value={card.answer}
-            className={`card-answer-input card-${index}-answer`}
-            onChange={(e) => {
-                const updated = [...cards];
-                updated[index].answer = e.target.value;
-                setCards(updated);
-            }}
-        />
-        <button
-            onClick={() => {
-                if (cards.length > 1) {
-                    const updated = cards.filter((_, i) => i !== index);
-                    setCards(updated);
-                } else {
-                    alert("Must have at least one card.");
-                }
-            }}
-            className="delete-card-button"
-        >
-            Delete
-        </button>
-    </div>
-))}
+                        <div key={index} className={`card-input-row card-${index}`}>
+                            <input
+                                type="text"
+                                placeholder="Question"
+                                value={card.question}
+                                className={`card-question-input card-${index}-question`}
+                                onChange={(e) => {
+                                    const updated = [...cards];
+                                    updated[index].question = e.target.value;
+                                    setCards(updated);
+                                }}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Answer"
+                                value={card.answer}
+                                className={`card-answer-input card-${index}-answer`}
+                                onChange={(e) => {
+                                    const updated = [...cards];
+                                    updated[index].answer = e.target.value;
+                                    setCards(updated);
+                                }}
+                            />
+                            <button
+                                onClick={() => {
+                                    if (cards.length > 1) {
+                                        const updated = cards.filter((_, i) => i !== index);
+                                        setCards(updated);
+                                    } else {
+                                        alert("Must have at least one card.");
+                                    }
+                                }}
+                                className="delete-card-button"
+                            >
+                                {/* Minimal trashcan icon using inline SVG with black fill */}
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" viewBox="0 0 24 24">
+                                    <path d="M3 6h18v2H3zM7 8v12h2V8zm4 0v12h2V8zm4 0v12h2V8zM9 4h6v2H9z" />
+                                </svg>
+                            </button>
+
+
+
+
+                        </div>
+                    ))}
 
                     <button onClick={() => setCards([...cards, { question: "", answer: "" }])} className="add-card-button">
                         Add Card
@@ -172,14 +193,14 @@ function DeckPage() {
                 <button onClick={() => navigate("/main")} className="back-button">
                     Back
                 </button>
-                                {/* Could display deck name or a search bar */}
+                {/* Could display deck name or a search bar */}
 
                 <div className="deck-title">{deckName || "Untitled Deck"}</div>
                 <button className="settings-button">⚙</button>
             </header>
 
             <main className="deck-content">
-                                {/* Progress circle in top-left, text of card, video support, etc. */}
+                {/* Progress circle in top-left, text of card, video support, etc. */}
                 <div className="progress-circle">Progress</div>
                 <div className="card-view">
                     <h2 className="card-text">TEXT OF THE CARD</h2>
