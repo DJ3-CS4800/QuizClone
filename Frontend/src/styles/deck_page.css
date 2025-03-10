@@ -1,3 +1,12 @@
+/* Define CSS Variables to match Main Page */
+:root {
+    --primary-color: #65558f;
+    --secondary-color: #e8def8;
+    --background-color: #f5f0ff;
+    --text-color: #333;
+    --border-radius: 8px;
+}
+
 /* General Styles */
 .deck-container {
     display: flex;
@@ -6,10 +15,15 @@
     justify-content: center;
     padding: 20px;
     font-family: Arial, sans-serif;
-    color: White;
+    /* Updated text color to match Main Page */
+    color: var(--text-color);
     font-weight: bold;
     border-radius: 15px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    /* Center the entire container on larger screens */
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
 }
 
 /* Header Styles */
@@ -17,8 +31,10 @@
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center; /* Center content */
-    position: relative; /* Allows absolute positioning for the back button */
+    justify-content: center;
+    /* Center content */
+    position: relative;
+    /* Allows absolute positioning for the back button */
     padding: 10px;
     border-bottom: 2px solid #ccc;
 }
@@ -29,29 +45,32 @@
     font-weight: bold;
     flex-grow: 1;
     text-align: center;
-    top: 12px
+    top: 12px;
 }
 
 /* Back button: Smaller size, left-aligned */
 .back-button {
-    background: #80669d;
+    background: var(--primary-color);
     border: none;
     font-size: 16px;
     cursor: pointer;
     padding: 5px 10px;
-    width: max-content; /* Prevents stretching */
+    width: max-content;
+    /* Prevents stretching */
     position: absolute;
     left: 11px;
     top: 0px;
     display: flex;
     align-items: center;
-    border-radius: 5px; /* Rounded edges */
-    transition: background 0.3s ease; /* Smooth transition */
-    color: black;
+    border-radius: 5px;
+    /* Rounded edges */
+    transition: background 0.3s ease;
+    /* Smooth transition */
+    color: white;
 }
 
 .back-button:hover {
-    background: purple;
+    background: #4f4572;
     color: whitesmoke;
 }
 
@@ -65,39 +84,68 @@
 }
 
 .delete-card-button {
-    color: white;
-    border: none;
-    border-radius: 40px;
+    background: #ff0000;
+    /* White background for contrast */
+    border: 1px solid #ccc;
+    /* Optional border for better definition */
+    border-radius: 50%;
+    /* Makes the button round */
     cursor: pointer;
-    background-color: #ED0800;
+    padding: 0.2rem;
+    /* Reduced padding for a smaller button */
+    width: 30px;
+    /* Fixed width for a compact appearance */
+    height: 30px;
+    /* Fixed height for a compact appearance */
+    display: flex;
+    /* Use flex to center the SVG icon */
+    align-items: center;
+    justify-content: center;
 }
 
 .delete-card-button:hover {
-    background: rgb(211, 4, 4);
+    background: #ff7d7d;
+    /* Slightly different background on hover */
 }
+
+/* Divider styling between the big card and the content below */
+.card-divider {
+    width: 100%;
+    max-width: 1000px;
+    /* Matches the big card's maximum width */
+    border-top: 1px solid #ccc;
+    /* Thin line for a minimal divider */
+    margin: 20px auto;
+    /* Vertical spacing and centered horizontally */
+}
+
+
+
 .card-input-row {
     display: flex;
     gap: 10px;
 }
 
-.card-question-input, .card-answer-input {
+.card-question-input,
+.card-answer-input {
     flex: 1;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-.add-card-button{
+.add-card-button {
     padding: 10px 15px;
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
+
 .create-deck-button {
     padding: 10px 255px;
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 4px;
@@ -106,9 +154,50 @@
 
 /* Study Mode */
 .study-mode .deck-content {
+    width: 100%;
+    max-width: 800px;
+    /* Ensures content does not stretch on large screens */
+    margin: 0 auto;
+    /* Centers the content horizontally */
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* Centers child elements horizontally */
+}
+
+.big-card {
+    width: 90%;
+    /* Responsive width */
+    max-width: 600px;
+    /* Maximum width for larger screens */
+    /* Comment out the aspect ratio if you want direct height control */
+    /* aspect-ratio: 4 / 3; */
+    height: 300px;
+    /* Set the fixed height (adjust this value as needed) */
+    margin: 20px auto;
+    /* Centers the big card horizontally */
+    padding: 20px;
+    background-color: white;
+    color: var(--text-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    /* Center content inside the card using flexbox */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* Media query for phone compatibility for the big card */
+@media (max-width: 480px) {
+    .big-card {
+        padding: 15px;
+        /* Slightly reduce padding on smaller screens */
+        font-size: 0.9rem;
+        /* Adjust font size if needed */
+    }
 }
 
 .card-view {
@@ -123,10 +212,15 @@
     padding: 8px 12px;
     margin: 5px;
     cursor: pointer;
-    background-color: #28a745;
+    background-color: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
+    transition: background-color 0.2s ease;
+}
+
+.deck-navigation button:hover {
+    background-color: #4f4572;
 }
 
 /* Mode Buttons */
@@ -136,7 +230,7 @@
     background-color: #ffc107;
     border: none;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
 }
 
 /* Public checkbox: Right-aligned */
@@ -148,12 +242,13 @@
     font-size: 14px;
 }
 
-
 .public-checkbox input {
     margin-left: 5px;
 }
 
 /* Apply background gradient */
+/* Original background gradient - commented out to match Main Page color scheme */
+/*
 body {
     background-color: #ad5389;
     background-image: linear-gradient(225deg, #ad5389 0%, #3c1053 50%, #2B86C5 100%);
@@ -161,11 +256,23 @@ body {
     padding: 0;
     font-family: Arial, sans-serif;
 }
+*/
+
+/* Updated Body Background to match Main Page */
+body {
+    background-color: var(--background-color);
+    background-image: none;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
 
 /* Adjust Deck Name Input */
 .deck-name-input {
-    width: 100%; /* Adjust width to full width */
-    max-width: 999px; /* Increase max width */
+    width: 100%;
+    /* Adjust width to full width */
+    max-width: 999px;
+    /* Increase max width */
     padding: 10px;
     font-size: 20px;
     border: 2px solid #ccc;
@@ -174,3 +281,215 @@ body {
     position: relative;
 }
 
+/* Big Card styling for study mode (with flip functionality) */
+.big-card {
+    width: 90%;
+    /* Responsive width */
+    max-width: 600px;
+    /* Maximum width for larger screens */
+    /* You can now remove or comment out the aspect-ratio or fixed height if desired */
+    height: 300px;
+    /* Fixed height for now, adjust as needed */
+    margin: 20px auto;
+    /* Centers the big card horizontally */
+    padding: 20px;
+    background-color: white;
+    color: var(--text-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    /* For 3D flip effect */
+    perspective: 1000px;
+    cursor: pointer;
+    /* Indicates the card is clickable */
+}
+
+.big-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+/* When the card is flipped, rotate the inner container */
+.big-card.flipped .big-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* Style for both sides of the card */
+.big-card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    /* Hide the backside when not flipped */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    /* Ensure text stays within the card */
+    overflow: hidden;
+    /* Prevent text from spilling out */
+    text-align: center;
+    word-wrap: break-word;
+    /* Break words that are too long */
+    hyphens: auto;
+    /* Automatically hyphenate words if needed */
+}
+
+
+/* The back of the card (answer) should be rotated 180 degrees */
+.big-card-back {
+    transform: rotateY(180deg);
+}
+
+/* Navigation buttons container */
+.card-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    /* Space between buttons */
+    margin-top: 15px;
+    /* Space below the big card */
+}
+
+/* Left and Right Arrow Buttons */
+.nav-button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    /* Makes the buttons circular */
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.nav-button:hover {
+    background: #4f4572;
+}
+
+/* Ensure buttons are responsive on smaller screens */
+@media (max-width: 480px) {
+    .nav-button {
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+}
+
+/* Center the card counter between navigation buttons */
+.card-counter {
+    font-size: 16px;
+    color: #555;
+    padding: 5px 15px;
+    font-weight: bold;
+}
+
+/* Big Card Wrapper to contain the big card and the public checkbox */
+.big-card-wrapper {
+    position: relative;
+    /* So that absolutely positioned children are relative to this container */
+    display: inline-block;
+    /* Shrinks to the size of the big card */
+}
+
+/* Position the public checkbox container just below the big card */
+.public-checkbox-absolute {
+    position: absolute;
+    top: 100%;
+    /* Places it directly below the wrapper (big card) */
+    right: 0;
+    /* Aligns it with the right edge of the big card */
+    margin-top: 5px;
+    /* Adjust vertical spacing as needed */
+}
+
+/* Optional: Style for the public checkbox (if needed) */
+.public-checkbox {
+    font-size: 14px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+/* Position the public toggle container just below the big card */
+.public-toggle-container {
+    position: absolute;
+    top: 100%;
+    /* Places it directly below the big card wrapper */
+    right: 0;
+    /* Aligns it with the right edge of the big card */
+    margin-top: 5px;
+    /* Adjust vertical spacing as needed */
+}
+
+/* Styles for the public toggle */
+.public-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Globe icon styling */
+.globe-icon {
+    font-size: 18px;
+    /* Adjust the size of the globe icon */
+}
+
+/* Switch styling */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: #2196F3;
+}
+
+input:checked+.slider:before {
+    transform: translateX(26px);
+}

@@ -70,10 +70,10 @@ const Home = () => {
                     <div className="input-group">
                         <label>Username</label>
                         <input
-                              type="text"
-                              placeholder="Enter your Username"
-                              value={username} 
-                              onChange={(e) => setUsername(e.target.value)}
+                            type="text"
+                            placeholder="Enter your Username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                         />
                     </div>
                     <div className="input-group">
