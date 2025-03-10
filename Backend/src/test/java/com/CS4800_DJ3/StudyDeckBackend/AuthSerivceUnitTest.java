@@ -68,4 +68,16 @@ public class AuthSerivceUnitTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Invalid username or password.", response.getBody().getMessage());
     }
+
+    @Test
+void testLogin_Fail_userNotFound() {
+    AccountRequestDTO accountRequest = new AccountRequestDTO("nonexistentuser", "somepassword");
+    when(accountRepo.findByUsername("nonexistentuser")).thenReturn(null);  // Simulate user not found
+
+    ResponseEntity<ApiResponseDTO> response = authService.login(accountRequest, session);
+
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("Invalid username or password.", response.getBody().getMessage());
+}
+
 }
