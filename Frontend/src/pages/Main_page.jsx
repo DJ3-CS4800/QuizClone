@@ -48,6 +48,23 @@ function MainPage() {
         }
     };
 
+    // Toggle favorite for a deck and sort decks so that favorites come first
+    const toggleFavorite = (deckId) => {
+        setDecks(prevDecks => {
+            const updatedDecks = prevDecks.map(deck => {
+                if (deck.id === deckId) {
+                    return { ...deck, favorite: !deck.favorite };
+                }
+                return deck;
+            });
+            // Sort updated decks so that favorited ones come first
+            updatedDecks.sort((a, b) => (b.favorite - a.favorite));
+            return updatedDecks;
+        });
+    };
+
+
+
 
     return (
         <div className="main-container">
@@ -66,6 +83,18 @@ function MainPage() {
                 {/* Existing decks displayed here */}
                 {decks.map(deck => (
                     <div key={deck.id} className="deck-card" onClick={() => openDeck(deck.id)}>
+                        {/* Favorite button in the top left corner */}
+                        <button
+                            className="favorite-deck-button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                toggleFavorite(deck.id);
+                            }}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill={deck.favorite ? "yellow" : "grey"}>
+                                <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.402 8.168L12 18.897l-7.336 3.86 1.402-8.168L.132 9.21l8.2-1.192z" />
+                            </svg>
+                        </button>
                         {/* Delete button in the top right corner */}
                         <button
                             className="delete-deck-button"
@@ -87,6 +116,7 @@ function MainPage() {
                     </div>
                 ))}
 
+
                 {/* "Add Set" card -> always displayed as the last card */}
                 <div className="deck-card add-card" onClick={handleAddSet}>
                     <span className="plus-icon">+</span>
@@ -94,13 +124,6 @@ function MainPage() {
                 </div>
             </main>
 
-
-            {/* Bottom Nav */}
-            <footer className="bottom-nav">
-                <button>Explore</button>
-                <button>Saved</button>
-                <button>Updates</button>
-            </footer>
         </div>
     );
 }

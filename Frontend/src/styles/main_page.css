@@ -14,6 +14,15 @@ body {
     padding: 0;
 }
 
+/* Center the dashboard title and subtitle */
+.title,
+.subtitle {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
 .main-container {
     min-height: 100vh;
     display: flex;
@@ -91,8 +100,10 @@ body {
 }
 
 
-
 .deck-card {
+    position: relative;
+    text-align: center;
+    box-sizing: border-box;
     width: 200px;
     height: 260px;
     background: white;
@@ -100,10 +111,30 @@ body {
     padding: 1rem;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    /* Center content horizontally */
+    justify-content: center;
+    /* Vertically center by default */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
 }
+
+/* Title & description can have normal margins; they'll sit in the middle by default */
+.deck-card h3,
+.deck-card p {
+    margin: 0.5rem 0;
+}
+
+/* Anchors the progress circle to the bottom center */
+.progress-circle {
+    margin-top: auto;
+    /* Pushes this element down within the flex container */
+    margin-bottom: 0.5rem;
+    /* Small gap from the bottom edge */
+}
+
+
 
 .deck-card:hover {
     transform: translateY(-4px);
@@ -253,4 +284,46 @@ button:active {
     height: 12px;
     fill: #000000;
     /* Dark fill color for the icon */
+}
+
+/* Ensure each deck card is positioned relative */
+.deck-card {
+    position: relative;
+    width: 220px;
+    /* Fixed width for the card */
+    /* Other existing styles for deck-card remain intact */
+}
+
+/* Styles for the favorite deck button inside each deck card */
+.favorite-deck-button {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 24px;
+    /* Fixed width for a small circle */
+    height: 24px;
+    /* Fixed height for a small circle */
+    border-radius: 50%;
+    /* Makes the button round */
+    background-color: rgba(0, 0, 0, 0.1);
+    /* Light background for contrast */
+    border: none;
+    display: flex;
+    /* Use flex to center the SVG icon */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    /* No extra padding */
+}
+
+.favorite-deck-button:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    /* Darker on hover */
+}
+
+.favorite-deck-button svg {
+    width: 12px;
+    /* Adjust size of the icon */
+    height: 12px;
 }
