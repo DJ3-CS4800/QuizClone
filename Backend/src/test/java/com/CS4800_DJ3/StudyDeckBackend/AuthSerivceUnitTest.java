@@ -54,4 +54,18 @@ public class AuthSerivceUnitTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Logged in successfully.", response.getBody().getMessage());
     }
+
+    @Test
+    void testLogin_Fail_wrongPassword() {
+        AccountRequestDTO accountRequest = new AccountRequestDTO("testuser", "wrongpassword");
+        Account account = mock(Account.class);
+
+        when(accountRepo.findByUsername("testuser")).thenReturn(account);
+        when(account.checkPassword("wrongpassword")).thenReturn(false);
+
+        ResponseEntity<ApiResponseDTO> response = authService.login(accountRequest, session);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Invalid username or password.", response.getBody().getMessage());
+    }
 }
