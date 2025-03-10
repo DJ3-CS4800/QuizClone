@@ -24,7 +24,7 @@ import com.CS4800_DJ3.StudyDeckBackend.Service.AuthService;
 import jakarta.servlet.http.HttpSession;
 
 public class AuthSerivceUnitTest {
-    
+
     @InjectMocks
     private AuthService authService;
 
@@ -35,7 +35,7 @@ public class AuthSerivceUnitTest {
     private HttpSession session;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
@@ -70,14 +70,14 @@ public class AuthSerivceUnitTest {
     }
 
     @Test
-void testLogin_Fail_userNotFound() {
-    AccountRequestDTO accountRequest = new AccountRequestDTO("nonexistentuser", "somepassword");
-    when(accountRepo.findByUsername("nonexistentuser")).thenReturn(null);  // Simulate user not found
+    void testLogin_Fail_userNotFound() {
+        AccountRequestDTO accountRequest = new AccountRequestDTO("nonexistentuser", "somepassword");
+        when(accountRepo.findByUsername("nonexistentuser")).thenReturn(null); // Simulate user not found
 
-    ResponseEntity<ApiResponseDTO> response = authService.login(accountRequest, session);
+        ResponseEntity<ApiResponseDTO> response = authService.login(accountRequest, session);
 
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    assertEquals("Invalid username or password.", response.getBody().getMessage());
-}
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Invalid username or password.", response.getBody().getMessage());
+    }
 
 }
