@@ -75,6 +75,11 @@ function MainPage() {
                 </div>
                 <div className="user-section">User Account ID</div>
             </header>
+            {/* Temporary button to navigate to deck_page */}
+            <div className="temp-deck-page-button" style={{ textAlign: 'center', margin: '1rem 0' }}>
+                <button onClick={() => navigate("/deck")}>Deck page (temp button)</button>
+            </div>
+
 
             <h1 className="title">Dashboard</h1>
             <p className="subtitle">Manage your decks or create a new one.</p>

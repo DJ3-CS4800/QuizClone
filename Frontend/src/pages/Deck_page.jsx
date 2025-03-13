@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import "../styles/deck_page.css";
-import Navbar from "./navbar";
 
 function DeckPage() {
     const navigate = useNavigate();
@@ -15,21 +14,6 @@ function DeckPage() {
     const [isPublic, setIsPublic] = useState(false);
     const [cards, setCards] = useState([{ question: "", answer: "" }]);
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
-    // Add a state for tracking whether the big card is flipped
-    const [isFlipped, setIsFlipped] = useState(false);
-    // State for tracking the current card index
-
-    // Function to go to the previous card
-    const goToPreviousCard = () => {
-        setCurrentCardIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : cards.length - 1));
-    };
-
-    // Function to go to the next card
-    const goToNextCard = () => {
-        setCurrentCardIndex((prevIndex) => (prevIndex < cards.length - 1 ? prevIndex + 1 : 0));
-    };
-
-
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -103,9 +87,8 @@ function DeckPage() {
 
     if (mode === "create") {
         return (
-
             <div className="deck-container create-mode">
-                <h1 className="deck-title">Deck</h1>
+                <h1 className="deck-title">Deck Creation</h1>
                 {/* Top Bar with "Back" */}
                 <button onClick={() => navigate("/main")} className="back-button">
                     Back
@@ -119,61 +102,26 @@ function DeckPage() {
                         onChange={(e) => setDeckName(e.target.value)}
                     />
                 </label>
-
+                <label className="public-checkbox">
+                    <input
+                        type="checkbox"
+                        checked={isPublic}
+                        onChange={(e) => setIsPublic(e.target.checked)}
+                    />
+                    Public
+                </label>
 
                 <main className="deck-content">
 
-                    {/* Big Card Wrapper */}
-                    <div className="big-card-wrapper">
-                        {/* Big Card displaying the current card's Question and Answer with flip functionality */}
-                        <div
-                            className={`big-card ${isFlipped ? "flipped" : ""}`}
-                            onClick={() => setIsFlipped(!isFlipped)} // Toggle the flip state when clicked
-                        >
-                            <div className="big-card-inner">
-                                <div className="big-card-face big-card-front">
-                                    <h2 className="big-card-question">
-                                        {cards[currentCardIndex]?.question || "No question available"}
-                                    </h2>
-                                </div>
-                                <div className="big-card-face big-card-back">
-                                    <p className="big-card-answer">
-                                        {cards[currentCardIndex]?.answer || "No answer available"}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        {/* Public toggle: minimalistic globe icon and slider */}
-                        <div className="public-toggle-container">
-                            <div className="public-toggle">
-                                <span className="globe-icon">🌐</span>
-                                <label className="switch">
-                                    <input
-                                        type="checkbox"
-                                        checked={isPublic}
-                                        onChange={(e) => setIsPublic(e.target.checked)}
-                                    />
-                                    <span className="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
+                    {/* Big Card displaying the current card's Question and Answer */}
+                    <div className="big-card">
+                        <h2 className="big-card-question">
+                            {cards[currentCardIndex]?.question || "Blank"}
+                        </h2>
+                        <p className="big-card-answer">
+                            {cards[currentCardIndex]?.answer || "Blank"}
+                        </p>
                     </div>
-
-
-
-                    {/* Navigation Buttons Below the Big Card with Card Counter in Between */}
-                    <div className="card-navigation">
-                        <button className="nav-button left" onClick={goToPreviousCard}>&larr;</button>
-                        <span className="card-counter">
-                            {cards.length > 0 ? `${currentCardIndex + 1} / ${cards.length}` : "0 / 0"}
-                        </span>
-                        <button className="nav-button right" onClick={goToNextCard}>&rarr;</button>
-                    </div>
-
-
-
-
 
                     {/* Thin line divider between the big card and the additional content */}
                     <div className="card-divider"></div>
