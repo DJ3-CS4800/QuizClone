@@ -66,13 +66,11 @@ public class DeckService {
             return ResponseUtil.messsage(HttpStatus.NOT_FOUND, "Deck does not exist.");
         }
 
-        Boolean isOwner = (currUserID != null && studyDeck.getOwnerID() == currUserID);
+        Boolean isOwner = (currUserID != null && studyDeck.getOwnerID().equals(currUserID));
 
         // Check if deck is public or not, if not public, other users cannot access it
-        if (!studyDeck.isPublic()) {
-            if (currUserID == null || !(studyDeck.getOwnerID() == currUserID)) {
-                return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "Deck is not public.");
-            }
+        if (!studyDeck.isPublic() && !isOwner) {
+            return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "Deck is not public.");
         }
 
         // Check if deckProgress exists, if not, create it
@@ -112,7 +110,6 @@ public class DeckService {
         studyDeck.setOwnerName(userName);
         studyDeck.setDeckName(studyDeckCreateRequest.getDeckName());
         studyDeck.setPublic(studyDeckCreateRequest.getIsPublic());
-        
         studyDeck.setCreatedAt(new Date(Calendar.getInstance().getTime().getTime()));
         studyDeck.setUpdatedAt(new Date(Calendar.getInstance().getTime().getTime()));
 
@@ -128,6 +125,8 @@ public class DeckService {
 
             content.add(newCard);
         }
+
+        // Set the content of the study deck
         studyDeck.setContent(content);
         studyDeckRepo.save(studyDeck);
 
@@ -142,19 +141,21 @@ public class DeckService {
         Boolean anyChange = false;
         
 
+        // Check if user is logged in
         if (userID == null)
             return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
 
         StudyDeck studyDeck = studyDeckRepo.findByDeckID(deckID);
 
+        // Check if deck exists
         if (studyDeck == null)
             return ResponseUtil.messsage(HttpStatus.NOT_FOUND, "Deck does not exist.");
 
+        // Check if user is trying to edit a deck that does not belong to them
         if (!studyDeck.getOwnerID().equals(userID))
             return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "You do not own this deck");
 
-        // Check if user is trying to change any of the following: public, deck name, or
-        // content
+        // Check if user is trying to change any of the following: public, deck name, or content
         if (studyDeck.isPublic() != studyDeckEditRequest.getIsPublic()) {
             studyDeck.setPublic(studyDeckEditRequest.getIsPublic());
             anyChange = true;
@@ -182,28 +183,32 @@ public class DeckService {
 
         if (anyChange) {
             studyDeck.setUpdatedAt(new Date(Calendar.getInstance().getTime().getTime()));
+            entityManager.merge(studyDeck);
+            return ResponseUtil.messsage(HttpStatus.OK, "Deck updated successfully.");
         }
 
-        entityManager.merge(studyDeck);
-
-        return ResponseUtil.messsage(HttpStatus.OK, "Deck updated successfully.");
+        return ResponseUtil.messsage(HttpStatus.OK, "No changes made to the deck.");
     }
 
 
     public ResponseEntity<ApiResponseDTO> deleteDeck(UUID deckID, HttpSession session) {
         UUID userID = (UUID) session.getAttribute("userID");
 
+        // Check if user is logged in
         if (userID == null)
             return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
 
         StudyDeck studyDeck = studyDeckRepo.findByDeckID(deckID);
 
+        // Check if deck exists
         if (studyDeck == null)
             return ResponseUtil.messsage(HttpStatus.NOT_FOUND, "Deck does not exist.");
 
+        // Check if user is trying to delete a deck that does not belong to them
         if (studyDeck.getOwnerID() != userID)
             return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "You do not own this deck.");
 
+        // Delete the deck
         studyDeckRepo.delete(studyDeck);
         deckProgressService.removeAllStudyDeckToProgress(studyDeck);
 
