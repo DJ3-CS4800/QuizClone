@@ -17,17 +17,31 @@ const Home = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     const handleLogin = () => {
-        if (email && password && username) {
-            navigate("/main");
-        } else if (!username) {
-            alert("Please enter your username.");
-        }
-        else if (!email) {
-            alert("Please enter your email address.");
-        }
-        else {
-            alert("Please enter your password.");
-        }
+        fetch("http://18.223.196.87/api/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "username": username,
+                "password": password,
+            }),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error("Login failed");
+                }
+            })
+            .then((data) => {
+                // Handle successful login, e.g., navigate to the main page
+                navigate("/main");
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("Login failed. Please check your credentials.");
+            });
     };
 
     const handleRegister = () => {
