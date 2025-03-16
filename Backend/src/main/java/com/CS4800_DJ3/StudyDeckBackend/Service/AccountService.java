@@ -29,7 +29,7 @@ public class AccountService {
         String email = accountRequest.getEmail();
 
         // Check if username and password are provided
-        if (username == null || password == null || email == null) {
+        if (username.isBlank() || password.isBlank() || email.isBlank()) {
             return ResponseUtil.messsage(HttpStatus.BAD_REQUEST, "Username, password, and email are required.");
         }
 
@@ -67,7 +67,7 @@ public class AccountService {
         }
 
         // Check if username and password are provided
-        if (username == null || password == null) {
+        if (username.isBlank() || password.isBlank()) {
             return ResponseUtil.messsage(HttpStatus.BAD_REQUEST, "Username and password are required.");
         }
 

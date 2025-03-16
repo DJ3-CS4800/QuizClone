@@ -26,7 +26,7 @@ public class AuthService {
         String password = accountRequest.getPassword();
 
         // Check if username and password are provided
-        if (username == null || password == null) {
+        if (username.isBlank() || password.isBlank()) {
             return ResponseUtil.messsage(HttpStatus.BAD_REQUEST, "Username and password are required.");
         }
 
