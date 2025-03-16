@@ -1,19 +1,41 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/register_page.css";
 
 const RegisterPage = () => {
     const navigate = useNavigate();
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [username, setUsername] = useState("");
 
-    const handleBackToLogin = () => {
-        if (email && password) {
-            navigate("/");
-        } else {
-            alert("Please fill out all feilds.");
-        }
+    const handleRegister = () => {
+        fetch("http://18.223.196.87/api/account/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "username": username,
+                "email": email,
+                "password": password,
+            }),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`Register failed: ${response.status} - ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then((data) => {
+                // Registration successful; navigate to the main page
+                navigate("/main");
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("Register failed. Please check your credentials.\n" + error.message);
+            });
     };
 
     const handleCancel = () => {
@@ -27,7 +49,7 @@ const RegisterPage = () => {
                 <div className="input-group">
                     <label>Username</label>
                     <input
-                        type="username"
+                        type="text"
                         placeholder="Enter your username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
@@ -51,11 +73,15 @@ const RegisterPage = () => {
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>
-                <button className="Register-button" onClick={handleBackToLogin}>Register</button>
-                <button className="Cancel-button" onClick={handleCancel}>Cancel</button>
+                <button className="Register-button" onClick={handleRegister}>
+                    Register
+                </button>
+                <button className="Cancel-button" onClick={handleCancel}>
+                    Cancel
+                </button>
             </div>
         </div>
-
     );
 };
+
 export default RegisterPage;
