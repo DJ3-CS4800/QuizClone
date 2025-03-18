@@ -1,0 +1,31 @@
+name: Backend Docker Image CI
+
+on:
+    push:
+        branches: [ "main" ]
+        paths:
+            - 'Backend/**'  
+    workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+    - name: Build the Docker image
+      run: docker build -t cs-4800-studydecks-frontend
+
+    - name: Tag the Docker image
+      run: docker tag cs-4800-studydecks-frontend remrem06/cs-4800-studydecks-frontend:latest
+
+    - name: Push the Docker image
+      run: docker push remrem06/cs-4800-studydecks-frontend:latest

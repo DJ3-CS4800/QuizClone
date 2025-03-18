@@ -19,7 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/api/account")
+@RequestMapping("/account")
 public class AccountController {
 
     @Autowired
