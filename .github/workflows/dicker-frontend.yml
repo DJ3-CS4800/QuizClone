@@ -4,7 +4,7 @@ on:
     push:
         branches: [ "main" ]
         paths:
-            - 'Backend/**'  
+            - 'Frontend/**'  
     workflow_dispatch:
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
     - name: Build the Docker image
-      run: docker build -t cs-4800-studydecks-frontend
+      run: docker build -t cs-4800-studydecks-frontend ./Frontend
 
     - name: Tag the Docker image
       run: docker tag cs-4800-studydecks-frontend remrem06/cs-4800-studydecks-frontend:latest
