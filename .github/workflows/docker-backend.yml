@@ -1,10 +1,10 @@
 name: Backend Docker Image CI
 
 on:
-    push:
-        branches: [ "main" ]
-        paths:
-            - 'Backend/**'  
+    #push:
+    #    branches: [ "main" ]
+    #    paths:
+    #        - 'Backend/**'  
     workflow_dispatch:
 
 jobs:

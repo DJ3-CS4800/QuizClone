@@ -1,10 +1,10 @@
 name: Frontend Docker Image CI
 
 on:
-    push:
-        branches: [ "main" ]
-        paths:
-            - 'Frontend/**'  
+    #push:
+    #    branches: [ "main" ]
+    #    paths:
+    #        - 'Frontend/**'  
     workflow_dispatch:
 
 jobs:
