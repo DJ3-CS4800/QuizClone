@@ -1,329 +1,180 @@
-:root {
-    --primary-color: #65558f;
-    --secondary-color: #e8def8;
-    --background-color: #f5f0ff;
-    --text-color: #333;
-    --border-radius: 8px;
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    margin: 0;
-    padding: 0;
-}
-
-/* Center the dashboard title and subtitle */
-.title,
-.subtitle {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-
+/* Main Container */
 .main-container {
-    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    color: white;
     display: flex;
     flex-direction: column;
-    background-color: var(--background-color);
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
 }
 
+/* Header */
 .header {
+    width: 100%;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 1rem 2rem;
-    background-color: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 2px solid #ccc;
 }
 
-.menu-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-    font-size: 1.2rem;
+/* Search Bar */
+.search-bar input {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 250px;
 }
 
-.search-bar {
-    flex: 1;
-    background-color: var(--secondary-color);
-    padding: 0.6rem 1rem;
-    border-radius: var(--border-radius);
-    border: none;
-    outline: none;
-    font-size: 1rem;
-    transition: background-color 0.2s ease;
-}
-
-.search-bar:focus {
-    background-color: #d4c7f1;
-}
-
+/* User Section */
 .user-section {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem;
-    border: 1px solid var(--primary-color);
-    border-radius: var(--border-radius);
-    background-color: white;
+    font-size: 14px;
+    font-weight: bold;
 }
 
-.theme-toggle {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
+/* Title and Subtitle */
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 20px 0;
 }
 
-.main-content {
-    flex: 1;
-    padding: 2rem;
-    overflow-y: auto;
+.subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    color: #ccc;
 }
 
-/* Updated deck-grid for fixed card sizes: left-to-right, wrapping top-to-bottom */
+/* Deck Grid */
 .deck-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    /* Consistent gap between cards */
-    padding: 2rem;
-    justify-content: flex-start;
-    /* Align cards to the left */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
 }
 
-
+/* Deck Card */
 .deck-card {
-    position: relative;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
     text-align: center;
-    box-sizing: border-box;
-    width: 200px;
-    height: 260px;
-    background: white;
-    border-radius: var(--border-radius);
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* Center content horizontally */
-    justify-content: center;
-    /* Vertically center by default */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
 }
-
-/* Title & description can have normal margins; they'll sit in the middle by default */
-.deck-card h3,
-.deck-card p {
-    margin: 0.5rem 0;
-}
-
-/* Anchors the progress circle to the bottom center */
-.progress-circle {
-    margin-top: auto;
-    /* Pushes this element down within the flex container */
-    margin-bottom: 0.5rem;
-    /* Small gap from the bottom edge */
-}
-
-
 
 .deck-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05);
 }
 
-.add-card {
+/* Favorite Button */
+.favorite-deck-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* Delete Button */
+.delete-deck-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* Deck Card Content */
+.deck-card h3 {
+    margin: 10px 0;
+    font-size: 1.2rem;
+}
+
+.deck-card p {
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.progress-circle {
+    background-color: #f0f0f0;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--secondary-color);
-    color: var(--primary-color);
-    font-size: 1.5rem;
+    margin: 10px auto;
+    color: #333;
 }
 
-.add-card:hover {
-    background-color: #d4c7f1;
-}
-
-button {
-    padding: 0.75rem 1.25rem;
-    border: none;
-    border-radius: var(--border-radius);
-    background-color: var(--primary-color);
-    color: white;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.2s ease;
-}
-
-button:hover {
-    background-color: #4f4572;
-}
-
-button:active {
-    transform: scale(0.98);
-}
-
-.bottom-nav {
+/* Add Set Card */
+.deck-card.add-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
     display: flex;
-    justify-content: space-around;
-    background-color: var(--secondary-color);
-    padding: 1rem;
-    border-radius: 2rem;
-    margin: 1rem;
-}
-
-.nav-item {
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    padding: 0.75rem 2rem;
-    border-radius: 1.5rem;
-    color: #000;
-    font-size: 1rem;
-    transition: background-color 0.2s ease;
+    justify-content: center;
+    cursor: pointer;
 }
 
-.nav-item:hover {
-    background-color: rgba(101, 85, 143, 0.3);
+.plus-icon {
+    font-size: 2rem;
+    margin-right: 10px;
 }
 
-.nav-item.active {
-    background-color: rgba(101, 85, 143, 0.5);
+/* Temporary Deck Page Button */
+.temp-deck-page-button {
+    text-align: center;
+    margin: 1rem 0;
 }
 
-@media (max-width: 1024px) {
-    .deck-grid {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    }
-
-    .deck-card {
-        width: 180px;
-        height: 240px;
-    }
+.temp-deck-page-button button {
+    padding: 10px 20px;
+    background-color: #4681f4;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
 }
 
+.temp-deck-page-button button:hover {
+    background-color: #33b249;
+}
+
+/* Responsive Layout for Mobile */
 @media (max-width: 768px) {
-    .header {
-        padding: 1rem;
-    }
-
-    .nav-item {
-        padding: 0.5rem 1.5rem;
-    }
-
-    .deck-card {
-        width: 160px;
-        height: 220px;
+    .deck-grid {
+        grid-template-columns: 1fr 1fr;
     }
 }
 
 @media (max-width: 480px) {
     .deck-grid {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        grid-template-columns: 1fr;
     }
 
-    .deck-card {
-        width: 140px;
-        height: 200px;
+    .search-bar input {
+        width: 100%;
     }
 
-    .header {
-        padding: 0.75rem;
+    .title {
+        font-size: 1.5rem;
     }
-}
 
-/* Ensure each deck card is positioned relative */
-.deck-card {
-    position: relative;
-    width: 220px;
-    /* Fixed width for the card */
-    /* Other existing styles for deck-card remain intact */
-}
-
-/* Styles for the delete deck button inside each deck card */
-.delete-deck-button {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    width: 24px;
-    /* Fixed width for a small circle */
-    height: 24px;
-    /* Fixed height for a small circle */
-    border-radius: 50%;
-    /* Makes the button round */
-    background-color: rgba(0, 0, 0, 0.1);
-    /* Light background for contrast */
-    border: none;
-    display: flex;
-    /* Use flex to center the SVG icon */
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 0;
-    /* No extra padding */
-}
-
-.delete-deck-button:hover {
-    background-color: rgba(0, 0, 0, 0.2);
-    /* Darker on hover */
-}
-
-.delete-deck-button svg {
-    width: 12px;
-    /* Adjust size of the icon */
-    height: 12px;
-    fill: #000000;
-    /* Dark fill color for the icon */
-}
-
-/* Ensure each deck card is positioned relative */
-.deck-card {
-    position: relative;
-    width: 220px;
-    /* Fixed width for the card */
-    /* Other existing styles for deck-card remain intact */
-}
-
-/* Styles for the favorite deck button inside each deck card */
-.favorite-deck-button {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 24px;
-    /* Fixed width for a small circle */
-    height: 24px;
-    /* Fixed height for a small circle */
-    border-radius: 50%;
-    /* Makes the button round */
-    background-color: rgba(0, 0, 0, 0.1);
-    /* Light background for contrast */
-    border: none;
-    display: flex;
-    /* Use flex to center the SVG icon */
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 0;
-    /* No extra padding */
-}
-
-.favorite-deck-button:hover {
-    background-color: rgba(0, 0, 0, 0.2);
-    /* Darker on hover */
-}
-
-.favorite-deck-button svg {
-    width: 12px;
-    /* Adjust size of the icon */
-    height: 12px;
+    .subtitle {
+        font-size: 1rem;
+    }
 }

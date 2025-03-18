@@ -1,282 +1,194 @@
-/* Define CSS Variables to match Main Page */
-:root {
-    --primary-color: #65558f;
-    --secondary-color: #e8def8;
-    --background-color: #f5f0ff;
-    --text-color: #333;
-    --border-radius: 8px;
-}
-
-/* General Styles */
 .deck-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    /* Updated text color to match Main Page */
-    color: var(--text-color);
-    font-weight: bold;
-    border-radius: 15px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    /* Center the entire container on larger screens */
+    padding: 1rem;
     max-width: 1200px;
     margin: 0 auto;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Header Styles */
+.create-mode, .study-mode {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
 .deck-header {
-    width: 100%;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    /* Center content */
-    position: relative;
-    /* Allows absolute positioning for the back button */
-    padding: 10px;
-    border-bottom: 2px solid #ccc;
+    width: 100%;
+    padding: 1rem;
 }
 
-/* Deck title: Centered */
-.deck-title {
-    font-size: 50px;
-    font-weight: bold;
-    flex-grow: 1;
-    text-align: center;
-    top: 12px;
-}
-
-/* Back button: Smaller size, left-aligned */
 .back-button {
-    background: var(--primary-color);
+    padding: 0.5rem;
+    font-size: 1rem;
+    background-color: #ff6f61;
+    color: white;
     border: none;
-    font-size: 16px;
     cursor: pointer;
-    padding: 5px 10px;
-    width: max-content;
-    /* Prevents stretching */
-    position: absolute;
-    left: 11px;
-    top: 0px;
-    display: flex;
-    align-items: center;
+}
+
+.settings-button {
+    font-size: 1.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+.deck-name-input {
+    padding: 0.5rem;
+    width: 100%;
+    font-size: 1rem;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    /* Rounded edges */
-    transition: background 0.3s ease;
-    /* Smooth transition */
-    color: white;
 }
 
-.back-button:hover {
-    background: #4f4572;
-    color: whitesmoke;
-}
-
-/* Deck Creation Mode */
-.create-mode .deck-content {
-    width: 100%;
-    max-width: 600px;
+.public-checkbox {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.delete-card-button {
-    background: #ff0000;
-    /* White background for contrast */
-    border: 1px solid #ccc;
-    /* Optional border for better definition */
-    border-radius: 50%;
-    /* Makes the button round */
-    cursor: pointer;
-    padding: 0.2rem;
-    /* Reduced padding for a smaller button */
-    width: 30px;
-    /* Fixed width for a compact appearance */
-    height: 30px;
-    /* Fixed height for a compact appearance */
-    display: flex;
-    /* Use flex to center the SVG icon */
     align-items: center;
-    justify-content: center;
+    margin-top: 0.5rem;
 }
-
-.delete-card-button:hover {
-    background: #ff7d7d;
-    /* Slightly different background on hover */
-}
-
-/* Divider styling between the big card and the content below */
-.card-divider {
+.deck-content {
     width: 100%;
-    max-width: 600px;
-    /* Matches the big card's maximum width */
-    border-top: 1px solid #ccc;
-    /* Thin line for a minimal divider */
-    margin: 20px auto;
-    /* Vertical spacing and centered horizontally */
-}
-
-
-
-.card-input-row {
-    display: flex;
-    gap: 10px;
-}
-
-.card-question-input,
-.card-answer-input {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.add-card-button {
-    padding: 10px 15px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.create-deck-button {
-    padding: 10px 255px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-/* Study Mode */
-.study-mode .deck-content {
-    width: 100%;
-    max-width: 800px;
-    /* Ensures content does not stretch on large screens */
-    margin: 0 auto;
-    /* Centers the content horizontally */
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Centers child elements horizontally */
+    margin-top: 2rem;
 }
 
 .big-card {
-    width: 90%;
-    /* Responsive width */
-    max-width: 600px;
-    /* Maximum width for larger screens */
-    /* Comment out the aspect ratio if you want direct height control */
-    /* aspect-ratio: 4 / 3; */
-    height: 300px;
-    /* Set the fixed height (adjust this value as needed) */
-    margin: 20px auto;
-    /* Centers the big card horizontally */
-    padding: 20px;
-    background-color: white;
-    color: var(--text-color);
-    border-radius: var(--border-radius);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    padding: 1rem;
+    background-color: #f8f8f8;
+    border-radius: 5px;
     text-align: center;
-    /* Center content inside the card using flexbox */
+    margin-bottom: 1rem;
+}
+
+.card-divider {
+    width: 80%;
+    height: 2px;
+    background-color: #ccc;
+    margin: 1rem 0;
+}
+
+.card-input-row {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-between;
+    width: 80%;
+    margin-bottom: 1rem;
 }
 
-
-/* Media query for phone compatibility for the big card */
-@media (max-width: 480px) {
-    .big-card {
-        padding: 15px;
-        /* Slightly reduce padding on smaller screens */
-        font-size: 0.9rem;
-        /* Adjust font size if needed */
-    }
-}
-
-.card-view {
+.card-question-input, .card-answer-input {
+    padding: 0.5rem;
+    width: 45%;
+    font-size: 1rem;
     border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 8px;
-    margin: 10px 0;
+    border-radius: 5px;
 }
 
-/* Navigation Buttons */
-.deck-navigation button {
-    padding: 8px 12px;
-    margin: 5px;
+.delete-card-button {
+    background-color: transparent;
+    border: none;
     cursor: pointer;
-    background-color: var(--primary-color);
+}
+.add-card-button {
+    padding: 0.5rem 1rem;
+    background-color: #4caf50;
     color: white;
     border: none;
-    border-radius: var(--border-radius);
-    transition: background-color 0.2s ease;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+.deck-footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
 }
 
-.deck-navigation button:hover {
-    background-color: #4f4572;
-}
-
-/* Mode Buttons */
-.mode-buttons button {
-    padding: 8px 16px;
-    margin: 5px;
-    background-color: #ffc107;
+.create-deck-button {
+    padding: 0.5rem 2rem;
+    background-color: #ff6f61;
+    color: white;
     border: none;
     cursor: pointer;
-    border-radius: var(--border-radius);
+}
+.study-mode .deck-title {
+    font-size: 2rem;
+    font-weight: bold;
 }
 
-/* Public checkbox: Right-aligned */
-.public-checkbox {
-    position: absolute;
-    right: 10px;
+.deck-navigation {
     display: flex;
-    align-items: center;
-    font-size: 14px;
-}
-
-.public-checkbox input {
-    margin-left: 5px;
-}
-
-/* Apply background gradient */
-/* Original background gradient - commented out to match Main Page color scheme */
-/*
-body {
-    background-color: #ad5389;
-    background-image: linear-gradient(225deg, #ad5389 0%, #3c1053 50%, #2B86C5 100%);
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
-*/
-
-/* Updated Body Background to match Main Page */
-body {
-    background-color: var(--background-color);
-    background-image: none;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
-
-/* Adjust Deck Name Input */
-.deck-name-input {
+    justify-content: space-between;
     width: 100%;
-    /* Adjust width to full width */
-    max-width: 999px;
-    /* Increase max width */
-    padding: 10px;
-    font-size: 20px;
-    border: 2px solid #ccc;
+    margin-top: 1rem;
+}
+
+.prev-card-button, .next-card-button {
+    padding: 0.5rem 1rem;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.shuffle-button {
+    padding: 0.5rem 1rem;
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.mode-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.study-mode-button, .test-mode-button, .match-mode-button {
+    padding: 0.5rem 1.5rem;
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.deck-tools {
+    width: 20%;
+    padding: 1rem;
+    background-color: #f8f8f8;
     border-radius: 5px;
-    bottom: 10px;
-    position: relative;
+    margin-top: 2rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    padding: 0.5rem 0;
+    cursor: pointer;
+}
+
+.tool-favorites {
+    color: #ff6f61;
+}
+
+.tool-delete {
+    color: #f44336;
+}
+
+.question-item {
+    font-size: 1rem;
+    color: #555;
+    padding: 0.5rem 0;
 }

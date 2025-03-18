@@ -31,16 +31,16 @@ function MainPage() {
             favorite: false
         };
         setDecks(prevDecks => [...prevDecks, newDeck]);
-    };
 
-    // When returning from Deck page, it might pass newly created deck info
-    // In a real app, you might fetch again or use a global store (redux/context).
-    // For simplicity, assume the newly created deck is appended to state via a custom event or after navigation.
+        // Navigate to the new deck page after creating it
+        navigate(`/deck/${newDeck.id}`);
+    };
 
     // Open existing deck in deck page
     const openDeck = (deckId) => {
         navigate(`/deck/${deckId}`);
     };
+
     // Delete a deck from the main page after confirming with the user
     const deleteDeck = (deckId) => {
         if (window.confirm("Are you sure you want to delete this set?")) {
@@ -63,9 +63,6 @@ function MainPage() {
         });
     };
 
-
-
-
     return (
         <div className="main-container">
             {/* Top Bar */}
@@ -75,11 +72,6 @@ function MainPage() {
                 </div>
                 <div className="user-section">User Account ID</div>
             </header>
-            {/* Temporary button to navigate to deck_page */}
-            <div className="temp-deck-page-button" style={{ textAlign: 'center', margin: '1rem 0' }}>
-                <button onClick={() => navigate("/deck")}>Deck page (temp button)</button>
-            </div>
-
 
             <h1 className="title">Dashboard</h1>
             <p className="subtitle">Manage your decks or create a new one.</p>
@@ -108,7 +100,6 @@ function MainPage() {
                                 deleteDeck(deck.id);
                             }}
                         >
-                            {/* Minimal trashcan icon using inline SVG with black fill */}
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" viewBox="0 0 24 24">
                                 <path d="M3 6h18v2H3zM7 8v12h2V8zm4 0v12h2V8zm4 0v12h2V8zM9 4h6v2H9z" />
                             </svg>
@@ -121,14 +112,12 @@ function MainPage() {
                     </div>
                 ))}
 
-
                 {/* "Add Set" card -> always displayed as the last card */}
                 <div className="deck-card add-card" onClick={handleAddSet}>
                     <span className="plus-icon">+</span>
                     <span>add set</span>
                 </div>
             </main>
-
         </div>
     );
 }

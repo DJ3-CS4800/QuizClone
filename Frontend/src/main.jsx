@@ -10,15 +10,13 @@ import "./styles/login.css";
 import "./styles/sections.css";
 import "./styles/buttons.css";
 
-
-
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/main" element={<Main />} />
-      <Route path="/deck" element={<Deck />} />
-      <Route path="/register" element={<RegisterPage/>} />
+      <Route path="/deck/:deckId" element={<Deck />} /> {/* Dynamic deck route */}
+      <Route path="/register" element={<RegisterPage />} />
     </Routes>
   </BrowserRouter>
 );

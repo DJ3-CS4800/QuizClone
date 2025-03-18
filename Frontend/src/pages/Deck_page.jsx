@@ -17,22 +17,30 @@ function DeckPage() {
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
+        
+        // Check if the URL contains 'mode=create', if so, set mode to create
         if (searchParams.get("mode") === "create") {
             setMode("create");
         }
+    
+        // Check if the deckId is present in the URL
         if (params.deckId) {
-            // Fetch deck from backend
-            // fetch deck from backend to view/edit/study
-            // Example:
-            // fetch(`http://localhost:8080/api/deck/${params.deckId}`)
-            //   .then(res => res.json())
-            //   .then(deck => {
-            //     setDeckName(deck.name);
-            //     setCards(deck.content);
-            //   })
-            //   .catch(err => console.error(err));
+            // Fetch deck from the backend for study/edit
+            fetch(`http://localhost:8080/api/deck/${params.deckId}`)
+                .then(res => res.json())
+                .then(deck => {
+                    setDeckName(deck.name); // Set the deck name
+                    setCards(deck.content); // Set the deck cards
+                    setIsPublic(deck.public); // Set the public status
+                    setMode("study"); // Switch to study mode
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Failed to load deck.");
+                });
         }
-    }, [location, params.deckId]);
+    }, [location, params.deckId]); // Effect will run on changes to location or deckId
+    
     // Create a new deck
 
     const createDeck = async () => {
