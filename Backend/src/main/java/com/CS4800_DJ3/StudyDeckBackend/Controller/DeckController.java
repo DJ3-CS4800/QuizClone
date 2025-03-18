@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/deck")
+@RequestMapping("/api/deck")
 public class DeckController {
 
     @Autowired
