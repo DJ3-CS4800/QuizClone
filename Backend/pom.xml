@@ -81,13 +81,6 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <target>
-                                <!-- Load .env file and set properties -->
-                                <loadfile property="env.props" srcFile=".env" />
-                                <propertyset>
-                                    <propertyref prefix="env." />
-                                </propertyset>
-                            </target>
                         </configuration>
                     </execution>
                 </executions>

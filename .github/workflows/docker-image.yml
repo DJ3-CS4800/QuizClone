@@ -22,7 +22,12 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
     - name: Build the Docker image
-      run: docker build -t cs4800-studydecks-deployment ./Backend
+      run: |
+        docker build --build-arg DATASOURCE_URL=${{ secrets.DATASOURCE_URL }} \
+        --build-arg DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }} \
+        --build-arg DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
+        --build-arg FRONTEND_URL=${{ secrets.FRONTEND_URL }} \
+        -t cs4800-studydecks-deployment ./Backend
 
     - name: Tag the Docker image
       run: docker tag cs4800-studydecks-deployment remrem06/cs4800-studydecks-deployment:latest
