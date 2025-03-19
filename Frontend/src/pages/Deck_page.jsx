@@ -42,6 +42,7 @@ function DeckPage() {
     }, [location, params.deckId]); // Effect will run on changes to location or deckId
     
     // Create a new deck
+    
 
     const createDeck = async () => {
         if (!deckName.trim()) {
@@ -195,6 +196,27 @@ function DeckPage() {
     }
 
     // If not "create" mode, show the study/test UI
+    const [isEditing, setIsEditing] = useState(false);
+
+    const saveCard = () => {
+        const updated = [...cards];
+        updated[currentCardIndex].question = document.querySelector('.card-question-input').value;
+        updated[currentCardIndex].answer = document.querySelector('.user-answer-input').value;
+        setCards(updated);
+        document.querySelector('.card-question-input').value = '';
+        document.querySelector('.user-answer-input').value = '';
+    };
+
+    const deleteCard = () => {
+        if (cards.length > 1) {
+            const updated = cards.filter((_, i) => i !== currentCardIndex);
+            setCards(updated);
+            setCurrentCardIndex((idx) => (idx - 1 + updated.length) % updated.length);
+        } else {
+            alert("Must have at least one card.");
+        }
+    };
+
     return (
         <div className="deck-container study-mode">
             <header className="deck-header">
@@ -203,17 +225,95 @@ function DeckPage() {
                 </button>
                 {/* Could display deck name or a search bar */}
 
-                <div className="deck-title">{deckName || "Untitled Deck"}</div>
+                <div className="deck-title" onClick={() => setIsEditing(true)}>
+                    {isEditing ? (
+                        <input
+                            type="text"
+                            value={deckName}
+                            onChange={(e) => setDeckName(e.target.value)}
+                            onBlur={() => setIsEditing(false)} // Save on blur
+                            autoFocus
+                            className="deck-name-input"
+                        />
+                    ) : (
+                        deckName || "Untitled Deck"
+                    )}
+                </div>
+
                 <button className="settings-button">⚙</button>
             </header>
+            
 
             <main className="deck-content">
                 {/* Progress circle in top-left, text of card, video support, etc. */}
                 <div className="progress-circle">Progress</div>
                 <div className="card-view">
-                    <h2 className="card-text">TEXT OF THE CARD</h2>
-                    <p>Should be able to support video playing on card.</p>
+                    <h2 className="card-text">
+                        <input
+                            type="text"
+                            value={cards[currentCardIndex]?.question || ""}
+                            onChange={(e) => {
+                                const updated = [...cards];
+                                updated[currentCardIndex].question = e.target.value;
+                                setCards(updated);
+                            }}
+                            className="card-question-input"
+                        />
+                        <input
+                            type="file"
+                            accept="video/*,image/*"
+                            onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                    const updated = [...cards];
+                                    updated[currentCardIndex].questionMedia = URL.createObjectURL(file);
+                                    setCards(updated);
+                                }
+                            }}
+                            className="media-upload-input"
+                        />
+                        {cards[currentCardIndex]?.questionMedia && (
+                            cards[currentCardIndex].questionMedia.includes("video") ? (
+                                <video controls src={cards[currentCardIndex].questionMedia} className="question-media"></video>
+                            ) : (
+                                <img src={cards[currentCardIndex].questionMedia} alt="Question Media" className="question-media" />
+                            )
+                        )}
+                    </h2>
+                    <p>
+                        <input
+                            type="text"
+                            placeholder="Your Answer"
+                            className="user-answer-input"
+                        />
+                        <input
+                            type="file"
+                            accept="video/*,image/*"
+                            onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                    const updated = [...cards];
+                                    updated[currentCardIndex].answerMedia = URL.createObjectURL(file);
+                                    setCards(updated);
+                                }
+                            }}
+                            className="media-upload-input"
+                        />
+                        {cards[currentCardIndex]?.answerMedia && (
+                            cards[currentCardIndex].answerMedia.includes("video") ? (
+                                <video controls src={cards[currentCardIndex].answerMedia} className="answer-media"></video>
+                            ) : (
+                                <img src={cards[currentCardIndex].answerMedia} alt="Answer Media" className="answer-media" />
+                            )
+                        )}
+                    </p>
                 </div>
+
+                <div className="deck-footer">
+                    <button onClick={saveCard} className="save-Card-button">✓</button>
+                    <button onClick={deleteCard} className="delete-Card-button">✖</button>
+                </div>
+
                 <div className="deck-navigation">
                     <button onClick={prevCard} className="prev-card-button">←</button>
                     <span className="card-index">{currentCardIndex + 1}/{cards.length || 1}</span>
