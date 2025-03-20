@@ -131,7 +131,10 @@ public class DeckProgressService {
         deckProgress.setLastOpened(new java.sql.Timestamp(System.currentTimeMillis()));
         deckProgress.setContentWithProgress(flashCardsWithProgress);
 
-        if (userID != null) deckProgress.setUserID(userID);
+        if (userID != null){
+            deckProgress.setUserID(userID);
+            deckProgressRepo.save(deckProgress);
+        }
 
         return deckProgress;
     }
