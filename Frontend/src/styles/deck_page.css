@@ -1,41 +1,318 @@
-/* Container for the card view */
-.card-view {
+/* Ensure the buttons stay fixed at the top */
+.top-buttons {
+    position: relative; /* Fix the container at the top */
+    top: 10px; /* Adjust as needed */
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between; /* Space buttons out */
+    padding: 0 10px; /* Adjust for spacing */
+    z-index: 1000; /* Ensure buttons stay on top */
+}
+
+/* Styling for back button */
+.back-button {
+    width: 70px;
+    height: 50px;
+    color: black;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: 0.3s;
+    text-align: center;
+    cursor: pointer;
+}
+
+/* Back button hover effect */
+.back-button:hover {
+    background-color: #e0e0e0; /* Lighter shade on hover */
+    color: #333; /* Slightly darker text on hover */
+}
+
+/* Styling for settings button */
+.settings-button {
+    width: 70px;
+    height: 50px;
+    color: black;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+    text-align: center;
+}
+
+/* Settings button hover effect */
+.settings-button:hover {
+    background-color: #e0e0e0; /* Lighter shade on hover */
+    color: #333; /* Slightly darker text on hover */
+}
+
+/* Add padding to the main content to prevent overlap */
+.deck-content {
+    padding-top: 70px; /* Make space for the fixed header */
+}
+
+
+
+/* Deck Title */
+.deck-title {
+    font-size: 24px; /* Big font size */
+    font-weight: bold; /* Bold text */
+    text-align: center; /* Centered text */
+    margin: 20px 0; /* Margin for spacing */
+}
+
+/* Question and Answer Container */
+.question-answer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Align items to the top */
+    width: 100%;
+    gap: 20px;
+}
+
+/* Question Section */
+.question-container {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-top: 20px;
-    width: 100%;
+    margin-right: 10px; /* Add margin to the right */
 }
 
-/* Ensures card question takes up more vertical space */
-.card-text {
-    width: 100%;
-    margin-bottom: 10px;
-}
-
+/* Question Input */
 .card-question-input {
-    width: 100%;
-    padding: 15px;
+    width: 70%; /* Make it take full width */
+    height: 300px; /* Increase height */
+    padding: 12px;
     font-size: 16px;
+    border-radius: 8px;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-    min-height: 80px; /* Makes the question input field longer */
-    resize: vertical; /* Allow the user to resize the input */
+    margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-left: 60px; /* Move to the right */
+    box-sizing: border-box; /* Ensure padding is included in width and height */
+    text-align: left; /* Align text to the left */
+    vertical-align: top; /* Align text to the top */
 }
 
-/* Ensures the answer input is also long and vertically stretched */
+/* Answer Section */
+.answer-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center items vertically */
+    align-items: center; /* Center items horizontally */
+    margin-left: 10px; /* Add margin to the left */
+}
+
+/* Answer Input */
 .user-answer-input {
-    width: 100%;
-    padding: 15px;
+    width: 70%; /* Make it take full width */
+    height: 300px; /* Increase height */
+    padding: 12px;
     font-size: 16px;
+    border-radius: 8px;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-    min-height: 80px; /* Makes the answer input field longer */
-    resize: vertical; /* Allow the user to resize the input */
+    margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-left: 60px; /* Move to the right */
+    box-sizing: border-box; /* Ensure padding is included in width and height */
+    text-align: left; /* Align text to the left */
+    vertical-align: top; /* Align text to the top */
+}
+
+/* Media Upload */
+.media-upload-input {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Question Media */
+.question-media {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.deck-footer {
+    display: flex;
+    justify-content: center; /* Center items horizontally */
+    align-items: center; /* Center items vertically */
+    padding: 20px; /* Add padding for spacing */
+}
+
+/* Styling for delete card button */
+.delete-card-button {
+    width: 50px;
+    height: 50px;
+    color: red;
+    background-color: #f0f0f0; /* Light background color */
+    border: none;
+    border-radius: 6px;
+    font-size: 24px;
+    transition: 0.3s;
+    text-align: center;
+    cursor: pointer;
+    display: inline-block; /* Make it an inline-block element */
+    margin: 0 10px; /* Add horizontal margin */
+}
+
+/* Styling for save card button */
+.save-card-button {
+    width: 50px;
+    height: 50px;
+    color: green;
+    background-color: #f0f0f0; /* Light background color */
+    border: none;
+    border-radius: 6px;
+    font-size: 24px;
+    transition: 0.3s;
+    text-align: center;
+    cursor: pointer;
+    display: inline-block; /* Make it an inline-block element */
+    margin: 0 10px; /* Add horizontal margin */
+}
+
+/* Save card button hover effect */
+.save-card-button:hover {
+    background-color: #e0e0e0; /* Lighter shade on hover */
+    color: #333; /* Slightly darker text on hover */
+}
+
+/* Delete card button hover effect */
+.delete-card-button:hover {
+    background-color: #e0e0e0; /* Lighter shade on hover */
+    color: #333; /* Slightly darker text on hover */
+}
+/* Deck Navigation */
+.deck-navigation {
+    display: flex;
+    justify-content: center; /* Center items horizontally */
+    align-items: center; /* Center items vertically */
+    margin-top: 20px; /* Add margin for spacing */
+}
+
+/* Previous Card Button */
+.prev-card-button {
+    width: 50px;
+    height: 50px;
+    color: black;
+    background-color: #f0f0f0; /* Light background color */
+    border: none;
+    border-radius: 6px;
+    font-size: 24px;
+    transition: 0.3s;
+    text-align: center;
+    cursor: pointer;
+    margin: 0 10px; /* Add horizontal margin */
+}
+
+/* Next Card Button */
+.next-card-button {
+    width: 50px;
+    height: 50px;
+    color: black;
+    background-color: #f0f0f0; /* Light background color */
+    border: none;
+    border-radius: 6px;
+    font-size: 24px;
+    transition: 0.3s;
+    text-align: center;
+    cursor: pointer;
+    margin: 0 10px; /* Add horizontal margin */
+}
+
+/* Shuffle Button */
+.shuffle-button {
+    width: 100px;
+    height: 50px;
+    color: black;
+    background-color: #f0f0f0; /* Light background color */
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: 0.3s;
+    text-align: center;
+    cursor: pointer;
+    margin: 0 10px; /* Add horizontal margin */
+}
+
+/* Button Hover Effects */
+.prev-card-button:hover,
+.next-card-button:hover,
+.shuffle-button:hover {
+    background-color: #e0e0e0; /* Lighter shade on hover */
+    color: #333; /* Slightly darker text on hover */
+}
+
+/* Card Index */
+.card-index {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 20px; /* Add horizontal margin */
+}
+
+/* Mode Buttons Container */
+.mode-buttons {
+    display: flex;
+    justify-content: center; /* Center buttons horizontally */
+    align-items: center; /* Center buttons vertically */
+    margin-top: 20px; /* Add margin for spacing */
+    gap: 10px; /* Add space between buttons */
+}
+
+/* Mode Buttons */
+.mode-button {
+    width: 100px;
+    height: 50px;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: 0.3s;
+    text-align: center;
+    cursor: pointer;
+}
+
+/* Study Mode Button */
+.study-mode-button {
+    background-color: #4caf50; /* Green background */
+}
+
+/* Test Mode Button */
+.test-mode-button {
+    background-color: #2196f3; /* Blue background */
+}
+
+/* Match Mode Button */
+.match-mode-button {
+    background-color: #ff9800; /* Orange background */
+}
+
+/* Mode Buttons Hover Effects */
+.mode-button:hover {
+    background-color: #e0e0e0; /* Lighter shade on hover */
+    color: #333; /* Slightly darker text on hover */
+}
+
+/* Mode Buttons Hover Effects */
+.study-mode-button:hover,
+.test-mode-button:hover,
+.match-mode-button:hover {
+    background-color: #e0e0e0; /* Lighter shade on hover */
+    color: #333; /* Slightly darker text on hover */
+}
+
+/* save Header */
+.save-header {
+    font-weight: bold; /* Bold text */
+    text-align: center; /* Centered text */
+    font-size: 24px; /* Adjust font size as needed */
+    margin: 20px 0; /* Margin for spacing */
 }
