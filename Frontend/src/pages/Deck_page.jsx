@@ -16,28 +16,41 @@ function DeckPage() {
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
-
+    
         // Check if the mode is set to "create" in the URL search parameters
         if (searchParams.get("mode") === "create") {
             setMode("create");
         }
-
+    
         // If a deckId is present in the URL parameters, fetch the deck data from the server
         if (params.deckId) {
             fetch(`http://localhost:8080/api/deck/${params.deckId}`)
-                .then(res => res.json())
-                .then(deck => {
-                    setDeckName(deck.name);
-                    setCards(deck.content);
-                    setIsPublic(deck.public);
-                    setMode("study");
+                .then((res) => res.json())
+                .then((deck) => {
+                    // Check if the deck and its content exist
+                    if (deck && deck.contentWithProgress) {
+                        setDeckName(deck.name);
+                        setCards(deck.contentWithProgress.map(card => ({
+                            question: card.question,
+                            answer: card.answer,
+                            questionMedia: null,  // If you want to handle media, modify accordingly
+                            answerMedia: null      // Same for answer media
+                        })));
+                        setIsPublic(deck.trackProgress);  // Assuming you want to use trackProgress
+                        setMode("study");
+                    } else {
+                        alert("Deck content is missing.");
+                    }
                 })
-                .catch(err => {
+                .catch((err) => {
                     console.error(err);
                     alert("Failed to load deck.");
                 });
+                console.log("Fetching deck data...");
+                console.log(cards); // Log the current state of cards
         }
     }, [location.search, params.deckId]);
+    
 
     // Function to create a new deck
     const createDeck = async () => {
@@ -74,22 +87,48 @@ function DeckPage() {
         }
     };
 
-    // Function to navigate to the next card
-    const nextCard = () => {
-        setCurrentCardIndex((idx) => (idx + 1) % cards.length);
-    };
+// Function to navigate to the next card
+const nextCard = () => {
+    const userAnswerInput = document.querySelector(".user-answer-input");
+    if (userAnswerInput) {
+        userAnswerInput.value = "";
+    }
+    setCurrentCardIndex((idx) => {
+        const newIndex = (idx + 1) % cards.length;
+        if (userAnswerInput) {
+            userAnswerInput.value = cards[newIndex].answer;
+        }
+        return newIndex;
+    });
+};
 
-    // Function to navigate to the previous card
-    const prevCard = () => {
-        setCurrentCardIndex((idx) => (idx - 1 + cards.length) % cards.length);
-    };
+// Function to navigate to the previous card
+const prevCard = () => {
+    const userAnswerInput = document.querySelector(".user-answer-input");
+    if (userAnswerInput) {
+        userAnswerInput.value = "";
+    }
+    setCurrentCardIndex((idx) => {
+        const newIndex = (idx - 1 + cards.length) % cards.length;
+        if (userAnswerInput) {
+            userAnswerInput.value = cards[newIndex].answer;
+        }
+        return newIndex;
+    });
+};
 
-    // Function to shuffle the cards
-    const shuffleCards = () => {
-        const shuffled = [...cards].sort(() => Math.random() - 0.5);
-        setCards(shuffled);
-        setCurrentCardIndex(0);
-    };
+const shuffleCards = () => {
+    // Create a copy of the cards array and shuffle it
+    const shuffled = [...cards]
+        .map(card => ({ card, sort: Math.random() })) // Assign a random sort key
+        .sort((a, b) => a.sort - b.sort) // Sort by the random key
+        .map(({ card }) => card); // Extract the shuffled cards
+
+    setCards(shuffled);
+    setCurrentCardIndex(0);
+};
+
+
 
         /**
      * Updates the current card in the cards array with an empty question and answer.
@@ -98,52 +137,59 @@ function DeckPage() {
      * @function saveCard
      * @returns {void}
      */
+const saveCard = () => {
+    const updatedCards = [...cards];
+    const userQuestionInput = document.querySelector(".card-question-input").value.trim();
+    const userAnswerInput = document.querySelector(".user-answer-input").value.trim();
+    updatedCards[currentCardIndex] = {
+        ...updatedCards[currentCardIndex],
+        question: userQuestionInput,
+        answer: userAnswerInput,
+    };
 
-        const saveCard = () => {
-            // Update the current card with empty question and answer
-            setCards((prevCards) => {
-                const newCards = [...prevCards];
-                newCards[currentCardIndex] = { question: "", answer: "" };
-                return newCards;
-            });
+    setCards(updatedCards);
+    console.log("Updated Cards After Saving:", updatedCards);
+
+    if (currentCardIndex === cards.length - 1) {
+        setCards((prevCards) => {
+            const newCards = [...prevCards, { question: "", answer: "", questionMedia: null, answerMedia: null }];
+            return newCards;
+        });
+        setCurrentCardIndex(cards.length);
+    } else {
+        setCurrentCardIndex((prevIndex) => prevIndex + 1);
+    }
+
+    // Clear the input fields for the new card
+    document.querySelector(".card-question-input").value = "";
+    document.querySelector(".user-answer-input").value = "";
+     // Clear the file input elements (media-upload-input class)
+     document.querySelectorAll('.media-upload-input').forEach(input => input.value = '');
+};
+
         
-            // Optionally move to the next card after saving, if you'd like
-            setCurrentCardIndex((prevIndex) => {
-                const nextIndex = prevIndex + 1 < cards.length ? prevIndex + 1 : prevIndex;
-                return nextIndex;
-            });
-        };
+// Function to delete the current card
+const deleteCard = () => {
+    if (cards.length > 1) {
+        // Remove the current card at the current index
+        const updated = cards.filter((_, i) => i !== currentCardIndex);
+        
+        // Update the current card index to the next valid index (if possible)
+        setCards(updated);
+        setCurrentCardIndex((idx) => Math.min(idx, updated.length - 1));
+    } else {
+        // If there's only one card left, reset the deck to a single empty card
+        setCards([{ question: "", answer: "", questionMedia: null, answerMedia: null }]);
+        setCurrentCardIndex(0);
+    }
     
-        /**
-         * Deletes the current card from the deck.
-         * 
-         * If there is more than one card in the deck, it removes the card at the current index
-         * and updates the current card index to the next valid index.
-         * If there is only one card left, it resets the deck to a single empty card.
-         * 
-         * Additionally, it clears the value of all elements with the class 'media-upload-input'.
-         * 
-         * @function
-         */
-        const deleteCard = () => {
-            if (cards.length > 1) {
-                // Remove the current card at the current index
-                const updated = cards.filter((_, i) => i !== currentCardIndex);
-                
-                // Update the current card index to the next valid index (if possible)
-                setCards(updated);
-                setCurrentCardIndex((idx) => Math.min(idx, updated.length - 1));
-            } else {
-                // If there's only one card left, reset the deck to a single empty card
-                setCards([{ question: "", answer: "", questionMedia: null, answerMedia: null }]);
-            }
-            
-            // Clear the text areas (question and answer)
-            document.querySelectorAll('.question-textarea, .answer-textarea').forEach(textarea => textarea.value = '');
-            
-            // Clear the file input elements (media-upload-input class)
-            document.querySelectorAll('.media-upload-input').forEach(input => input.value = '');
-        };
+    // Clear the input fields
+    document.querySelector(".card-question-input").value = "";
+    document.querySelector(".user-answer-input").value = "";
+    
+    // Clear the file input elements (media-upload-input class)
+    document.querySelectorAll('.media-upload-input').forEach(input => input.value = '');
+};
         
 
     if (mode === "create") {
@@ -372,7 +418,7 @@ function DeckPage() {
                 </div>
 
                 <header className="save-header">
-                Save Card? </header>
+ Save Card? </header>
                 <div className="deck-footer">
                
                 <button onClick={deleteCard} className="delete-card-button">✖</button>
@@ -395,5 +441,7 @@ function DeckPage() {
         </div>
     );
 }
+
+
 
 export default DeckPage;
