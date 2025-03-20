@@ -37,4 +37,22 @@ public interface DeckProgressRepo extends JpaRepository<DeckProgress, Long> {
      */
     @Query(value = "SELECT * FROM deck_progress WHERE deck_id = ?1", nativeQuery = true)
     List<DeckProgress> findAllByDeckID(UUID deckID);
+
+
+    /**
+     * SQL Query to find all deck progress by user id sort by last opened descending
+     * @param userID: user id
+     * @return DeckProgress: deck progress with the given user id
+     */
+    @Query(value = "SELECT * FROM deck_progress WHERE user_id = ?1 ORDER BY last_opened DESC", nativeQuery = true)
+    List<DeckProgress> findAllByUserID(UUID userID);
+
+
+    /**
+     * SQL QWuery to find all UUIDs of the decks that the user has progress on
+     * @param userID: user id
+     * @return List<UUID>: list of deck ids
+     */
+    @Query(value = "SELECT deck_id FROM deck_progress WHERE user_id = ?1 ORDER BY last_opened DESC", nativeQuery = true)
+    List<UUID> findAllDeckIDsByUserID(UUID userID);
 } 

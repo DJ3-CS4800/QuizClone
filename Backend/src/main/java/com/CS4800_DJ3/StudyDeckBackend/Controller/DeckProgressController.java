@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.CS4800_DJ3.StudyDeckBackend.DTO.DeckProgressUnderstandingLevelEditRequestDTO;
 import com.CS4800_DJ3.StudyDeckBackend.DTO.StudyDeckProgressEditRequestDTO;
 import com.CS4800_DJ3.StudyDeckBackend.Service.DeckProgressService;
 
@@ -42,4 +43,37 @@ public class DeckProgressController {
             contentWithProgressEditRequest, deckID, session);
     }
 
+    
+    @PutMapping("/understanding/{deckID}")
+    @Operation(
+        description = "Updates the understanding level of a study deck for the current user."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Deck progress updated successfully"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized - user not logged in"),
+        @ApiResponse(responseCode = "404", description = "Deck progress not found"),
+    })
+    public ResponseEntity<?> updateDeckProgressUnderstanding(
+            @PathVariable UUID deckID,  
+            @RequestBody DeckProgressUnderstandingLevelEditRequestDTO deckProgressUnderstandingLevelEditRequestDTO,
+            HttpSession session) {
+        return deckProgressService.updateDeckProgressUnderstandingLevel(
+            deckProgressUnderstandingLevelEditRequestDTO, deckID, session);
+    }
+
+
+    @PutMapping("/favorite/{deckID}")
+    @Operation(
+        description = "Updates the favorite status of a study deck for the current user."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Deck progress updated successfully"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized - user not logged in"),
+        @ApiResponse(responseCode = "404", description = "Deck progress not found"),
+    })
+    public ResponseEntity<?> updateDeckProgressFavorite(
+            @PathVariable UUID deckID,  
+            HttpSession session) {
+        return deckProgressService.updateDeckProgressFavoriteStatus(deckID, session);
+    }
 }
