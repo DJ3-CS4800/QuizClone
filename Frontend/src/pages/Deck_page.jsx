@@ -372,7 +372,7 @@ function DeckPage() {
                 </div>
 
                 <header className="save-header">
-                Save Deck? </header>
+                Save Card? </header>
                 <div className="deck-footer">
                
                 <button onClick={deleteCard} className="delete-card-button">✖</button>
