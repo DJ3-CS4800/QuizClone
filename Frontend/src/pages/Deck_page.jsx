@@ -17,16 +17,16 @@ function DeckPage() {
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
-        
+
         // Check if the URL contains 'mode=create', if so, set mode to create
         if (searchParams.get("mode") === "create") {
             setMode("create");
         }
-    
+
         // Check if the deckId is present in the URL
         if (params.deckId) {
             // Fetch deck from the backend for study/edit
-            fetch(`http://localhost:8080/api/deck/${params.deckId}`)
+            fetch(`http://quizclone.com/api/deck/${params.deckId}`)
                 .then(res => res.json())
                 .then(deck => {
                     setDeckName(deck.name); // Set the deck name
@@ -40,7 +40,7 @@ function DeckPage() {
                 });
         }
     }, [location, params.deckId]); // Effect will run on changes to location or deckId
-    
+
     // Create a new deck
 
     const createDeck = async () => {

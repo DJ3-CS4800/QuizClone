@@ -9,7 +9,7 @@ const RegisterPage = () => {
     const [password, setPassword] = useState("");
 
     const handleRegister = () => {
-        fetch("http://18.223.196.87/api/account/register", {
+        fetch("https://quizclone.com/api/account/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -5,41 +5,44 @@ import "../styles/login.css";
 import "../styles/footer.css";
 import "../styles/sections.css";
 import "../styles/buttons.css";
-// Import the logo image if needed (for navbar)
-// import logoImage from "../assets/logo.png";
 
 const Home = () => {
     const navigate = useNavigate();
     const [username, setUsername] = useState("");
+    // Assuming email is optional—remove if not needed.
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showTopBtn, setShowTopBtn] = useState(false);
-    const [menuOpen, setMenuOpen] = useState(false);
 
     const handleLogin = () => {
-        fetch("http://18.223.196.87/api/auth/login", {
+        fetch("https://quizclone.com/api/auth/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
+            credentials: "include", // Ensure cookies are sent/received
             body: JSON.stringify({
-                "username": username,
-                "password": password,
+                username: username,
+                password: password,
+                // Include email if required by your backend:
+                // email: email,
             }),
         })
             .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                } else {
+                if (!response.ok) {
                     throw new Error("Login failed");
                 }
+                return response.json();
             })
             .then((data) => {
-                // Handle successful login, e.g., navigate to the main page
+                // Assuming your backend returns a JSON with a userId field:
+                console.log("Login successful:", data);
+                localStorage.setItem("userId", data.userId);
+                // Navigate to the dashboard page
                 navigate("/main");
             })
             .catch((error) => {
-                console.error("Error:", error);
+                console.error("Error during login:", error);
                 alert("Login failed. Please check your credentials.");
             });
     };
@@ -48,7 +51,6 @@ const Home = () => {
         navigate("/register");
     };
 
-    // Updated: Quickstart now navigates to "/main" instead of "/deck"
     const handleQuickstart = () => {
         navigate("/main");
     };
@@ -67,7 +69,6 @@ const Home = () => {
 
     return (
         <div className="home-page">
-
             {/* LOGIN SECTION WITH FULL BACKGROUND IMAGE AND COLOR OVERLAY */}
             <section id="login" className="login-section">
                 <div className="bg-image"></div>
@@ -109,12 +110,18 @@ const Home = () => {
                         />
                     </div>
                     <div className="options">
-                        <label><input type="checkbox" /> Remember me</label>
+                        <label>
+                            <input type="checkbox" /> Remember me
+                        </label>
                         <a href="#">Forgot Password?</a>
                     </div>
                     <div className="button-container">
-                        <button className="sign-in-btn" onClick={handleLogin}>Login</button>
-                        <button className="quickstart-btn" onClick={handleQuickstart}>Quickstart as Guest</button>
+                        <button className="sign-in-btn" onClick={handleLogin}>
+                            Login
+                        </button>
+                        <button className="quickstart-btn" onClick={handleQuickstart}>
+                            Quickstart as Guest
+                        </button>
                     </div>
                     <p className="register-link">
                         Don't have an account? <span onClick={handleRegister}>Register</span>
@@ -127,13 +134,15 @@ const Home = () => {
                 <div className="footer-column">
                     <h3>About</h3>
                     <p>
-                        We are a dedicated team committed to enhancing your study experience with innovative tools.
+                        We are a dedicated team committed to enhancing your study experience
+                        with innovative tools.
                     </p>
                 </div>
                 <div className="footer-column">
                     <h3>Services</h3>
                     <p>
-                        Our platform offers interactive flashcards, progress tracking, and personalized study sessions.
+                        Our platform offers interactive flashcards, progress tracking, and
+                        personalized study sessions.
                     </p>
                 </div>
                 <div className="footer-column">

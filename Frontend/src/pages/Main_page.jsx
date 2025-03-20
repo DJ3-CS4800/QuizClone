@@ -2,122 +2,152 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/main_page.css";
 
-// Simulate existing decks or fetch from backend
-const initialDecks = [
-    // Example deck data
-    // { id: 1, name: "Deck 1", description: "Some description", progress: 20, favorite: false },
-];
-
 function MainPage() {
     const navigate = useNavigate();
-    const [decks, setDecks] = useState(initialDecks);
+    const [decks, setDecks] = useState([]);
+    const [userId, setUserId] = useState("");
+    const [loading, setLoading] = useState(true);
 
-    // Example: fetch decks from backend on mount
     useEffect(() => {
-        // fetch("http://localhost:8080/api/allDecks")
-        //   .then(res => res.json())
-        //   .then(data => setDecks(data.studyDeckList))
-        //   .catch(err => console.error(err));
-    }, []);
+        const storedUserId = localStorage.getItem("userId");
+        if (!storedUserId) {
+            // Redirect back to Home (login) if userId is missing
+            navigate("/");
+            return;
+        }
+        setUserId(storedUserId);
 
-    // Navigate to Deck page for creation
-    const handleAddSet = () => {
-        // Instead of navigating to deck page, add a new blank deck card on the main page
-        const newDeck = {
-            id: Date.now(), // using timestamp as a temporary unique id
-            name: "New Set",
-            description: "Click to edit this set",
-            progress: 0,
-            favorite: false
+        fetch(`https://quizclone.com/api/deck/all?ownerID=${storedUserId}`, {
+            credentials: "include",
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error(`Error fetching decks: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then((data) => {
+                if (data.studyDeckList) {
+                    const mappedDecks = data.studyDeckList.map((deck) => ({
+                        id: deck.deckID,
+                        name: deck.deckName,
+                        description: "Click to edit this set",
+                        progress: 0,
+                        favorite: false,
+                    }));
+                    setDecks(mappedDecks);
+                }
+                setLoading(false);
+            })
+            //currently i always end up on this error. i think it does have something to do with login based on inspect.
+            //maybe maybe cause no decks initially? kinda unsure. honestly i might have just set it up wrong.
+            .catch((err) => {
+                console.error("Error fetching decks:", err);
+                setLoading(false);
+                // navigate("/"); // Redirect to Home if fetching decks fails
+            });
+    }, [navigate]);
+
+    // Create a new deck without navigating away
+    const handleAddSet = async () => {
+        const storedUserId = localStorage.getItem("userId");
+        if (!storedUserId) {
+            navigate("/");
+            return;
+        }
+
+        const newDeckData = {
+            deckName: "New Set",
+            isPublic: true,
+            content: [],
         };
-        setDecks(prevDecks => [...prevDecks, newDeck]);
 
-        // Navigate to the new deck page after creating it
-        navigate(`/deck/${newDeck.id}`);
+        try {
+            const response = await fetch("https://quizclone.com/api/deck/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newDeckData),
+                credentials: "include",
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error("Error response from server:", errorText);
+                throw new Error(`Error creating deck: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("Deck created successfully:", data);
+
+            const newDeck = {
+                id: data.deckID,
+                name: data.deckName,
+                description: "Click to edit this set",
+                progress: 0,
+                favorite: false,
+            };
+
+            setDecks((prevDecks) => [...prevDecks, newDeck]);
+        } catch (error) {
+            console.error("Failed to add new deck:", error);
+            alert("Error adding new set, please try again");
+        }
     };
 
-    // Open existing deck in deck page
     const openDeck = (deckId) => {
         navigate(`/deck/${deckId}`);
     };
 
-    // Delete a deck from the main page after confirming with the user
-    const deleteDeck = (deckId) => {
-        if (window.confirm("Are you sure you want to delete this set?")) {
-            setDecks(prevDecks => prevDecks.filter(deck => deck.id !== deckId));
-        }
-    };
-
-    // Toggle favorite for a deck and sort decks so that favorites come first
-    const toggleFavorite = (deckId) => {
-        setDecks(prevDecks => {
-            const updatedDecks = prevDecks.map(deck => {
-                if (deck.id === deckId) {
-                    return { ...deck, favorite: !deck.favorite };
-                }
-                return deck;
-            });
-            // Sort updated decks so that favorited ones come first
-            updatedDecks.sort((a, b) => (b.favorite - a.favorite));
-            return updatedDecks;
-        });
+    // Optional: Add a logout button that clears the stored user and returns to Home
+    const handleLogout = () => {
+        localStorage.removeItem("userId");
+        navigate("/");
     };
 
     return (
         <div className="main-container">
-            {/* Top Bar */}
             <header className="header">
                 <div className="search-bar">
                     <input type="text" placeholder="Search decks..." />
                 </div>
-                <div className="user-section">User Account ID</div>
+                <div className="user-section">
+                    {userId}
+                    <button onClick={handleLogout} style={{ marginLeft: "1rem" }}>
+                        Log Out
+                    </button>
+                </div>
             </header>
 
             <h1 className="title">Dashboard</h1>
             <p className="subtitle">Manage your decks or create a new one.</p>
 
-            <main className="deck-grid">
-                {/* Existing decks displayed here */}
-                {decks.map(deck => (
-                    <div key={deck.id} className="deck-card" onClick={() => openDeck(deck.id)}>
-                        {/* Favorite button in the top left corner */}
-                        <button
-                            className="favorite-deck-button"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                toggleFavorite(deck.id);
-                            }}
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill={deck.favorite ? "yellow" : "grey"}>
-                                <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.402 8.168L12 18.897l-7.336 3.86 1.402-8.168L.132 9.21l8.2-1.192z" />
-                            </svg>
-                        </button>
-                        {/* Delete button in the top right corner */}
-                        <button
-                            className="delete-deck-button"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                deleteDeck(deck.id);
-                            }}
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" viewBox="0 0 24 24">
-                                <path d="M3 6h18v2H3zM7 8v12h2V8zm4 0v12h2V8zm4 0v12h2V8zM9 4h6v2H9z" />
-                            </svg>
-                        </button>
-                        <h3>{deck.name}</h3>
-                        <p>{deck.description || "No description"}</p>
-                        <div className="progress-circle">
-                            {deck.progress}%
-                        </div>
+            {loading ? (
+                <p>Loading...</p>
+            ) : (
+                <main className="deck-grid">
+                    {decks.length > 0 ? (
+                        decks.map((deck) => (
+                            <div
+                                key={deck.id}
+                                className="deck-card"
+                                onClick={() => openDeck(deck.id)}
+                            >
+                                <h3>{deck.name}</h3>
+                                <p>{deck.description}</p>
+                                <div className="progress-circle">{deck.progress}%</div>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No decks found. Click "add set" to create a new deck.</p>
+                    )}
+                    <div className="deck-card add-card" onClick={handleAddSet}>
+                        <span className="plus-icon">+</span>
+                        <span>add set</span>
                     </div>
-                ))}
-
-                {/* "Add Set" card -> always displayed as the last card */}
-                <div className="deck-card add-card" onClick={handleAddSet}>
-                    <span className="plus-icon">+</span>
-                    <span>add set</span>
-                </div>
-            </main>
+                </main>
+            )}
         </div>
     );
 }
