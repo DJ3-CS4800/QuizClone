@@ -17,6 +17,7 @@ import com.CS4800_DJ3.StudyDeckBackend.DTO.ApiResponseDTO;
 import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCardDTO;
 import com.CS4800_DJ3.StudyDeckBackend.DTO.StudyDeckCreateRequestDTO;
 import com.CS4800_DJ3.StudyDeckBackend.DTO.StudyDeckEditRequestDTO;
+import com.CS4800_DJ3.StudyDeckBackend.DTO.StudyDeckWithProgressDTO;
 import com.CS4800_DJ3.StudyDeckBackend.Models.DeckProgress;
 import com.CS4800_DJ3.StudyDeckBackend.Models.StudyDeck;
 import com.CS4800_DJ3.StudyDeckBackend.Repo.DeckProgressRepo;
@@ -48,16 +49,22 @@ public class DeckService {
 
         if (userID == null)
             return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
+        
+        // Get all study decks owned by the user
+        List<StudyDeckWithProgressDTO> studyDecksList = studyDeckRepo.findDecksWithProgress(userID);
 
-        List<StudyDeck> studyDeckList = studyDeckRepo.findAllByOwnerID(userID);
+        if (studyDecksList.isEmpty()) {
+            return ResponseUtil.messsage(HttpStatus.NOT_FOUND, "No study decks found.");
+        }
 
-        return ResponseEntity.ok(Map.of("studyDeckList", studyDeckList));
+        return ResponseEntity.ok(Map.of("studyDeckList", studyDecksList));
     }
 
 
     public ResponseEntity<?> getDeck(UUID deckID, HttpSession session) {
         UUID currUserID = (UUID) session.getAttribute("userID");
         StudyDeck studyDeck = studyDeckRepo.findByDeckID(deckID);
+
         DeckProgress deckProgress = (currUserID != null) ? 
             deckProgressRepo.findByUserIDAndDeckID(currUserID, deckID): null;
 
@@ -75,23 +82,22 @@ public class DeckService {
 
         // Check if deckProgress exists, if not, create it
         if (deckProgress == null) {
-            if (currUserID != null) {
-                deckProgress = deckProgressService.copyStudyDeckToProgress(
-                        deckID,
-                        currUserID,
-                        studyDeck);
-            } else {
-                deckProgress = deckProgressService.copyStudyDeckToProgressWithoutDB(
-                        deckID,
-                        studyDeck);
-            }
+            deckProgress = deckProgressService.studyDeckToProgress(
+                    deckID,
+                    currUserID,
+                    studyDeck);
         }
+
+        // Update the last opened time
+        deckProgress.setLastOpened(new java.sql.Timestamp(System.currentTimeMillis()));
 
         return ResponseEntity.ok(Map.of(
                 "deckName", studyDeck.getDeckName(),
-                "deck", deckProgress,
-                "owner", isOwner,
                 "ownerName", studyDeck.getOwnerName(),
+                "createdAt", studyDeck.getCreatedAt(),
+                "updatedAt", studyDeck.getUpdatedAt(),
+                "isOwner", isOwner,
+                "deckWithProgress", deckProgress,
                 "trackProgress", currUserID != null));
     }
 
@@ -129,6 +135,12 @@ public class DeckService {
         // Set the content of the study deck
         studyDeck.setContent(content);
         studyDeckRepo.save(studyDeck);
+
+        // Create a new deck progress object for the user
+        deckProgressService.studyDeckToProgress(
+                studyDeck.getDeckID(),
+                userID,
+                studyDeck);
 
         return ResponseUtil.messsage(HttpStatus.OK, "Deck created successfully.");
     }
