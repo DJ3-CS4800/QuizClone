@@ -35,6 +35,19 @@ public class AuthController {
     public ResponseEntity<ApiResponseDTO> login(@RequestBody AccountRequestDTO accountRequest, HttpSession session) {
         return authService.login(accountRequest, session);
     }
+
+    
+    @PostMapping(value = "/verify")
+    @Operation(
+        description = "Verifies if the user is logged in."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "User is logged in"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized - user not logged in"),
+    })
+    public ResponseEntity<?> verifyAuth(HttpSession session) {
+        return authService.verifyAuth(session);
+    }
     
 
 

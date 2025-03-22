@@ -34,3 +34,13 @@ jobs:
 
     - name: Push the Docker image
       run: docker push remrem06/cs4800-studydecks-deployment:latest
+
+    - name: Update Docker image in EC2
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ec2-54-215-75-149.us-west-1.compute.amazonaws.com
+        username: ec2-user
+        port: 22
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+            sudo ./update-docker.sh

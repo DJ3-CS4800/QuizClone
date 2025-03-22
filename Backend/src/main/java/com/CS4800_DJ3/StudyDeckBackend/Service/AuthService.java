@@ -1,5 +1,7 @@
 package com.CS4800_DJ3.StudyDeckBackend.Service;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,9 @@ import jakarta.servlet.http.HttpSession;
 
 @Service
 public class AuthService {
- 
+
     @Autowired
     private AccountRepo accountRepo;
-
 
     public ResponseEntity<ApiResponseDTO> login(
             AccountRequestDTO accountRequest, HttpSession session) {
@@ -33,20 +34,31 @@ public class AuthService {
         Account account = accountRepo.findByUsername(username);
 
         // Check if account exists and password is correct
-        if (account == null || !account.checkPassword(password)){
+        if (account == null || !account.checkPassword(password)) {
             return ResponseUtil.messsage(HttpStatus.BAD_REQUEST, "Invalid username or password.");
         }
 
         // Store user information in session
         session.setAttribute("username", account.getUsername());
         session.setAttribute("userID", account.getUserID());
+        session.setAttribute("email", account.getEmail());
 
         return ResponseUtil.messsage(HttpStatus.OK, "Logged in successfully.");
     }
-    
+
+    public ResponseEntity<?> verifyAuth(HttpSession session) {
+        if (session.getAttribute("userID") == null) {
+            return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
+        }
+
+        return ResponseEntity.ok(Map.of(
+            "userID", session.getAttribute("userID"),
+            "username", session.getAttribute("username"),
+            "email", session.getAttribute("email")));
+    }
 
     public ResponseEntity<ApiResponseDTO> logout(HttpSession session) {
-        
+
         // Check if user is logged in
         if (session.getAttribute("userID") == null) {
             return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
