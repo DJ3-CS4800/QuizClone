@@ -6,15 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom" 
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate() 
 
   const handleClose = () => {
-    window.history.back();
+    navigate("/");
   };
 
   const handleLogin = async (event: React.FormEvent) => {
@@ -42,7 +44,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
       const data = await response.json();
       console.log("Login successful:", data);
       localStorage.setItem("username", username);
-      window.location.href = "/";
+      navigate("/"); 
 
     } catch (error) {
       console.error("Login error:", error);

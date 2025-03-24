@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom" 
+
 
 export function RegistrationForm({ className, ...props }: React.ComponentProps<"div">) {
     const [username, setUsername] = useState("");
@@ -13,9 +15,10 @@ export function RegistrationForm({ className, ...props }: React.ComponentProps<"
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate() 
 
     const handleClose = () => {
-        window.history.back();
+        navigate("/login");
     };
 
     const handleRegister = async (event: React.FormEvent) => {
@@ -43,7 +46,7 @@ export function RegistrationForm({ className, ...props }: React.ComponentProps<"
 
             const data = await response.json();
             console.log("Registration successful:", data);
-            window.location.href = "/login";
+            navigate("/login");
         } catch (error) {
             console.error("Registration error:", error);
             setError(error instanceof Error ? error.message : "An unexpected error occurred.");
@@ -55,7 +58,6 @@ export function RegistrationForm({ className, ...props }: React.ComponentProps<"
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
             <Card className="relative overflow-hidden bg-muted text-muted-foreground">
-                {/* Close Button */}
                 <Button
                     variant="ghost"
                     size="icon"
