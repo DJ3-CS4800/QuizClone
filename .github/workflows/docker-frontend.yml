@@ -38,4 +38,4 @@ jobs:
         port: 22
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-            sudo ./update-docker.sh
+            sudo ./update-frontend-docker.sh
