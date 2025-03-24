@@ -42,7 +42,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
       const data = await response.json();
       console.log("Login successful:", data);
       localStorage.setItem("username", username);
-      window.location.href = "/"; 
+      window.location.href = "/";
 
     } catch (error) {
       console.error("Login error:", error);
@@ -108,7 +108,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
               </Button>
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <a href="#" className="underline underline-offset-4 text-[var(--accent)]">
+                <a href="/register" className="underline underline-offset-4 text-[var(--accent)]">
                   Sign up
                 </a>
               </div>
