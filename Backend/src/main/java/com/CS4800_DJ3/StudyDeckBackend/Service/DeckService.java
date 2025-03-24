@@ -53,10 +53,6 @@ public class DeckService {
         // Get all study decks owned by the user
         List<StudyDeckWithProgressDTO> studyDecksList = studyDeckRepo.findDecksWithProgress(userID);
 
-        if (studyDecksList.isEmpty()) {
-            return ResponseUtil.messsage(HttpStatus.NOT_FOUND, "No study decks found.");
-        }
-
         return ResponseEntity.ok(Map.of("studyDeckList", studyDecksList));
     }
 
