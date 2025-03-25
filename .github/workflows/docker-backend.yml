@@ -23,7 +23,8 @@ jobs:
 
     - name: Build the Docker image
       run: |
-        docker build --build-arg DATASOURCE_URL=${{ secrets.DATASOURCE_URL }} \
+        docker build \
+        --build-arg DATASOURCE_URL=${{ secrets.DATASOURCE_URL }} \
         --build-arg DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }} \
         --build-arg DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
         --build-arg FRONTEND_URL=${{ secrets.FRONTEND_URL }} \
@@ -43,4 +44,16 @@ jobs:
         port: 22
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-            sudo ./update-backend-docker.sh
+            sudo  docker pull remrem06/cs4800-studydecks-deployment:latest
+            sudo docker stop studydeck-backend || true
+            sudo docker rm studydeck-backend || true
+            
+            sudo docker run -d \
+            --name studydeck-backend \
+            -p 8082:8080 \
+            -e DATASOURCE_URL=${{ secrets.DATASOURCE_URL }} \
+            -e DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }} \
+            -e DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
+            -e FRONTEND_URL=${{ secrets.FRONTEND_URL }} \
+            remrem06/cs4800-studydecks-deployment:latest
+

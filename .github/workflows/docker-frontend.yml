@@ -38,4 +38,11 @@ jobs:
         port: 22
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-            sudo ./update-frontend-docker.sh
+              sudo docker pull remrem06/cs-4800-studydecks-frontend:latest
+              sudo docker stop studydeck-frontend || true
+              sudo docker rm studydeck-frontend || true
+
+              sudo docker run -d \
+              --name studydeck-frontend \
+              -p 8081:80 \
+              remrem06/cs-4800-studydecks-frontend:latest
