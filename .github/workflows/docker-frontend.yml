@@ -4,7 +4,7 @@ on:
     push:
         branches: [ "main" ]
         paths:
-            - 'Frontend2/**'  
+            - 'Frontend/**'  
     workflow_dispatch:
 
 jobs:
