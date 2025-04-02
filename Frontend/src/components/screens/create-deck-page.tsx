@@ -158,7 +158,7 @@ const CreateDeckPage = () => {
                                             className="border rounded-lg p-4 shadow-md flex flex-col space-y-4 bg-[var(--background)] text-[var(--foreground)]"
                                         >
                                             <div className="flex items-center space-x-4">
-                                                {/* Question Input */}
+                                                {/* Front of Card Input */}
                                                 <input
                                                     type="text"
                                                     placeholder="Front (Question)"
@@ -170,7 +170,7 @@ const CreateDeckPage = () => {
                                                 {/* Separator Line */}
                                                 <div className="h-full w-[1px] bg-[var(--border)]"></div>
 
-                                                {/* Answer Input */}
+                                                {/* Back of Card Input */}
                                                 <input
                                                     type="text"
                                                     placeholder="Back (Answer)"
