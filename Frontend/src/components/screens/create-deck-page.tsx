@@ -162,22 +162,32 @@ const CreateDeckPage = () => {
                                     {cards.map((card) => (
                                         <div
                                             key={card.id}
-                                            className="border rounded-lg p-4 shadow-md flex flex-col space-y-2"
+                                            className="border rounded-lg p-4 shadow-md flex flex-col space-y-4 bg-white"
                                         >
-                                            <input
-                                                type="text"
-                                                placeholder="Front of the card"
-                                                value={card.front}
-                                                onChange={(e) => updateCard(card.id, "front", e.target.value)}
-                                                className="border p-2 rounded-md w-full"
-                                            />
-                                            <input
-                                                type="text"
-                                                placeholder="Back of the card"
-                                                value={card.back}
-                                                onChange={(e) => updateCard(card.id, "back", e.target.value)}
-                                                className="border p-2 rounded-md w-full"
-                                            />
+                                            <div className="flex items-center space-x-4">
+                                                {/* Question Input */}
+                                                <input
+                                                    type="text"
+                                                    placeholder="Front (Question)"
+                                                    value={card.front}
+                                                    onChange={(e) => updateCard(card.id, "front", e.target.value)}
+                                                    className="border p-2 rounded-md w-1/2"
+                                                />
+
+                                                {/* Separator Line */}
+                                                <div className="h-full w-[1px] bg-gray-300"></div>
+
+                                                {/* Answer Input */}
+                                                <input
+                                                    type="text"
+                                                    placeholder="Back (Answer)"
+                                                    value={card.back}
+                                                    onChange={(e) => updateCard(card.id, "back", e.target.value)}
+                                                    className="border p-2 rounded-md w-1/2"
+                                                />
+                                            </div>
+
+                                            {/* Delete Button */}
                                             <Button
                                                 variant="destructive"
                                                 onClick={() => deleteCard(card.id)}
