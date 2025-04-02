@@ -75,6 +75,8 @@ const CreateDeckPage = () => {
             username, // Associate the deck with the logged-in user
         };
 
+        console.log("Deck data being sent:", deck); // Debugging: Log the deck data
+
         try {
             const response = await fetch("https://quizclone.com/api/deck/create", {
                 method: "POST",
@@ -84,18 +86,23 @@ const CreateDeckPage = () => {
                 body: JSON.stringify(deck),
             });
 
+            console.log("Response status:", response.status); // Debugging: Log the response status
+            console.log("Response headers:", response.headers); // Debugging: Log the response headers
+
             if (!response.ok) {
-                throw new Error("Failed to save deck");
+                const errorBody = await response.text(); // Get the response body for debugging
+                console.error("Response error body:", errorBody); // Debugging: Log the error body
+                throw new Error(`Failed to save deck. Status: ${response.status}`);
             }
 
             const data = await response.json(); // Get the saved deck data (including deckID)
-            console.log("Deck saved successfully:", data);
+            console.log("Deck saved successfully:", data); // Debugging: Log the response data
 
             alert("Deck saved successfully!");
             setDeckName(""); // Reset deck name
             setCards([]); // Clear cards
         } catch (error) {
-            console.error("Error saving deck:", error);
+            console.error("Error saving deck:", error); // Debugging: Log the error
             alert("Failed to save the deck. Please try again.");
         }
     };
