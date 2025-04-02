@@ -94,6 +94,9 @@ const CreateDeckPage = () => {
             alert("Deck saved successfully!");
             setDeckName(""); // Reset deck name
             setCards([]); // Clear cards
+
+            // Navigate back to the main page
+            navigate("/");
         } catch (error) {
             console.error("Error saving deck:", error);
             alert("Failed to save the deck. Please try again.");
@@ -138,7 +141,7 @@ const CreateDeckPage = () => {
                                     placeholder="Deck Name"
                                     value={deckName}
                                     onChange={(e) => setDeckName(e.target.value)}
-                                    className="border p-2 rounded-md w-full mb-4"
+                                    className="border border-[var(--border)] bg-[var(--input-background)] text-[var(--foreground)] p-2 rounded-md w-full mb-4"
                                 />
                                 <label className="flex items-center space-x-2 mb-4">
                                     <input
@@ -146,28 +149,38 @@ const CreateDeckPage = () => {
                                         checked={isPublic}
                                         onChange={(e) => setIsPublic(e.target.checked)}
                                     />
-                                    <span>Make Deck Public</span>
+                                    <span className="text-[var(--foreground)]">Make Deck Public</span>
                                 </label>
                                 <div className="space-y-4">
                                     {cards.map((card) => (
                                         <div
                                             key={card.id}
-                                            className="border rounded-lg p-4 shadow-md flex flex-col space-y-2"
+                                            className="border rounded-lg p-4 shadow-md flex flex-col space-y-4 bg-[var(--background)] text-[var(--foreground)]"
                                         >
-                                            <input
-                                                type="text"
-                                                placeholder="Front of the card"
-                                                value={card.front}
-                                                onChange={(e) => updateCard(card.id, "front", e.target.value)}
-                                                className="border p-2 rounded-md w-full"
-                                            />
-                                            <input
-                                                type="text"
-                                                placeholder="Back of the card"
-                                                value={card.back}
-                                                onChange={(e) => updateCard(card.id, "back", e.target.value)}
-                                                className="border p-2 rounded-md w-full"
-                                            />
+                                            <div className="flex items-center space-x-4">
+                                                {/* Question Input */}
+                                                <input
+                                                    type="text"
+                                                    placeholder="Front (Question)"
+                                                    value={card.front}
+                                                    onChange={(e) => updateCard(card.id, "front", e.target.value)}
+                                                    className="border border-[var(--border)] bg-[var(--input-background)] text-[var(--foreground)] p-2 rounded-md w-1/2"
+                                                />
+
+                                                {/* Separator Line */}
+                                                <div className="h-full w-[1px] bg-[var(--border)]"></div>
+
+                                                {/* Answer Input */}
+                                                <input
+                                                    type="text"
+                                                    placeholder="Back (Answer)"
+                                                    value={card.back}
+                                                    onChange={(e) => updateCard(card.id, "back", e.target.value)}
+                                                    className="border border-[var(--border)] bg-[var(--input-background)] text-[var(--foreground)] p-2 rounded-md w-1/2"
+                                                />
+                                            </div>
+
+                                            {/* Delete Button */}
                                             <Button
                                                 variant="destructive"
                                                 onClick={() => deleteCard(card.id)}
@@ -178,7 +191,7 @@ const CreateDeckPage = () => {
                                         </div>
                                     ))}
                                     {cards.length === 0 && (
-                                        <p className="text-center text-gray-500">No cards added yet.</p>
+                                        <p className="text-center text-[var(--muted-foreground)]">No cards added yet.</p>
                                     )}
                                 </div>
                             </div>
