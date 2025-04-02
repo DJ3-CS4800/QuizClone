@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider, Sidebar, SidebarInset } from "@/components/ui/sidebar";
@@ -6,11 +7,27 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { LeftSidebar } from "@/components/left-sidebar";
 
 const CreateDeckPage = () => {
+    const navigate = useNavigate();
+    const [username, setUsername] = useState<string | null>(null); // Logged-in user's username
     const [leftOpen, setLeftOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [cards, setCards] = useState<{ id: number; front: string; back: string }[]>([]);
+    const [deckName, setDeckName] = useState(""); // Deck name
+    const [isPublic, setIsPublic] = useState(true); // Deck visibility (public/private)
 
-    React.useEffect(() => {
+    // Check if the user is logged in
+    useEffect(() => {
+        const storedUsername = localStorage.getItem("username");
+        console.log("Stored username:", storedUsername); // Debugging log
+        if (!storedUsername) {
+            console.warn("No username found in localStorage. Redirecting to login.");
+            navigate("/login");
+        } else {
+            setUsername(storedUsername);
+        }
+    }, [navigate]);
+
+    useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 1024);
         checkMobile();
         window.addEventListener("resize", checkMobile);
@@ -36,6 +53,49 @@ const CreateDeckPage = () => {
                 card.id === id ? { ...card, [field]: value } : card
             )
         );
+    };
+
+    const saveDeck = async () => {
+        if (!deckName) {
+            alert("Please provide a name for the deck.");
+            return;
+        }
+
+        if (cards.length === 0) {
+            alert("Please add at least one card to the deck.");
+            return;
+        }
+
+        const deck = {
+            deckName,
+            isPublic,
+            content: cards.map((card) => ({
+                question: card.front,
+                answer: card.back,
+            })),
+            username, // Associate the deck with the logged-in user
+        };
+
+        try {
+            const response = await fetch("https://quizclone.com/api/deck", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(deck),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to save deck");
+            }
+
+            alert("Deck saved successfully!");
+            setDeckName(""); // Reset deck name
+            setCards([]); // Clear cards
+        } catch (error) {
+            console.error("Error saving deck:", error);
+            alert("Failed to save the deck. Please try again.");
+        }
     };
 
     return (
@@ -66,39 +126,59 @@ const CreateDeckPage = () => {
                                 <Button variant="default" onClick={addCard}>
                                     Add Card
                                 </Button>
+                                <Button variant="default" onClick={saveDeck}>
+                                    Save Deck
+                                </Button>
                             </header>
-                            <div className="p-4 space-y-4">
-                                {cards.map((card) => (
-                                    <div
-                                        key={card.id}
-                                        className="border rounded-lg p-4 shadow-md flex flex-col space-y-2"
-                                    >
-                                        <input
-                                            type="text"
-                                            placeholder="Front of the card"
-                                            value={card.front}
-                                            onChange={(e) => updateCard(card.id, "front", e.target.value)}
-                                            className="border p-2 rounded-md w-full"
-                                        />
-                                        <input
-                                            type="text"
-                                            placeholder="Back of the card"
-                                            value={card.back}
-                                            onChange={(e) => updateCard(card.id, "back", e.target.value)}
-                                            className="border p-2 rounded-md w-full"
-                                        />
-                                        <Button
-                                            variant="destructive"
-                                            onClick={() => deleteCard(card.id)}
-                                            className="self-end"
+                            <div className="p-4">
+                                <input
+                                    type="text"
+                                    placeholder="Deck Name"
+                                    value={deckName}
+                                    onChange={(e) => setDeckName(e.target.value)}
+                                    className="border p-2 rounded-md w-full mb-4"
+                                />
+                                <label className="flex items-center space-x-2 mb-4">
+                                    <input
+                                        type="checkbox"
+                                        checked={isPublic}
+                                        onChange={(e) => setIsPublic(e.target.checked)}
+                                    />
+                                    <span>Make Deck Public</span>
+                                </label>
+                                <div className="space-y-4">
+                                    {cards.map((card) => (
+                                        <div
+                                            key={card.id}
+                                            className="border rounded-lg p-4 shadow-md flex flex-col space-y-2"
                                         >
-                                            Delete
-                                        </Button>
-                                    </div>
-                                ))}
-                                {cards.length === 0 && (
-                                    <p className="text-center text-gray-500">No cards added yet.</p>
-                                )}
+                                            <input
+                                                type="text"
+                                                placeholder="Front of the card"
+                                                value={card.front}
+                                                onChange={(e) => updateCard(card.id, "front", e.target.value)}
+                                                className="border p-2 rounded-md w-full"
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="Back of the card"
+                                                value={card.back}
+                                                onChange={(e) => updateCard(card.id, "back", e.target.value)}
+                                                className="border p-2 rounded-md w-full"
+                                            />
+                                            <Button
+                                                variant="destructive"
+                                                onClick={() => deleteCard(card.id)}
+                                                className="self-end"
+                                            >
+                                                Delete
+                                            </Button>
+                                        </div>
+                                    ))}
+                                    {cards.length === 0 && (
+                                        <p className="text-center text-gray-500">No cards added yet.</p>
+                                    )}
+                                </div>
                             </div>
                         </main>
                     </div>
