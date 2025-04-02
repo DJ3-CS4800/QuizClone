@@ -50,7 +50,7 @@ const DeckPage = () => {
                 </Button>
               </header>
               <div className="p-4 ">
-                <StudyDeck deckId={deckID} /> 
+                <StudyDeck deckId={deckID} />
               </div>
             </main>
           </div>
