@@ -18,7 +18,6 @@ const CreateDeckPage = () => {
     // Check if the user is logged in
     useEffect(() => {
         const storedUsername = localStorage.getItem("username");
-        console.log("Stored username:", storedUsername); // Debugging log
         if (!storedUsername) {
             console.warn("No username found in localStorage. Redirecting to login.");
             navigate("/login");
@@ -77,7 +76,7 @@ const CreateDeckPage = () => {
         };
 
         try {
-            const response = await fetch("https://quizclone.com/api/deck", {
+            const response = await fetch("https://quizclone.com/api/deck/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -88,6 +87,9 @@ const CreateDeckPage = () => {
             if (!response.ok) {
                 throw new Error("Failed to save deck");
             }
+
+            const data = await response.json(); // Get the saved deck data (including deckID)
+            console.log("Deck saved successfully:", data);
 
             alert("Deck saved successfully!");
             setDeckName(""); // Reset deck name
