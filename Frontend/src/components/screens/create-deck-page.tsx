@@ -101,6 +101,9 @@ const CreateDeckPage = () => {
             alert("Deck saved successfully!");
             setDeckName(""); // Reset deck name
             setCards([]); // Clear cards
+
+            // Navigate back to the main page
+            navigate("/");
         } catch (error) {
             console.error("Error saving deck:", error); // Debugging: Log the error
             alert("Failed to save the deck. Please try again.");
