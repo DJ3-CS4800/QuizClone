@@ -76,7 +76,7 @@ const CreateDeckPage = () => {
         };
 
         try {
-            const response = await fetch("https://quizclone.com/api/deck", {
+            const response = await fetch("https://quizclone.com/api/deck/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
