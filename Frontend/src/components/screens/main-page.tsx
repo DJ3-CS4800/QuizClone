@@ -127,6 +127,29 @@ export default function MainPage() {
         }
     }
 
+    const handleDeleteDeck = async (deckID: string) => {
+        try {
+            const response = await fetch(`https://quizclone.com/api/deck/${deckID}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to delete the deck");
+            }
+
+            // Remove the deleted deck from the state
+            setDecks((prevDecks) => prevDecks.filter((deck) => deck.deckID !== deckID));
+            alert("Deck deleted successfully!");
+        } catch (error) {
+            console.error("Error deleting deck:", error);
+            alert("Failed to delete the deck. Please try again.");
+        }
+    };
+
 
     const toggleLeft = () => setLeftOpen((prev) => !prev)
 
@@ -175,6 +198,26 @@ export default function MainPage() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                         {decks.map((deck) => (
                                             <div key={deck.deckID} className="relative">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="absolute top-2 left-2"
+                                                    onClick={() => handleDeleteDeck(deck.deckID)}
+                                                >
+                                                    <span className="sr-only">Delete Deck</span>
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        className="h-5 w-5 text-red-500 hover:text-red-700"
+                                                        viewBox="0 0 20 20"
+                                                        fill="currentColor"
+                                                    >
+                                                        <path
+                                                            fillRule="evenodd"
+                                                            d="M6 2a1 1 0 00-1 1v1H3a1 1 0 100 2h14a1 1 0 100-2h-2V3a1 1 0 00-1-1H6zm2 4a1 1 0 00-1 1v7a1 1 0 102 0V7a1 1 0 00-1-1zm4 0a1 1 0 00-1 1v7a1 1 0 102 0V7a1 1 0 00-1-1z"
+                                                            clipRule="evenodd"
+                                                        />
+                                                    </svg>
+                                                </Button>
                                                 <button
                                                     className="group rounded-lg bg-muted p-4 text-left transition hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] w-full"
                                                     onClick={() => handleDeckClick(deck)}
