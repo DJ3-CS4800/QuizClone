@@ -210,36 +210,44 @@ export default function MainPage() {
                                 {loading ? (
                                     <p>Loading decks...</p>
                                 ) : (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {decks.map((deck) => (
-                                            <div key={deck.deckID} className="relative">
+                                            <div
+                                                key={deck.deckID}
+                                                className="relative bg-[var(--background)] border border-[var(--border)] rounded-lg shadow-md p-4 flex flex-col justify-between items-center aspect-[3/4]"
+                                            >
+                                                {/* Delete Button */}
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
-                                                    className="absolute top-2 left-2"
+                                                    className="absolute top-2 left-2 text-gray-500 hover:text-red-500"
                                                     onClick={() => handleDeleteDeck(deck.deckID)}
                                                 >
                                                     <span className="sr-only">Delete Deck</span>
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
-                                                        className="h-5 w-5 text-red-500 hover:text-red-700"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
+                                                        className="h-5 w-5"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
                                                     >
-                                                        <path
-                                                            fillRule="evenodd"
-                                                            d="M6 2a1 1 0 00-1 1v1H3a1 1 0 100 2h14a1 1 0 100-2h-2V3a1 1 0 00-1-1H6zm2 4a1 1 0 00-1 1v7a1 1 0 102 0V7a1 1 0 00-1-1zm4 0a1 1 0 00-1 1v7a1 1 0 102 0V7a1 1 0 00-1-1z"
-                                                            clipRule="evenodd"
-                                                        />
+                                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                                                        <path d="M10 11v6"></path>
+                                                        <path d="M14 11v6"></path>
                                                     </svg>
                                                 </Button>
-                                                <button
-                                                    className="group rounded-lg bg-muted p-4 text-left transition hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] w-full"
-                                                    onClick={() => handleDeckClick(deck)}
-                                                >
-                                                    <h2 className="mb-2 text-lg font-semibold">{deck.deckName}</h2>
-                                                    <p>Created by {deck.ownerName}</p>
-                                                </button>
+
+                                                {/* Deck Name and Description */}
+                                                <div className="text-center">
+                                                    <h2 className="text-lg font-semibold text-[var(--foreground)]">{deck.deckName}</h2>
+                                                    <p className="text-sm text-[var(--muted-foreground)]">Created by {deck.ownerName}</p>
+                                                </div>
+
+                                                {/* Favorite Button */}
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
@@ -254,6 +262,8 @@ export default function MainPage() {
                                                 </Button>
                                             </div>
                                         ))}
+
+                                        {/* Create New Deck Button */}
                                         <button
                                             className="group flex flex-col items-center justify-center rounded-lg bg-[var(--accent2)] text-left transition hover:bg-[var(--accent)] w-full shadow-md h-23"
                                             onClick={() => navigate("/create-deck")}
