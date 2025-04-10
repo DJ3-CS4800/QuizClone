@@ -100,9 +100,16 @@ export default function MainPage() {
         if (deck.local) {
             const updatedDecks = decks.map(d =>
                 d.deckID === deck.deckID ? { ...d, starred: !d.starred } : d
-            )
-            setDecks(updatedDecks)
-            localStorage.setItem("studyDecks", JSON.stringify(updatedDecks))
+            );
+
+            // Move the favorited deck to the beginning if starred is true
+            const reorderedDecks = updatedDecks.sort((a, b) => {
+                if (a.starred === b.starred) return 0;
+                return a.starred ? -1 : 1;
+            });
+
+            setDecks(reorderedDecks);
+            localStorage.setItem("studyDecks", JSON.stringify(reorderedDecks));
         } else {
             const updateStarred = async () => {
                 try {
@@ -112,20 +119,28 @@ export default function MainPage() {
                             "Content-Type": "application/json",
                         },
                         credentials: "include",
-                    })
+                    });
 
-                    if (!response.ok) throw new Error("Failed to update starred status")
+                    if (!response.ok) throw new Error("Failed to update starred status");
+
                     const updatedDecks = decks.map(d =>
                         d.deckID === deck.deckID ? { ...d, starred: !d.starred } : d
-                    )
-                    setDecks(updatedDecks)
+                    );
+
+                    // Move the favorited deck to the beginning if starred is true
+                    const reorderedDecks = updatedDecks.sort((a, b) => {
+                        if (a.starred === b.starred) return 0;
+                        return a.starred ? -1 : 1;
+                    });
+
+                    setDecks(reorderedDecks);
                 } catch (error) {
-                    console.error("Error updating starred status:", error)
+                    console.error("Error updating starred status:", error);
                 }
-            }
-            updateStarred()
+            };
+            updateStarred();
         }
-    }
+    };
 
     const handleDeleteDeck = async (deckID: string) => {
         try {
