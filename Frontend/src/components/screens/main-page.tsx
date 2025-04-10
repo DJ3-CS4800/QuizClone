@@ -1,74 +1,72 @@
-import * as React from "react"
-import { Menu, Plus, Star, StarOff } from "lucide-react"
-import { LeftSidebar } from "@/components/left-sidebar"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
-import { SidebarInset, SidebarProvider, Sidebar } from "@/components/ui/sidebar"
-import { useNavigate } from "react-router-dom" // Import useNavigate
+import * as React from "react";
+import { Menu, Plus, Star, StarOff } from "lucide-react";
+import { LeftSidebar } from "@/components/left-sidebar";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { SidebarInset, SidebarProvider, Sidebar } from "@/components/ui/sidebar";
+import { useNavigate } from "react-router-dom";
 
 interface Flashcard {
-    cardID: number
-    question: string
-    answer: string
+    cardID: number;
+    question: string;
+    answer: string;
 }
 
 interface StudyDeck {
-    deckID: string
-    deckName: string
-    ownerID: string
-    ownerName: string
-    createdAt: string
-    updatedAt: string
-    content: Flashcard[]
-    public: boolean
-    starred?: boolean
-    lastOpened?: string
-    local?: boolean
+    deckID: string;
+    deckName: string;
+    ownerID: string;
+    ownerName: string;
+    createdAt: string;
+    updatedAt: string;
+    content: Flashcard[];
+    public: boolean;
+    starred?: boolean;
+    lastOpened?: string;
+    local?: boolean;
 }
 
 export default function MainPage() {
-    const [leftOpen, setLeftOpen] = React.useState(false)
-    const [isMobile, setIsMobile] = React.useState(false)
-    const [decks, setDecks] = React.useState<StudyDeck[]>([])
-    const [loading, setLoading] = React.useState<boolean>(true)
-    const navigate = useNavigate() // Initialize useNavigate
+    const [leftOpen, setLeftOpen] = React.useState(false);
+    const [isMobile, setIsMobile] = React.useState(false);
+    const [decks, setDecks] = React.useState<StudyDeck[]>([]);
+    const [loading, setLoading] = React.useState<boolean>(true);
+    const navigate = useNavigate();
 
     React.useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 1024)
-        checkMobile()
-        window.addEventListener("resize", checkMobile)
-        return () => window.removeEventListener("resize", checkMobile)
-    }, [])
-
+        const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
 
     React.useEffect(() => {
         const loadDecks = async () => {
-            setLoading(true)
+            setLoading(true);
             try {
                 const username = localStorage.getItem("username");
 
                 // Load local decks first
-                const localData = localStorage.getItem("studyDecks")
+                const localData = localStorage.getItem("studyDecks");
                 if (localData) {
-                    setDecks(JSON.parse(localData))
-                    console.log("Loaded local decks.")
+                    setDecks(JSON.parse(localData));
+                    console.log("Loaded local decks.");
                 }
 
                 if (username) {
                     // Fetch API decks if user is logged in
-                    const response = await fetch(`https://quizclone.com/api/deck/all`,
-                        {
-                            method: "GET",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            credentials: "include",
-                        })
+                    const response = await fetch(`https://quizclone.com/api/deck/all`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        credentials: "include",
+                    });
 
-                    if (!response.ok) throw new Error("Failed to fetch study decks from API")
-                    const data: { studyDeckList: any[] } = await response.json()
+                    if (!response.ok) throw new Error("Failed to fetch study decks from API");
+                    const data: { studyDeckList: any[] } = await response.json();
 
-                    const mappedDecks: StudyDeck[] = data.studyDeckList.map(deck => ({
+                    const mappedDecks: StudyDeck[] = data.studyDeckList.map((deck) => ({
                         deckID: deck.deck_id,
                         deckName: deck.deck_name,
                         ownerID: deck.owner_id,
@@ -80,25 +78,23 @@ export default function MainPage() {
                         starred: deck.is_favorite,
                         lastOpened: deck.last_opened,
                         local: false,
-                    }))
+                    }));
 
-                    setDecks((prevDecks) => [...prevDecks, ...mappedDecks])
+                    setDecks((prevDecks) => [...prevDecks, ...mappedDecks]);
                 }
-
             } catch (error) {
-                console.error("Error loading decks:", error)
+                console.error("Error loading decks:", error);
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
-        }
+        };
 
-        loadDecks()
-    }, [])
-
+        loadDecks();
+    }, []);
 
     const toggleStar = (deck: StudyDeck) => {
         if (deck.local) {
-            const updatedDecks = decks.map(d =>
+            const updatedDecks = decks.map((d) =>
                 d.deckID === deck.deckID ? { ...d, starred: !d.starred } : d
             );
 
@@ -113,17 +109,20 @@ export default function MainPage() {
         } else {
             const updateStarred = async () => {
                 try {
-                    const response = await fetch(`https://quizclone.com/api/deckProgress/favorite/${deck.deckID}`, {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        credentials: "include",
-                    });
+                    const response = await fetch(
+                        `https://quizclone.com/api/deckProgress/favorite/${deck.deckID}`,
+                        {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            credentials: "include",
+                        }
+                    );
 
                     if (!response.ok) throw new Error("Failed to update starred status");
 
-                    const updatedDecks = decks.map(d =>
+                    const updatedDecks = decks.map((d) =>
                         d.deckID === deck.deckID ? { ...d, starred: !d.starred } : d
                     );
 
@@ -165,17 +164,15 @@ export default function MainPage() {
         }
     };
 
-
-    const toggleLeft = () => setLeftOpen((prev) => !prev)
-
+    const toggleLeft = () => setLeftOpen((prev) => !prev);
 
     const handleDeckClick = (deck: StudyDeck) => {
         if (deck.local) {
-            navigate(`/deck/local/${deck.deckID}`)
+            navigate(`/deck/local/${deck.deckID}`);
         } else {
-            navigate(`/deck/${deck.deckID}`)
+            navigate(`/deck/${deck.deckID}`);
         }
-    }
+    };
 
     return (
         <div className="flex h-max-content flex-col">
@@ -204,7 +201,9 @@ export default function MainPage() {
                                 </Button>
                             </header>
                             <div className="p-4 pl-5 pr-5">
-                                <h1 className="mb-4 text-4xl font-bold pb-5 text-[var(--accent)]">QuizClone</h1>
+                                <h1 className="mb-4 text-4xl font-bold pb-5 text-[var(--accent)]">
+                                    QuizClone
+                                </h1>
                                 <h1 className="mb-4 text-2xl font-bold">Study Decks</h1>
 
                                 {loading ? (
@@ -214,14 +213,18 @@ export default function MainPage() {
                                         {decks.map((deck) => (
                                             <div
                                                 key={deck.deckID}
-                                                className="relative bg-[var(--background)] border border-[var(--border)] rounded-lg shadow-md p-4 flex flex-col justify-between items-center aspect-[3/4]"
+                                                className="relative bg-[var(--background)] border border-[var(--border)] rounded-lg shadow-md p-4 flex flex-col justify-between items-center aspect-[3/4] cursor-pointer"
+                                                onClick={() => handleDeckClick(deck)}
                                             >
                                                 {/* Delete Button */}
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
                                                     className="absolute top-2 left-2 text-gray-500 hover:text-red-500"
-                                                    onClick={() => handleDeleteDeck(deck.deckID)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDeleteDeck(deck.deckID);
+                                                    }}
                                                 >
                                                     <span className="sr-only">Delete Deck</span>
                                                     <svg
@@ -243,8 +246,12 @@ export default function MainPage() {
 
                                                 {/* Deck Name and Description */}
                                                 <div className="text-center">
-                                                    <h2 className="text-lg font-semibold text-[var(--foreground)]">{deck.deckName}</h2>
-                                                    <p className="text-sm text-[var(--muted-foreground)]">Created by {deck.ownerName}</p>
+                                                    <h2 className="text-lg font-semibold text-[var(--foreground)]">
+                                                        {deck.deckName}
+                                                    </h2>
+                                                    <p className="text-sm text-[var(--muted-foreground)]">
+                                                        Created by {deck.ownerName}
+                                                    </p>
                                                 </div>
 
                                                 {/* Favorite Button */}
@@ -252,7 +259,10 @@ export default function MainPage() {
                                                     variant="ghost"
                                                     size="icon"
                                                     className="absolute top-2 right-2"
-                                                    onClick={() => toggleStar(deck)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        toggleStar(deck);
+                                                    }}
                                                 >
                                                     {deck.starred ? (
                                                         <Star className="text-[var(--accent3)]" />
@@ -279,5 +289,5 @@ export default function MainPage() {
                 </SidebarInset>
             </SidebarProvider>
         </div>
-    )
+    );
 }
