@@ -27,38 +27,75 @@ interface DeckData {
 
 interface StudyDeckProps {
   deckId: string;
+  deckType: string;
 }
 
-export default function StudyDeck({ deckId }: StudyDeckProps) {
+export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
   const navigate = useNavigate();
   const [deck, setDeck] = useState<DeckData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-
   useEffect(() => {
-    async function fetchDeck() {
+    async function loadDeck() {
       try {
-        const response = await fetch(`https://quizclone.com/api/deck/${deckId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          credentials: "include",
-        });
-        if (!response.ok) throw new Error("Failed to fetch deck");
-        const data: DeckData = await response.json();
-        setDeck(data);
+        if (deckType === "l") {
+          const localData = localStorage.getItem("studyDecks");
+          if (!localData) throw new Error("No local decks found");
+
+          const localDecks = JSON.parse(localData);
+          const foundDeck = localDecks.find((d: any) => d.deckID === deckId);
+
+          if (!foundDeck) throw new Error("Local deck not found");
+
+          // Map local deck to the same DeckData format
+          const formattedDeck: DeckData = {
+            deckName: foundDeck.deckName,
+            ownerName: foundDeck.ownerName,
+            createdAt: foundDeck.createdAt,
+            updatedAt: foundDeck.updatedAt,
+            isOwner: true,
+            deckWithProgress: {
+              contentWithProgress: foundDeck.content.map((card: any, index: number) => ({
+                cardID: card.cardID ?? index,
+                question: card.question,
+                answer: card.answer,
+              })),
+              progressID: -1,
+              deckID: foundDeck.deckID,
+              userID: null,
+              lastOpened: foundDeck.lastOpened,
+              isFavorite: foundDeck.starred || false,
+            },
+          };
+
+          setDeck(formattedDeck);
+        } else if (deckType === "r") {
+          const response = await fetch(`https://quizclone.com/api/deck/${deckId}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            credentials: "include",
+          });
+          if (!response.ok) throw new Error("Failed to fetch remote deck");
+          const data: DeckData = await response.json();
+          setDeck(data);
+        } else {
+          throw new Error("Invalid deck type");
+        }
       } catch (err) {
         setError((err as Error).message);
       } finally {
         setLoading(false);
       }
     }
-    fetchDeck();
-  }, [deckId]);
+
+    loadDeck();
+  }, [deckId, deckType]);
+
 
   if (loading) return <div className="text-center text-xl">Loading...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
@@ -82,7 +119,12 @@ export default function StudyDeck({ deckId }: StudyDeckProps) {
   };
 
   const handleStudyClick = () => {
-    navigate(`/study/${deck.deckWithProgress.deckID}`);
+    if(deckType === "l") {
+      navigate(`/study/l/${deck.deckWithProgress.deckID}`);
+    }
+    else{
+      navigate(`/study/r/${deck.deckWithProgress.deckID}`);
+    }
   }
 
   return (

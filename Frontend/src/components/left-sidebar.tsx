@@ -25,9 +25,8 @@ interface User {
 export function LeftSidebar() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false); // For confirmation dialog
-  const [isDarkMode, setIsDarkMode] = useState(
-    localStorage.getItem("theme") === "dark"); // Check stored theme
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem("theme") === "dark"); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,12 +81,29 @@ export function LeftSidebar() {
     setIsDialogOpen(true);
   };
 
-  const handleConfirmSignOut = () => {
-    localStorage.removeItem("username");
-    setUser(null);
-    setIsDialogOpen(false);
-    navigate("/");
-    window.location.reload();
+  const handleConfirmSignOut = async () => {
+    try {
+      const response = await fetch("https://quizclone.com/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+
+      localStorage.removeItem("username");
+      setUser(null);
+      setIsDialogOpen(false);
+      navigate("/");
+      window.location.reload();
+      sessionStorage.clear();
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   const handleCancelSignOut = () => {

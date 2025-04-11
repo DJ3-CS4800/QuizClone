@@ -9,6 +9,7 @@ import { LeftSidebar } from "@/components/left-sidebar";
 
 const DeckPage = () => {
   const { deckID } = useParams<{ deckID: string }>();
+  const { deckType } = useParams<{ deckType: string }>();
   const navigate = useNavigate();
   const [leftOpen, setLeftOpen] = React.useState(false);
   const [isMobile, setIsMobile] = React.useState(false);
@@ -21,6 +22,9 @@ const DeckPage = () => {
   }, []);
 
   if (!deckID) return <div className="text-center text-red-500">Invalid deck ID</div>;
+
+  if (deckType !== "r" && deckType !== "l")
+    return <div className="text-center text-red-500">Invalid link</div>;
 
   const toggleLeft = () => setLeftOpen((prev) => !prev);
 
@@ -53,12 +57,13 @@ const DeckPage = () => {
                   <Menu className="h-6 w-6 scale-175 text-[var(--accent2)]" />
                   <span className="sr-only">Toggle left sidebar</span>
                 </Button>
+                <span className="mb-4 text-2xl font-bold justify-center text-[var(--accent)]">Study</span>
                 <Button variant="ghost" onClick={goToMain}>
                   <X className="h-6 w-6 scale-175 text-[var(--accent2)]" />
                 </Button>
               </header>
               <div className="p-4 ">
-                <StudyDeck deckId={deckID} />
+                <StudyDeck deckId={deckID} deckType={deckType} />
               </div>
             </main>
           </div>

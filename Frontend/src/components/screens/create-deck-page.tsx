@@ -121,11 +121,10 @@ const CreateDeckPage = () => {
       alert("Deck saved locally!");
       setDeckName("");
       setCards([]);
-      navigate("/deck/local/" + UUID);
+      navigate("/deck/l/" + UUID);
       return;
     }
 
-    // Save to cloud
     try {
       const deck = {
         deckName,
@@ -154,7 +153,7 @@ const CreateDeckPage = () => {
       const createdDeckID = data.deckID;
       setDeckName("");
       setCards([]);
-      navigate("/" + createdDeckID);
+      navigate("/deck/r/" + createdDeckID);
     } catch (error) {
       console.error("Error saving deck:", error);
       alert("Failed to save the deck. Please try again.");
@@ -172,6 +171,8 @@ const CreateDeckPage = () => {
       setIsPublic(false);
     }
   }
+
+  console.log(username)
 
   return (
     <div className="flex h-max-content flex-col">
@@ -218,7 +219,7 @@ const CreateDeckPage = () => {
                 <label className="flex items-center space-x-2">
                   <input
                     type="checkbox"
-                    checked={isPublic}
+                    checked={isPublic && username !== null}
                     onChange={(e) => setIsPublic(e.target.checked)}
                     disabled={saveLocal}
                   />

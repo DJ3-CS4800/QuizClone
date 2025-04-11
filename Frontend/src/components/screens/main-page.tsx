@@ -116,9 +116,9 @@ export default function MainPage() {
     setDecks(sortDecks(updatedDecks))
 
     if (deck.local) {
-      navigate(`/deck/local/${deck.deckID}`)
+      navigate(`/deck/l/${deck.deckID}`)
     } else {
-      navigate(`/deck/${deck.deckID}`)
+      navigate(`/deck/r/${deck.deckID}`)
     }
   }
 
@@ -132,7 +132,6 @@ export default function MainPage() {
           : d
       )
       setDecks(sortDecks(updatedDecks))
-      localStorage.setItem("studyDecks", JSON.stringify(updatedDecks))
     } else {
       const updateStarredAndLastOpened = async () => {
         try {
@@ -228,7 +227,7 @@ export default function MainPage() {
                           onClick={() => handleDeckClick(deck)}
                         >
                           <h2 className="mb-2 text-lg font-semibold">{deck.deckName}</h2>
-                          <p>Created by {deck.ownerName}</p>
+                          {deck.local ? <p className="text-sm">Local Deck</p> : <p className="text-sm text-[var(--accent3)]">{deck.ownerName}</p>}
                         </button>
 
                         <Button
