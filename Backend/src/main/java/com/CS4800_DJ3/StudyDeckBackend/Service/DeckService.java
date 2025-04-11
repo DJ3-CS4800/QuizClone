@@ -86,6 +86,7 @@ public class DeckService {
 
         // Update the last opened time
         deckProgress.setLastOpened(new java.sql.Timestamp(System.currentTimeMillis()));
+        deckProgressRepo.save(deckProgress);
 
         return ResponseEntity.ok(Map.of(
                 "deckName", studyDeck.getDeckName(),
@@ -98,7 +99,7 @@ public class DeckService {
     }
 
 
-    public ResponseEntity<ApiResponseDTO> createDeck(StudyDeckCreateRequestDTO studyDeckCreateRequest, HttpSession session) {
+    public ResponseEntity<?> createDeck(StudyDeckCreateRequestDTO studyDeckCreateRequest, HttpSession session) {
         UUID userID = (UUID) session.getAttribute("userID");
         String userName = (String) session.getAttribute("username");
 
@@ -138,7 +139,7 @@ public class DeckService {
                 userID,
                 studyDeck);
 
-        return ResponseUtil.messsage(HttpStatus.OK, "Deck created successfully.");
+        return ResponseEntity.ok(Map.of("deckID", studyDeck.getDeckID()));
     }
 
 
@@ -212,9 +213,11 @@ public class DeckService {
         if (studyDeck == null)
             return ResponseUtil.messsage(HttpStatus.NOT_FOUND, "Deck does not exist.");
 
-        // Check if user is trying to delete a deck that does not belong to them
-        if (studyDeck.getOwnerID() != userID)
-            return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "You do not own this deck.");
+        // Check if user is trying to delete a deck that does not belong to them only delete the progress
+        if (studyDeck.getOwnerID() != userID) {
+            deckProgressService.removeDeckProgressFromUser(studyDeck.getDeckID(), userID);
+            return ResponseUtil.messsage(HttpStatus.OK, "Deck progress deleted successfully.");
+        }
 
         // Delete the deck
         studyDeckRepo.delete(studyDeck);

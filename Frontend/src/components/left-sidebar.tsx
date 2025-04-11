@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { User, Settings, icons, Moon, Sun } from "lucide-react";
+import { User, icons, Moon, Sun } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
@@ -146,15 +146,17 @@ export function LeftSidebar() {
                   Home
                 </SidebarMenuButton>
               </SidebarMenuItem>
+
               <SidebarMenuItem>
                 <SidebarMenuButton className="hover:bg-[var(--accent)]">
                   <icons.Search className="mr-2 h-4 w-4 text-[var(--accent2)]" onClick={handleSearchClick} />
                   Search
                 </SidebarMenuButton>
               </SidebarMenuItem>
+
               <SidebarMenuItem>
-                <SidebarMenuButton className="hover:bg-[var(--accent)]">
-                  <icons.Plus className="mr-2 h-4 w-4 text-[var(--accent2)]" onClick={handleCreateDeckClick} />
+                <SidebarMenuButton className="hover:bg-[var(--accent)]" onClick={handleCreateDeckClick}>
+                  <icons.Plus className="mr-2 h-4 w-4 text-[var(--accent2)]" />
                   Create Deck
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -165,15 +167,13 @@ export function LeftSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Settings</SidebarGroupLabel>
           <SidebarGroupContent>
-              {/* Dark Mode Toggle */}
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton className="hover:bg-[var(--accent)]"  onClick={toggleDarkMode}>
-                  <Settings className="mr-2 h-4 w-4 text-[var(--accent2)]" />
+                <SidebarMenuButton className="hover:bg-[var(--accent)]" onClick={toggleDarkMode}>
                   {isDarkMode ? (
-                    <Sun className="mr-2 h-4 w-4 text-yellow-400" />
+                    <Sun className="mr-2 h-4 w-4  text-[var(--accent2)]" />
                   ) : (
-                    <Moon className="mr-2 h-4 w-4 text-gray-500" />
+                    <Moon className="mr-2 h-4 w-4  text-[var(--accent2)]" />
                   )}
                   {isDarkMode ? "Light Mode" : "Dark Mode"}
                 </SidebarMenuButton>

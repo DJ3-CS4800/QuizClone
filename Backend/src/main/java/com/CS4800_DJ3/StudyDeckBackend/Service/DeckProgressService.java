@@ -185,6 +185,12 @@ public class DeckProgressService {
         }
     }
 
+    // remove a deckProgress related to a studyDeck for a specific user
+    @Transactional
+    public void removeDeckProgressFromUser(UUID deckID, UUID userID) {
+        deckProgressRepo.deleteByUserIDAndDeckID(deckID, userID);
+    }
+
 
     // remove all deckProgress related to a studyDeck
     @Transactional

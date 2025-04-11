@@ -54,7 +54,7 @@ public class DeckController {
         @ApiResponse(responseCode = "200", description = "Deck created successfully"),
         @ApiResponse(responseCode = "401", description = "Unauthorized - user not logged in"),
     })
-    public ResponseEntity<ApiResponseDTO> createDeck(
+    public ResponseEntity<?> createDeck(
         @RequestBody StudyDeckCreateRequestDTO studyDeckCreateRequest, 
         HttpSession session) {
         return deckService.createDeck(studyDeckCreateRequest, session);

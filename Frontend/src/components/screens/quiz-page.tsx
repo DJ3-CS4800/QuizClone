@@ -1,37 +1,63 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-interface Flashcard {
+interface Card {
     cardID: number;
     question: string;
     answer: string;
 }
 
+interface DeckData {
+    deckName: string;
+    deckWithProgress: {
+        contentWithProgress: Card[];
+        progressID: number;
+        deckID: string;
+        userID: string | null;
+        lastOpened: string;
+        isFavorite: boolean;
+    };
+    ownerName: string;
+    createdAt: string;
+    updatedAt: string;
+    isOwner: boolean;
+}
+
 const QuizPage = () => {
     const { deckID } = useParams<{ deckID: string }>();
-    const [cards, setCards] = useState<Flashcard[]>([]);
+    const [deck, setDeck] = useState<DeckData | null>(null);
+    const [error, setError] = useState<string | null>(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [options, setOptions] = useState<string[]>([]);
     const [score, setScore] = useState({ correct: 0, incorrect: 0 });
+    const [quizFinished, setQuizFinished] = useState(false);
+
+    const cards = deck?.deckWithProgress.contentWithProgress ?? [];
 
     useEffect(() => {
-        // Fetch the deck's cards
         const fetchDeck = async () => {
             try {
-                const response = await fetch(`https://quizclone.com/api/deck/${deckID}`);
+                const response = await fetch(`https://quizclone.com/api/deck/${deckID}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                    credentials: "include",
+                });
                 if (!response.ok) throw new Error("Failed to fetch deck");
-                const data = await response.json();
-                setCards(data.content); // Assuming `content` contains the cards
+                const data: DeckData = await response.json(); 
+                setDeck(data);
             } catch (error) {
                 console.error("Error fetching deck:", error);
+                setError("Failed to load quiz deck.");
             }
         };
-
         fetchDeck();
     }, [deckID]);
 
     useEffect(() => {
-        if (cards.length > 0) {
+        if (cards.length > 0 && currentQuestionIndex < cards.length) {
             generateQuestion();
         }
     }, [cards, currentQuestionIndex]);
@@ -42,7 +68,7 @@ const QuizPage = () => {
             .filter((card) => card.cardID !== currentCard.cardID)
             .map((card) => card.answer)
             .sort(() => 0.5 - Math.random())
-            .slice(0, 3); // Select 3 random incorrect answers
+            .slice(0, 3);
 
         const allOptions = [...incorrectAnswers, currentCard.answer].sort(() => 0.5 - Math.random());
         setOptions(allOptions);
@@ -50,20 +76,32 @@ const QuizPage = () => {
 
     const handleAnswer = (selectedAnswer: string) => {
         const currentCard = cards[currentQuestionIndex];
-        if (selectedAnswer === currentCard.answer) {
-            setScore((prev) => ({ ...prev, correct: prev.correct + 1 }));
-        } else {
-            setScore((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
-        }
+        const isCorrect = selectedAnswer === currentCard.answer;
+
+        setScore((prev) => ({
+            correct: prev.correct + (isCorrect ? 1 : 0),
+            incorrect: prev.incorrect + (!isCorrect ? 1 : 0),
+        }));
 
         if (currentQuestionIndex < cards.length - 1) {
             setCurrentQuestionIndex((prev) => prev + 1);
         } else {
-            alert(`Quiz finished! Correct: ${score.correct}, Incorrect: ${score.incorrect}`);
+            setQuizFinished(true);
         }
     };
 
-    if (cards.length === 0) return <p>Loading...</p>;
+    if (error) return <p>{error}</p>;
+    if (!deck || cards.length === 0) return <p>Loading...</p>;
+
+    if (quizFinished) {
+        return (
+            <div className="p-4">
+                <h1 className="text-2xl font-bold mb-4">Quiz Finished!</h1>
+                <p>Correct: {score.correct}</p>
+                <p>Incorrect: {score.incorrect}</p>
+            </div>
+        );
+    }
 
     const currentCard = cards[currentQuestionIndex];
 

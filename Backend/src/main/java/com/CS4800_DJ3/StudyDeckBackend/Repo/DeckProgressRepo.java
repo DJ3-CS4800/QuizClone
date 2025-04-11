@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.CS4800_DJ3.StudyDeckBackend.Models.DeckProgress;
+
+import jakarta.transaction.Transactional;
 
 public interface DeckProgressRepo extends JpaRepository<DeckProgress, Long> {
     
@@ -26,6 +29,8 @@ public interface DeckProgressRepo extends JpaRepository<DeckProgress, Long> {
      * @param deckID: deck id
      * @return DeckProgress: deck progress with the given user id and deck id
      */
+    @Modifying
+    @Transactional
     @Query(value = "DELETE FROM deck_progress WHERE user_id = ?1 AND deck_id = ?2", nativeQuery = true)
     void deleteByUserIDAndDeckID(UUID userID, UUID deckID);
 
@@ -55,4 +60,5 @@ public interface DeckProgressRepo extends JpaRepository<DeckProgress, Long> {
      */
     @Query(value = "SELECT deck_id FROM deck_progress WHERE user_id = ?1 ORDER BY last_opened DESC", nativeQuery = true)
     List<UUID> findAllDeckIDsByUserID(UUID userID);
+
 } 

@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import StudyDeck from "../study-deck"; // Import the study deck component
 import React from "react";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider, Sidebar, SidebarInset } from "@/components/ui/sidebar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -9,7 +9,7 @@ import { LeftSidebar } from "@/components/left-sidebar";
 
 const DeckPage = () => {
   const { deckID } = useParams<{ deckID: string }>();
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
   const [leftOpen, setLeftOpen] = React.useState(false);
   const [isMobile, setIsMobile] = React.useState(false);
 
@@ -23,6 +23,10 @@ const DeckPage = () => {
   if (!deckID) return <div className="text-center text-red-500">Invalid deck ID</div>;
 
   const toggleLeft = () => setLeftOpen((prev) => !prev);
+
+  const goToMain = () => {
+    navigate("/");
+  };
 
   return (
     <div className="flex h-max-content flex-col">
@@ -42,24 +46,19 @@ const DeckPage = () => {
         )}
 
         <SidebarInset className="flex-1 h-max-content">
-          <div className="flex w-full h-max-content">
+          <div className="flex w-full h-max-content ">
             <main className="flex-1 h-max-content">
-              <header className="flex h-30 items-center justify-between px-4">
+              <header className="flex h-20 items-center justify-between px-4">
                 <Button variant="ghost" size="icon" onClick={toggleLeft}>
-                  <Menu className="h-6 w-6" />
+                  <Menu className="h-6 w-6 scale-175 text-[var(--accent2)]" />
                   <span className="sr-only">Toggle left sidebar</span>
                 </Button>
-              </header>
-              <div className="p-4">
-                <StudyDeck deckId={deckID} />
-                {/* Study Button */}
-                <Button
-                  variant="default"
-                  className="mt-4"
-                  onClick={() => navigate(`/quiz/${deckID}`)}
-                >
-                  Study
+                <Button variant="ghost" onClick={goToMain}>
+                  <X className="h-6 w-6 scale-175 text-[var(--accent2)]" />
                 </Button>
+              </header>
+              <div className="p-4 ">
+                <StudyDeck deckId={deckID} />
               </div>
             </main>
           </div>

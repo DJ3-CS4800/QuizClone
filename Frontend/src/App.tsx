@@ -15,7 +15,7 @@ const App = () => {
       <Route path="/deck/:deckID" element={<DeckPage />} />
       <Route path="/register" element={<RegistrationPage />} />
       <Route path="/create-deck" element={<CreateDeckPage />} />
-      <Route path="/quiz/:deckID" element={<QuizPage />} />
+      <Route path="/study/:deckID" element={<QuizPage />} />
     </Routes>
   );
 };
