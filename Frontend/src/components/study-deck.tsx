@@ -49,7 +49,6 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
 
           if (!foundDeck) throw new Error("Local deck not found");
 
-          // Map local deck to the same DeckData format
           const formattedDeck: DeckData = {
             deckName: foundDeck.deckName,
             ownerName: foundDeck.ownerName,

@@ -66,20 +66,54 @@ const QuizPage = () => {
   useEffect(() => {
     const fetchDeck = async () => {
       try {
-        const response = await fetch(`https://quizclone.com/api/deck/${deckID}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          credentials: "include",
-        });
-        if (!response.ok) throw new Error("Failed to fetch deck");
-        const data: DeckData = await response.json();
-        setDeck(data);
-      } catch (error) {
-        console.error("Error fetching deck:", error);
-        setError("Failed to load quiz deck.");
+        if (deckType === "l") {
+          const localData = localStorage.getItem("studyDecks");
+          if (!localData) throw new Error("No local decks found");
+
+          const localDecks = JSON.parse(localData);
+          const foundDeck = localDecks.find((d: any) => d.deckID === deckID);
+
+          if (!foundDeck) throw new Error("Local deck not found");
+
+          // Map local deck to the same DeckData format
+          const formattedDeck: DeckData = {
+            deckName: foundDeck.deckName,
+            ownerName: foundDeck.ownerName,
+            createdAt: foundDeck.createdAt,
+            updatedAt: foundDeck.updatedAt,
+            isOwner: true,
+            deckWithProgress: {
+              contentWithProgress: foundDeck.content.map((card: any, index: number) => ({
+                cardID: card.cardID ?? index,
+                question: card.question,
+                answer: card.answer,
+              })),
+              progressID: -1,
+              deckID: foundDeck.deckID,
+              userID: null,
+              lastOpened: foundDeck.lastOpened,
+              isFavorite: foundDeck.starred || false,
+            },
+          };
+
+          setDeck(formattedDeck);
+        } else if (deckType === "r") {
+          const response = await fetch(`https://quizclone.com/api/deck/${deckID}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            credentials: "include",
+          });
+          if (!response.ok) throw new Error("Failed to fetch remote deck");
+          const data: DeckData = await response.json();
+          setDeck(data);
+        } else {
+          throw new Error("Invalid deck type");
+        }
+      } catch (err) {
+        setError((err as Error).message);
       }
     };
     fetchDeck();
@@ -172,7 +206,6 @@ const QuizPage = () => {
       </div>
     );
   }
-
 
   const currentCard = cards[currentQuestionIndex];
 
