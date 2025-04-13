@@ -182,11 +182,8 @@ public class DeckService {
             content.add(newCard);
         }
 
-        if (!studyDeck.getContent().equals(content)) {
-            studyDeck.setContent(content);
-            deckProgressService.updateAllStudyDeckToProgress(studyDeck);
-        }
-
+        studyDeck.setContent(content);
+        deckProgressService.updateAllStudyDeckToProgress(studyDeck);
         studyDeck.setUpdatedAt(new Date(Calendar.getInstance().getTime().getTime()));
         entityManager.merge(studyDeck);
         return ResponseUtil.messsage(HttpStatus.OK, "Deck updated successfully.");
