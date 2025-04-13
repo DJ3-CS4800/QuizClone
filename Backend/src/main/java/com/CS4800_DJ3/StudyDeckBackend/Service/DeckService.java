@@ -83,7 +83,7 @@ public class DeckService {
         }
 
         // Update the last opened time
-        if (currUserID.equals(null)) {
+        if (currUserID == null) {
             deckProgress.setLastOpened(new java.sql.Timestamp(System.currentTimeMillis()));
             deckProgressRepo.save(deckProgress);
         }
@@ -147,7 +147,6 @@ public class DeckService {
             HttpSession session) {
         List<FlashCardDTO> content = new ArrayList<>();
         UUID userID = (UUID) session.getAttribute("userID");
-        Boolean anyChange = false;
 
         // Check if user is logged in
         if (userID == null)
@@ -160,7 +159,7 @@ public class DeckService {
             return ResponseUtil.messsage(HttpStatus.NOT_FOUND, "Deck does not exist.");
 
         // Check if user is trying to edit a deck that does not belong to them
-        if (!studyDeck.getOwnerID().equals(userID))
+        if (studyDeck.getOwnerID() != userID)
             return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "You do not own this deck");
 
         // Check if user is trying to change any of the following: public, deck name, or
@@ -206,7 +205,7 @@ public class DeckService {
 
         // Check if user is trying to delete a deck that does not belong to them only
         // delete the progress
-        if (!studyDeck.getOwnerID().equals(userID)) {
+        if (studyDeck.getOwnerID() != userID) {
             deckProgressService.removeDeckProgressFromUser(studyDeck.getDeckID(), userID);
             return ResponseUtil.messsage(HttpStatus.OK, "Deck progress deleted successfully.");
         }

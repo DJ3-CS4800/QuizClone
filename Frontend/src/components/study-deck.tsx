@@ -75,7 +75,6 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
             credentials: "include",
           });
@@ -120,10 +119,6 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
   const handleClickNavigation = (location: String) => {
     navigate(`/deck/${deckType}/${deckId}/${location}`);
   }
-
-  
-
-
 
   return (
     <div className="max-w-6xl mx-auto p-6">

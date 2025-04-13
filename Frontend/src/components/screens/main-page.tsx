@@ -227,7 +227,7 @@ export default function MainPage() {
                           onClick={() => handleDeckClick(deck)}
                         >
                           <h2 className="mb-2 text-lg font-semibold">{deck.deckName}</h2>
-                          {deck.local ? <p className="text-sm">Local Deck</p> : <p className="text-sm text-[var(--accent3)]">{deck.ownerName}</p>}
+                          {deck.local ? <p className="text-sm text-[var(--accent2)]">Local Deck</p> : <p className="text-sm text-[var(--accent3)]"> {deck.ownerName}</p>}
                         </button>
 
                         <Button
