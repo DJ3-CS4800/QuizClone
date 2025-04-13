@@ -145,34 +145,49 @@ public class DeckProgressService {
     public DeckProgress updateStudyDeckToProgress(StudyDeck studyDeck, DeckProgress deckProgress) {
         List<FlashCardWithProgressDTO> flashCardsWithProgress = new ArrayList<>();
         int i = 0, j = 0;
-
-        while (i < studyDeck.getContent().size() && j < deckProgress.getContentWithProgress().size()) {
-            FlashCardDTO flashCard = studyDeck.getContent().get(i);
-            FlashCardWithProgressDTO flashCardWithProgress = deckProgress.getContentWithProgress().get(j);
-
+    
+        List<FlashCardDTO> deckContent = studyDeck.getContent();
+        List<FlashCardWithProgressDTO> progressContent = deckProgress.getContentWithProgress();
+    
+        while (i < deckContent.size() && j < progressContent.size()) {
+            FlashCardDTO flashCard = deckContent.get(i);
+            FlashCardWithProgressDTO flashCardWithProgress = progressContent.get(j);
+    
             if (flashCard.getCardID() == flashCardWithProgress.getCardID()) {
                 flashCardsWithProgress.add(new FlashCardWithProgressDTO(
-                        flashCard.getCardID(),
-                        flashCard.getQuestion(),
-                        flashCard.getAnswer(),
-                        flashCardWithProgress.getUnderstandingLevel()));
+                    flashCard.getCardID(),
+                    flashCard.getQuestion(),
+                    flashCard.getAnswer(),
+                    flashCardWithProgress.getUnderstandingLevel()));
                 i++;
                 j++;
             } else if (flashCard.getCardID() < flashCardWithProgress.getCardID()) {
                 flashCardsWithProgress.add(new FlashCardWithProgressDTO(
-                        flashCard.getCardID(),
-                        flashCard.getQuestion(),
-                        flashCard.getAnswer(),
-                        0.0));
+                    flashCard.getCardID(),
+                    flashCard.getQuestion(),
+                    flashCard.getAnswer(),
+                    0.0));
                 i++;
             } else {
                 j++;
             }
         }
-
+    
+        // Add remaining new cards
+        while (i < deckContent.size()) {
+            FlashCardDTO flashCard = deckContent.get(i);
+            flashCardsWithProgress.add(new FlashCardWithProgressDTO(
+                flashCard.getCardID(),
+                flashCard.getQuestion(),
+                flashCard.getAnswer(),
+                0.0));
+            i++;
+        }
+    
         deckProgress.setContentWithProgress(flashCardsWithProgress);
         return deckProgress;
     }
+    
 
 
     // update all deckProgress related to a studyDeck
