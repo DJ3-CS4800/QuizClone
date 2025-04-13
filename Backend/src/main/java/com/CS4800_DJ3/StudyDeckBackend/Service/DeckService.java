@@ -200,6 +200,7 @@ public class DeckService {
     }
 
 
+    @Transactional
     public ResponseEntity<ApiResponseDTO> deleteDeck(UUID deckID, HttpSession session) {
         UUID userID = (UUID) session.getAttribute("userID");
 
@@ -214,7 +215,7 @@ public class DeckService {
             return ResponseUtil.messsage(HttpStatus.NOT_FOUND, "Deck does not exist.");
 
         // Check if user is trying to delete a deck that does not belong to them only delete the progress
-        if (studyDeck.getOwnerID() != userID) {
+        if (!studyDeck.getOwnerID().equals(userID)) {
             deckProgressService.removeDeckProgressFromUser(studyDeck.getDeckID(), userID);
             return ResponseUtil.messsage(HttpStatus.OK, "Deck progress deleted successfully.");
         }
