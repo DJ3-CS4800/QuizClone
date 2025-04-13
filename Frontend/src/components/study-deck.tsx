@@ -117,23 +117,26 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
     setIsFlipped(!isFlipped);
   };
 
-  const handleStudyClick = () => {
-    if(deckType === "l") {
-      navigate(`/study/l/${deck.deckWithProgress.deckID}`);
-    }
-    else{
-      navigate(`/study/r/${deck.deckWithProgress.deckID}`);
-    }
+  const handleClickNavigation = (location: String) => {
+    navigate(`/deck/${deckType}/${deckId}/${location}`);
   }
+
+  
+
+
 
   return (
     <div className="max-w-6xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4">{deck.deckName}</h1>
 
       <div className="text-sm text-muted-foreground mb-4">
-        <p>
-          <strong className="text-[var(--accent)]">Created by:</strong> {deck.ownerName}
-        </p>
+        {
+          deckType === "l" ? (
+            <p> <strong className="text-[var(--accent)]"> </strong> Local Deck </p>
+          ) : (
+            <p> <strong className="text-[var(--accent)]">Owner:</strong> {deck.ownerName} </p>
+          )
+        }
         <p>
           <strong className="text-[var(--accent)]">Created At:</strong> {new Date(deck.createdAt).toLocaleDateString()}
         </p>
@@ -173,10 +176,10 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
       </div>
 
       <div className="flex justify-between gap-4 mb-6">
-        <Button className="w-[300px] h-[100px] py-3 text-xl cursor-pointer" variant="outline" onClick={handleStudyClick}>
+        <Button className="w-[300px] h-[100px] py-3 text-xl cursor-pointer" variant="outline" onClick={() =>handleClickNavigation("study")}>
           <h2 className="text-lg font-semibold">Study</h2>
         </Button>
-        <Button className="w-[300px] h-[100px] py-3 text-xl cursor-pointer" variant="outline">
+        <Button className="w-[300px] h-[100px] py-3 text-xl cursor-pointer" variant="outline" onClick={() =>handleClickNavigation("edit")}>
           <h2 className="text-lg font-semibold">Edit</h2>
         </Button>
         <Button className="w-[300px] h-[100px] py-3 text-xl cursor-pointer" variant="outline">

@@ -6,6 +6,7 @@ import DeckPage from "./components/screens/deck-page";
 import RegistrationPage from "./components/screens/registration-page";
 import CreateDeckPage from "./components/screens/create-deck-page";
 import QuizPage from "./components/screens/quiz-page"; // Import the QuizPage component
+import EditDeckPage from "./components/screens/edit-deck-page"; // Import the EditDeckPage component
 
 const App = () => {
   return (
@@ -15,7 +16,8 @@ const App = () => {
       <Route path="/deck/:deckType/:deckID" element={<DeckPage />} />
       <Route path="/register" element={<RegistrationPage />} />
       <Route path="/create-deck" element={<CreateDeckPage />} />
-      <Route path="/study/:deckType/:deckID" element={<QuizPage />} />
+      <Route path="/deck/:deckType/:deckID/study" element={<QuizPage />} />
+      <Route path="/deck/:deckType/:deckID/edit" element={< EditDeckPage/>} />
     </Routes>
   );
 };
