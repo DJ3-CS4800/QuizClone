@@ -33,36 +33,36 @@ const DeckPage = () => {
   };
 
   return (
-    <div className="flex h-max-content flex-col">
+    <div className="flex h-screen flex-col">
       <SidebarProvider defaultOpen={!isMobile} open={leftOpen} onOpenChange={setLeftOpen}>
         {isMobile ? (
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
-            <SheetContent side="left" className="w-[280px] p-0">
+            <SheetContent side="left" className="w-full p-0">
               <Sidebar style={{ "--sidebar-width": "280px" } as React.CSSProperties}>
                 <LeftSidebar />
               </Sidebar>
             </SheetContent>
           </Sheet>
         ) : (
-          <Sidebar variant="inset" className="border-r h-full">
+          <Sidebar variant="inset" className="border-r h-full w-[280px]">
             <LeftSidebar />
           </Sidebar>
         )}
 
-        <SidebarInset className="flex-1 h-max-content">
-          <div className="flex w-full h-max-content ">
-            <main className="flex-1 h-max-content">
-              <header className="flex h-20 items-center justify-between px-4">
+        <SidebarInset className="flex-1 h-full overflow-auto">
+          <div className="flex flex-col w-full h-full">
+            <main className="flex-1 h-full overflow-auto">
+              <header className="flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
                 <Button variant="ghost" size="icon" onClick={toggleLeft}>
                   <Menu className="h-6 w-6 scale-175 text-[var(--accent2)]" />
                   <span className="sr-only">Toggle left sidebar</span>
                 </Button>
-                <span className="mb-4 text-2xl font-bold justify-center text-[var(--accent)]">Study</span>
+                <span className="text-2xl font-bold text-[var(--accent)]">Study</span>
                 <Button variant="ghost" onClick={goToMain}>
                   <X className="h-6 w-6 scale-175 text-[var(--accent2)]" />
                 </Button>
               </header>
-              <div className="p-4 ">
+              <div className="p-4 sm:p-6 lg:p-8 max-w-full overflow-auto">
                 <StudyDeck deckId={deckID} deckType={deckType} />
               </div>
             </main>
