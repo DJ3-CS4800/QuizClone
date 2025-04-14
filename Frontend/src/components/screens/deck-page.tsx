@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import StudyDeck from "../study-deck"; // Import the study deck component
 import React from "react";
-import { Menu, X, Edit, Trash, Play } from "lucide-react"; // Import icons
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider, Sidebar, SidebarInset } from "@/components/ui/sidebar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -30,22 +30,6 @@ const DeckPage = () => {
 
   const goToMain = () => {
     navigate("/");
-  };
-
-  const handleStudy = () => {
-    navigate(`/study/${deckID}`);
-  };
-
-  const handleEdit = () => {
-    navigate(`/edit/${deckID}`);
-  };
-
-  const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this deck?")) {
-      // Add delete logic here
-      alert("Deck deleted!");
-      navigate("/");
-    }
   };
 
   return (
@@ -78,36 +62,6 @@ const DeckPage = () => {
                   <X className="h-6 w-6 scale-175 text-[var(--accent2)]" />
                 </Button>
               </header>
-
-              {/* Buttons Section */}
-              <div className="flex flex-wrap items-center justify-center gap-4 p-4 sm:p-6 lg:p-8">
-                <Button
-                  variant="default"
-                  className="flex items-center gap-2"
-                  onClick={handleStudy}
-                >
-                  <Play className="h-5 w-5" />
-                  Study
-                </Button>
-                <Button
-                  variant="default"
-                  className="flex items-center gap-2"
-                  onClick={handleEdit}
-                >
-                  <Edit className="h-5 w-5" />
-                  Edit
-                </Button>
-                <Button
-                  variant="destructive"
-                  className="flex items-center gap-2"
-                  onClick={handleDelete}
-                >
-                  <Trash className="h-5 w-5" />
-                  Delete
-                </Button>
-              </div>
-
-              {/* StudyDeck Component */}
               <div className="p-4 sm:p-6 lg:p-8 max-w-full overflow-auto">
                 <StudyDeck deckId={deckID} deckType={deckType} />
               </div>

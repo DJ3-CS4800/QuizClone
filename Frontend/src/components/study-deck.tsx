@@ -37,6 +37,7 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
   const [error, setError] = useState<string | null>(null);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+
   useEffect(() => {
     async function loadDeck() {
       try {
@@ -94,7 +95,6 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
     loadDeck();
   }, [deckId, deckType]);
 
-
   if (loading) return <div className="text-center text-xl">Loading...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
   if (!deck) return <div className="text-center text-red-500">Deck not found</div>;
@@ -118,28 +118,31 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
 
   const handleClickNavigation = (location: String) => {
     navigate(`/deck/${deckType}/${deckId}/${location}`);
-  }
+  };
 
   return (
     <div className="max-w-6xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4">{deck.deckName}</h1>
 
       <div className="text-sm text-muted-foreground mb-4">
-        {
-          deckType === "l" ? (
-            <p> <strong className="text-[var(--accent)]"> </strong> Local Deck </p>
-          ) : (
-            <p> <strong className="text-[var(--accent)]">Owner:</strong> {deck.ownerName} </p>
-          )
-        }
+        {deckType === "l" ? (
+          <p>
+            <strong className="text-[var(--accent)]"> </strong> Local Deck
+          </p>
+        ) : (
+          <p>
+            <strong className="text-[var(--accent)]">Owner:</strong> {deck.ownerName}
+          </p>
+        )}
         <p>
-          <strong className="text-[var(--accent)]">Created At:</strong> {new Date(deck.createdAt).toLocaleDateString()}
+          <strong className="text-[var(--accent)]">Created At:</strong>{" "}
+          {new Date(deck.createdAt).toLocaleDateString()}
         </p>
         <p>
-          <strong className="text-[var(--accent)]">Updated At:</strong> {new Date(deck.updatedAt).toLocaleDateString()}
+          <strong className="text-[var(--accent)]">Updated At:</strong>{" "}
+          {new Date(deck.updatedAt).toLocaleDateString()}
         </p>
       </div>
-
 
       <div className="flex items-center justify-center gap-6 mb-6 pt-10 pb-10">
         <button
@@ -153,13 +156,11 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
           className="w-[800px] h-[400px] flex items-center justify-center bg-card select-none text-card-foreground rounded-lg shadow-lg border border-border cursor-pointer p-25 transition-transform transform hover:scale-101"
           onClick={handleFlip}
         >
-          {
-            isFlipped ? (
-              <p className="text-lg break-words">{currentCard.answer}</p>
-            ) : (
-              <p className="text-lg font-semibold break-words">{currentCard.question}</p>
-            )
-          }
+          {isFlipped ? (
+            <p className="text-lg break-words">{currentCard.answer}</p>
+          ) : (
+            <p className="text-lg font-semibold break-words">{currentCard.question}</p>
+          )}
         </div>
 
         <button
@@ -170,15 +171,34 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
         </button>
       </div>
 
-      <div className="flex justify-between gap-4 mb-6">
-        <Button className="w-[300px] h-[100px] py-3 text-xl cursor-pointer" variant="outline" onClick={() =>handleClickNavigation("study")}>
-          <h2 className="text-lg font-semibold">Study</h2>
+      {/* Updated Buttons Section */}
+      <div className="flex flex-wrap justify-center gap-4 mb-6">
+        <Button
+          className="flex-1 min-w-[120px] max-w-[200px] py-2 text-sm sm:text-base cursor-pointer"
+          variant="outline"
+          onClick={() => handleClickNavigation("study")}
+        >
+          <h2 className="font-semibold">Study</h2>
         </Button>
-        <Button className="w-[300px] h-[100px] py-3 text-xl cursor-pointer" variant="outline" onClick={() =>handleClickNavigation("edit")}>
-          <h2 className="text-lg font-semibold">Edit</h2>
+        <Button
+          className="flex-1 min-w-[120px] max-w-[200px] py-2 text-sm sm:text-base cursor-pointer"
+          variant="outline"
+          onClick={() => handleClickNavigation("edit")}
+        >
+          <h2 className="font-semibold">Edit</h2>
         </Button>
-        <Button className="w-[300px] h-[100px] py-3 text-xl cursor-pointer" variant="outline">
-          <h2 className="text-lg font-semibold">Delete Deck</h2>
+        <Button
+          className="flex-1 min-w-[120px] max-w-[200px] py-2 text-sm sm:text-base cursor-pointer"
+          variant="destructive"
+          onClick={() => {
+            if (window.confirm("Are you sure you want to delete this deck?")) {
+              // Add delete logic here
+              alert("Deck deleted!");
+              navigate("/");
+            }
+          }}
+        >
+          <h2 className="font-semibold">Delete Deck</h2>
         </Button>
       </div>
 
