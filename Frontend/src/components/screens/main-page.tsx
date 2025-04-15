@@ -107,7 +107,6 @@ function DeckCard({
 export default function MainPage() {
   const [leftOpen, setLeftOpen] = React.useState(false);
   // You may remove the isMobile state if you want the sidebar to be hidden on all screen sizes.
-  const [isMobile, setIsMobile] = React.useState(false);
   const [decks, setDecks] = React.useState<StudyDeck[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const navigate = useNavigate();
