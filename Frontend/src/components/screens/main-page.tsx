@@ -1,71 +1,71 @@
-import * as React from "react"
-import { Menu, Plus, Star, StarOff, Trash } from "lucide-react"
-import { LeftSidebar } from "@/components/left-sidebar"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
-import { SidebarInset, SidebarProvider, Sidebar } from "@/components/ui/sidebar"
-import { useNavigate } from "react-router-dom"
+import * as React from "react";
+import { Menu, Plus, Star, StarOff, Trash } from "lucide-react";
+import { LeftSidebar } from "@/components/left-sidebar";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { SidebarInset, SidebarProvider, Sidebar } from "@/components/ui/sidebar";
+import { useNavigate } from "react-router-dom";
 
 interface Flashcard {
-  cardID: number
-  question: string
-  answer: string
+  cardID: number;
+  question: string;
+  answer: string;
 }
 
 interface StudyDeck {
-  deckID: string
-  deckName: string
-  ownerID: string
-  ownerName: string
-  createdAt: string
-  updatedAt: string
-  content: Flashcard[]
-  public: boolean
-  starred?: boolean
-  lastOpened?: string
-  local: boolean
+  deckID: string;
+  deckName: string;
+  ownerID: string;
+  ownerName: string;
+  createdAt: string;
+  updatedAt: string;
+  content: Flashcard[];
+  public: boolean;
+  starred?: boolean;
+  lastOpened?: string;
+  local: boolean;
 }
 
 export default function MainPage() {
-  const [leftOpen, setLeftOpen] = React.useState(false)
-  const [isMobile, setIsMobile] = React.useState(false)
-  const [decks, setDecks] = React.useState<StudyDeck[]>([])
-  const [loading, setLoading] = React.useState<boolean>(true)
-  const navigate = useNavigate()
+  const [leftOpen, setLeftOpen] = React.useState(false);
+  const [isMobile, setIsMobile] = React.useState(false);
+  const [decks, setDecks] = React.useState<StudyDeck[]>([]);
+  const [loading, setLoading] = React.useState<boolean>(true);
+  const navigate = useNavigate();
 
   const sortDecks = (unsorted: StudyDeck[]) => {
     return [...unsorted].sort((a, b) => {
       if ((b.starred ? 1 : 0) !== (a.starred ? 1 : 0)) {
-        return (b.starred ? 1 : 0) - (a.starred ? 1 : 0)
+        return (b.starred ? 1 : 0) - (a.starred ? 1 : 0);
       }
-      const aTime = a.lastOpened ? new Date(a.lastOpened).getTime() : 0
-      const bTime = b.lastOpened ? new Date(b.lastOpened).getTime() : 0
-      return bTime - aTime
-    })
-  }
+      const aTime = a.lastOpened ? new Date(a.lastOpened).getTime() : 0;
+      const bTime = b.lastOpened ? new Date(b.lastOpened).getTime() : 0;
+      return bTime - aTime;
+    });
+  };
 
   React.useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024)
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
-    return () => window.removeEventListener("resize", checkMobile)
-  }, [])
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   React.useEffect(() => {
-    loadDecks()
-  }, [])
+    loadDecks();
+  }, []);
 
   const loadDecks = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const username = localStorage.getItem("username")
-      const localData = localStorage.getItem("studyDecks")
+      const username = localStorage.getItem("username");
+      const localData = localStorage.getItem("studyDecks");
 
-      let allDecks: StudyDeck[] = []
+      let allDecks: StudyDeck[] = [];
 
       if (localData) {
-        const parsed = JSON.parse(localData)
-        allDecks = [...parsed]
+        const parsed = JSON.parse(localData);
+        allDecks = [...parsed];
       }
 
       if (username) {
@@ -75,10 +75,10 @@ export default function MainPage() {
             "Content-Type": "application/json",
           },
           credentials: "include",
-        })
+        });
 
-        if (!response.ok) throw new Error("Failed to fetch study decks from API")
-        const data: { studyDeckList: any[] } = await response.json()
+        if (!response.ok) throw new Error("Failed to fetch study decks from API");
+        const data: { studyDeckList: any[] } = await response.json();
 
         const mappedDecks: StudyDeck[] = data.studyDeckList.map((deck) => ({
           deckID: deck.deck_id,
@@ -92,46 +92,46 @@ export default function MainPage() {
           starred: deck.is_favorite,
           lastOpened: deck.last_opened,
           local: false,
-        }))
+        }));
 
-        allDecks = [...allDecks, ...mappedDecks]
+        allDecks = [...allDecks, ...mappedDecks];
       }
 
-      console.log(allDecks)
-      setDecks(sortDecks(allDecks))
+      console.log(allDecks);
+      setDecks(sortDecks(allDecks));
     } catch (error) {
-      console.error("Error loading decks:", error)
+      console.error("Error loading decks:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  const toggleLeft = () => setLeftOpen((prev) => !prev)
+  const toggleLeft = () => setLeftOpen((prev) => !prev);
 
   const handleDeckClick = (deck: StudyDeck) => {
-    const now = new Date().toISOString()
+    const now = new Date().toISOString();
     const updatedDecks = decks.map((d) =>
       d.deckID === deck.deckID ? { ...d, lastOpened: now } : d
-    )
-    setDecks(sortDecks(updatedDecks))
+    );
+    setDecks(sortDecks(updatedDecks));
 
     if (deck.local) {
-      navigate(`/deck/l/${deck.deckID}`)
+      navigate(`/deck/l/${deck.deckID}`);
     } else {
-      navigate(`/deck/r/${deck.deckID}`)
+      navigate(`/deck/r/${deck.deckID}`);
     }
-  }
+  };
 
   const handleFavoriteClick = (deck: StudyDeck) => {
-    const now = new Date().toISOString()
+    const now = new Date().toISOString();
 
     if (deck.local) {
       const updatedDecks = decks.map((d) =>
         d.deckID === deck.deckID
           ? { ...d, starred: !d.starred, lastOpened: now }
           : d
-      )
-      setDecks(sortDecks(updatedDecks))
+      );
+      setDecks(sortDecks(updatedDecks));
     } else {
       const updateStarredAndLastOpened = async () => {
         try {
@@ -141,22 +141,22 @@ export default function MainPage() {
               "Content-Type": "application/json",
             },
             credentials: "include",
-          })
+          });
           loadDecks();
           const updatedDecks = decks.map((d) =>
             d.deckID === deck.deckID
               ? { ...d, starred: !d.starred, lastOpened: now }
               : d
-          )
-          setDecks(sortDecks(updatedDecks))
+          );
+          setDecks(sortDecks(updatedDecks));
         } catch (error) {
-          console.error("Error updating starred or lastOpened:", error)
+          console.error("Error updating starred or lastOpened:", error);
         }
-      }
+      };
 
-      updateStarredAndLastOpened()
+      updateStarredAndLastOpened();
     }
-  }
+  };
 
   const handleDeleteDeck = async (deckID: string, local: boolean) => {
     if (local) {
@@ -270,5 +270,5 @@ export default function MainPage() {
         </SidebarInset>
       </SidebarProvider>
     </div>
-  )
+  );
 }
