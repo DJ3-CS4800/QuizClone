@@ -192,9 +192,11 @@ export default function MainPage() {
       <SidebarProvider defaultOpen={!isMobile} open={leftOpen} onOpenChange={setLeftOpen}>
         {isMobile ? (
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
-            <SheetContent side="left" className="w-[280px] p-0">
+            <SheetContent side="left" className="w-[280px] h-full p-0">
               <Sidebar style={{ "--sidebar-width": "280px" } as React.CSSProperties}>
                 <LeftSidebar />
+                {/* Debugging content */}
+                <p className="text-center text-red-500">Sidebar Content</p>
               </Sidebar>
             </SheetContent>
           </Sheet>
