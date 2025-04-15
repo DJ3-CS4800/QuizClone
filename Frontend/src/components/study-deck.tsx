@@ -153,13 +153,13 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
         </button>
 
         <div
-          className="w-[800px] h-[400px] flex items-center justify-center bg-card select-none text-card-foreground rounded-lg shadow-lg border border-border cursor-pointer p-25 transition-transform transform hover:scale-101"
+          className="w-[800px] h-[400px] flex items-center justify-center bg-card select-none text-card-foreground rounded-lg shadow-lg border border-border cursor-pointer p-6 transition-transform transform hover:scale-101 overflow-hidden"
           onClick={handleFlip}
         >
           {isFlipped ? (
-            <p className="text-lg break-words">{currentCard.answer}</p>
+            <p className="text-lg break-words overflow-hidden">{currentCard.answer}</p>
           ) : (
-            <p className="text-lg font-semibold break-words">{currentCard.question}</p>
+            <p className="text-lg font-semibold break-words overflow-hidden">{currentCard.question}</p>
           )}
         </div>
 
@@ -174,21 +174,21 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
       {/* Updated Buttons Section */}
       <div className="flex flex-wrap justify-center gap-4 mb-6">
         <Button
-          className="flex-1 min-w-[120px] max-w-[200px] py-2 text-sm sm:text-base cursor-pointer"
+          className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer"
           variant="outline"
           onClick={() => handleClickNavigation("study")}
         >
           <h2 className="font-semibold">Study</h2>
         </Button>
         <Button
-          className="flex-1 min-w-[120px] max-w-[200px] py-2 text-sm sm:text-base cursor-pointer"
+          className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer"
           variant="outline"
           onClick={() => handleClickNavigation("edit")}
         >
           <h2 className="font-semibold">Edit</h2>
         </Button>
         <Button
-          className="flex-1 min-w-[120px] max-w-[200px] py-2 text-sm sm:text-base cursor-pointer"
+          className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer"
           variant="destructive"
           onClick={() => {
             if (window.confirm("Are you sure you want to delete this deck?")) {
@@ -209,12 +209,14 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
             className="p-4 bg-card text-card-foreground rounded-lg shadow-lg border border-border"
           >
             <div className="flex items-stretch">
-              <div className="flex-1 flex items-start overflow-auto">
-                <p className="font-semibold break-words">{card.question}</p>
+              {/* Question Section */}
+              <div className="flex-1 flex items-start overflow-hidden max-h-[100px]">
+                <p className="font-semibold break-words overflow-hidden text-ellipsis">{card.question}</p>
               </div>
               <div className="w-px bg-border mx-4"></div>
-              <div className="flex-1 flex items-start overflow-auto">
-                <h2 className="text-muted-foreground break-words">{card.answer}</h2>
+              {/* Answer Section */}
+              <div className="flex-1 flex items-start overflow-hidden max-h-[100px]">
+                <h2 className="text-muted-foreground break-words overflow-hidden text-ellipsis">{card.answer}</h2>
               </div>
             </div>
           </div>
