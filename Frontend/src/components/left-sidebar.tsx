@@ -212,7 +212,7 @@ export function LeftSidebar() {
         <DialogContent>
           <DialogTitle>Are you sure you want to sign out?</DialogTitle>
           <DialogDescription>
-            You will only be able to access your local decks.
+            You will be only able access your local decks.
           </DialogDescription>
           <div className="flex justify-end gap-2">
             <DialogFooter>

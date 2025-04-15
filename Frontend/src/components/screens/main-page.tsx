@@ -26,7 +26,7 @@ interface StudyDeck {
   local: boolean;
 }
 
-// DeckCard component handles the layout of each deck.
+// A separate component for each deck card
 function DeckCard({
   deck,
   handleDeckClick,
@@ -39,9 +39,7 @@ function DeckCard({
   handleFavoriteClick: (deck: StudyDeck) => void;
 }) {
   return (
-    <div
-      className="relative rounded-lg bg-muted p-4 shadow-md transition hover:brightness-95 w-[250px] h-[220px]"
-    >
+    <div className="relative rounded-lg bg-muted p-4 shadow-md transition hover:brightness-95 w-[250px] h-[220px]">
       {/* Invisible button for full-card click */}
       <button
         onClick={() => handleDeckClick(deck)}
@@ -56,7 +54,7 @@ function DeckCard({
         </h2>
       </div>
 
-      {/* Delete button at top left */}
+      {/* Delete button at top left with hover effect and confirmation */}
       <div className="absolute top-2 left-2 z-20">
         <Button
           variant="ghost"
@@ -64,7 +62,9 @@ function DeckCard({
           className="rounded-full transition-colors duration-200 hover:bg-red-200"
           onClick={(e) => {
             e.stopPropagation();
-            handleDeleteDeck(deck.deckID, deck.local);
+            if (window.confirm("Are you sure you want to delete this deck?")) {
+              handleDeleteDeck(deck.deckID, deck.local);
+            }
           }}
           aria-label="Delete Deck"
         >
@@ -72,7 +72,7 @@ function DeckCard({
         </Button>
       </div>
 
-      {/* Favorite button at top right */}
+      {/* Favorite button at top right with hover effect */}
       <div className="absolute top-2 right-2 z-20">
         <Button
           variant="ghost"
@@ -106,11 +106,13 @@ function DeckCard({
 
 export default function MainPage() {
   const [leftOpen, setLeftOpen] = React.useState(false);
+  // You may remove the isMobile state if you want the sidebar to be hidden on all screen sizes.
   const [isMobile, setIsMobile] = React.useState(false);
   const [decks, setDecks] = React.useState<StudyDeck[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const navigate = useNavigate();
 
+  // Sort decks by starred flag, then by lastOpened time.
   const sortDecks = (unsorted: StudyDeck[]) => {
     return [...unsorted].sort((a, b) => {
       if ((b.starred ? 1 : 0) !== (a.starred ? 1 : 0)) {
@@ -138,7 +140,6 @@ export default function MainPage() {
     try {
       const username = localStorage.getItem("username");
       const localData = localStorage.getItem("studyDecks");
-
       let allDecks: StudyDeck[] = [];
 
       if (localData) {
@@ -155,10 +156,8 @@ export default function MainPage() {
           credentials: "include",
         });
 
-        if (!response.ok)
-          throw new Error("Failed to fetch study decks from API");
+        if (!response.ok) throw new Error("Failed to fetch study decks from API");
         const data: { studyDeckList: any[] } = await response.json();
-
         const mappedDecks: StudyDeck[] = data.studyDeckList.map((deck) => ({
           deckID: deck.deck_id,
           deckName: deck.deck_name,
@@ -172,7 +171,6 @@ export default function MainPage() {
           lastOpened: deck.last_opened,
           local: false,
         }));
-
         allDecks = [...allDecks, ...mappedDecks];
       }
 
@@ -268,22 +266,16 @@ export default function MainPage() {
 
   return (
     <div className="flex h-max-content flex-col">
-      <SidebarProvider defaultOpen={!isMobile} open={leftOpen} onOpenChange={setLeftOpen}>
-        {isMobile ? (
+      <SidebarProvider defaultOpen={false} open={leftOpen} onOpenChange={setLeftOpen}>
+        {/* Render the sidebar only when the user toggles it */}
+        {leftOpen && (
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
-            <SheetContent
-              side="left"
-              className="w-[80vw] min-w-[200px] max-w-[280px] h-full p-0 overflow-auto"
-            >
+            <SheetContent side="left" className="w-[280px] min-w-[200px] h-full p-0 overflow-auto">
               <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
                 <LeftSidebar />
               </Sidebar>
             </SheetContent>
           </Sheet>
-        ) : (
-          <Sidebar variant="inset" className="border-r h-full">
-            <LeftSidebar />
-          </Sidebar>
         )}
 
         <SidebarInset className="flex-1 h-full overflow-hidden">
@@ -292,7 +284,7 @@ export default function MainPage() {
               <header className="flex h-20 items-center justify-between px-4">
                 <Button variant="ghost" size="icon" onClick={toggleLeft}>
                   <Menu className="h-6 w-6 scale-175 text-[var(--accent2)]" />
-                  <span className="sr-only">Toggle left sidebar</span>
+                  <span className="sr-only">Toggle sidebar</span>
                 </Button>
                 <h1 className="mb-4 text-2xl font-bold text-[var(--accent)]">QuizClone</h1>
               </header>
@@ -314,6 +306,7 @@ export default function MainPage() {
                         handleFavoriteClick={handleFavoriteClick}
                       />
                     ))}
+
                     <button
                       className="group flex flex-col items-center justify-center rounded-lg bg-[var(--accent2)] text-left transition hover:bg-[var(--accent)] shadow-md w-[250px] h-[220px]"
                       onClick={() => navigate("/create-deck")}
