@@ -83,7 +83,7 @@ public class DeckService {
         }
 
         // Update the last opened time
-        if (currUserID == null) {
+        if (currUserID != null) {
             deckProgress.setLastOpened(new java.sql.Timestamp(System.currentTimeMillis()));
             deckProgressRepo.save(deckProgress);
         }

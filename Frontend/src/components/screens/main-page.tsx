@@ -1,10 +1,12 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 import { Menu, Plus, Star, StarOff, Trash } from "lucide-react";
 import { LeftSidebar } from "@/components/left-sidebar";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { SidebarInset, SidebarProvider, Sidebar } from "@/components/ui/sidebar";
 import { useNavigate } from "react-router-dom";
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+
 
 interface Flashcard {
   cardID: number;
@@ -62,9 +64,7 @@ function DeckCard({
           className="rounded-full transition-colors duration-200 hover:bg-red-200"
           onClick={(e) => {
             e.stopPropagation();
-            if (window.confirm("Are you sure you want to delete this deck?")) {
-              handleDeleteDeck(deck.deckID, deck.local);
-            }
+            handleDeleteDeck(deck.deckID, deck.local);
           }}
           aria-label="Delete Deck"
         >
@@ -104,10 +104,14 @@ function DeckCard({
   );
 }
 
+
+// MainPage component that uses the DeckCard component to display a list of decks.
 export default function MainPage() {
-  const [leftOpen, setLeftOpen] = React.useState(false);
-  const [decks, setDecks] = React.useState<StudyDeck[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(true);
+  const [leftOpen, setLeftOpen] = useState(false);
+  const [decks, setDecks] = useState<StudyDeck[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [aboutToDelete, setAboutToDelete] = useState({ deckID: "", local: false });
   const navigate = useNavigate();
 
   // Sort decks by starred flag and then by lastOpened date descending.
@@ -122,7 +126,7 @@ export default function MainPage() {
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     loadDecks();
   }, []);
 
@@ -188,14 +192,20 @@ export default function MainPage() {
   };
 
   const handleFavoriteClick = (deck: StudyDeck) => {
-    const now = new Date().toISOString();
     if (deck.local) {
       const updatedDecks = decks.map((d) =>
         d.deckID === deck.deckID
-          ? { ...d, starred: !d.starred, lastOpened: now }
+          ? { ...d, starred: !d.starred }
           : d
       );
       setDecks(sortDecks(updatedDecks));
+      const existing = JSON.parse(localStorage.getItem("studyDecks") || "[]");
+      const updated = existing.map((d: StudyDeck) =>
+        d.deckID === deck.deckID
+          ? { ...d, starred: !d.starred }
+          : d
+      );
+      localStorage.setItem("studyDecks", JSON.stringify(updated));
     } else {
       (async () => {
         try {
@@ -204,7 +214,14 @@ export default function MainPage() {
             headers: { "Content-Type": "application/json" },
             credentials: "include",
           });
-          loadDecks();
+
+          const updatedDecks = decks.map((d) =>
+            d.deckID === deck.deckID
+              ? { ...d, starred: !d.starred }
+              : d
+          );
+          setDecks(sortDecks(updatedDecks));
+
         } catch (error) {
           console.error("Error updating starred or lastOpened:", error);
         }
@@ -212,13 +229,24 @@ export default function MainPage() {
     }
   };
 
-  const handleDeleteDeck = async (deckID: string, local: boolean) => {
+  const handleDeleteClick = (deckID: string, local: boolean) => {
+    setAboutToDelete({ deckID: deckID, local: local });
+    setIsDialogOpen(true);
+  }
+
+  const handleCancelDeleteDeck = () => {
+    setAboutToDelete({ deckID: "", local: false });
+    setIsDialogOpen(false);
+  };
+
+  const handleConfirmDeleteDeck = async (deckID: string, local: boolean) => {
+    if (!deckID) return;
     if (local) {
       const existing = JSON.parse(localStorage.getItem("studyDecks") || "[]");
       const updated = existing.filter((deck: any) => deck.deckID !== deckID);
       localStorage.setItem("studyDecks", JSON.stringify(updated));
       setDecks((prev) => prev.filter((deck) => deck.deckID !== deckID));
-      alert("Local deck deleted successfully!");
+      setIsDialogOpen(false);
     } else {
       try {
         const response = await fetch(`https://quizclone.com/api/deck/${deckID}`, {
@@ -228,7 +256,7 @@ export default function MainPage() {
         });
         if (!response.ok) throw new Error("Failed to delete the deck");
         setDecks((prev) => prev.filter((deck) => deck.deckID !== deckID));
-        alert("Deck deleted successfully!");
+        setIsDialogOpen(false);
       } catch (error) {
         console.error("Error deleting deck:", error);
         alert("Failed to delete the deck. Please try again.");
@@ -276,7 +304,7 @@ export default function MainPage() {
                         key={deck.deckID}
                         deck={deck}
                         handleDeckClick={handleDeckClick}
-                        handleDeleteDeck={handleDeleteDeck}
+                        handleDeleteDeck={() => handleDeleteClick(deck.deckID, deck.local)}
                         handleFavoriteClick={handleFavoriteClick}
                       />
                     ))}
@@ -294,6 +322,30 @@ export default function MainPage() {
           </div>
         </SidebarInset>
       </SidebarProvider>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogTitle>Are you sure you want to delete this deck?</DialogTitle>
+          <DialogDescription>
+            You will not be able to recover the deck after deletion.
+          </DialogDescription>
+          <div className="flex justify-end gap-2">
+            <DialogFooter>
+              <Button className="text-muted-foreground hover:text-[var(--accent3)]" variant="outline" onClick={handleCancelDeleteDeck}>
+                Cancel
+              </Button>
+            </DialogFooter>
+            <DialogFooter>
+              <Button
+                className="text-[var(--accent)] hover:text-[var(--accent3)]" variant="outline"
+                onClick={() => handleConfirmDeleteDeck(aboutToDelete.deckID, aboutToDelete.local)}
+              >
+                Delete
+              </Button>
+            </DialogFooter>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
