@@ -26,6 +26,84 @@ interface StudyDeck {
   local: boolean;
 }
 
+// DeckCard component handles the layout of each deck.
+function DeckCard({
+  deck,
+  handleDeckClick,
+  handleDeleteDeck,
+  handleFavoriteClick,
+}: {
+  deck: StudyDeck;
+  handleDeckClick: (deck: StudyDeck) => void;
+  handleDeleteDeck: (deckID: string, local: boolean) => void;
+  handleFavoriteClick: (deck: StudyDeck) => void;
+}) {
+  return (
+    <div
+      className="relative rounded-lg bg-muted p-4 shadow-md transition hover:brightness-95 w-[250px] h-[220px]"
+    >
+      {/* Invisible button for full-card click */}
+      <button
+        onClick={() => handleDeckClick(deck)}
+        className="absolute inset-0 z-0"
+        aria-label={`Open ${deck.deckName}`}
+      />
+
+      {/* Centered deck name with wrapping */}
+      <div className="flex items-center justify-center h-full z-10">
+        <h2 className="text-center break-words text-lg font-semibold">
+          {deck.deckName}
+        </h2>
+      </div>
+
+      {/* Delete button at top left */}
+      <div className="absolute top-2 left-2 z-20">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full transition-colors duration-200 hover:bg-red-200"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDeleteDeck(deck.deckID, deck.local);
+          }}
+          aria-label="Delete Deck"
+        >
+          <Trash className="text-[var(--accent2)]" />
+        </Button>
+      </div>
+
+      {/* Favorite button at top right */}
+      <div className="absolute top-2 right-2 z-20">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full transition-colors duration-200 hover:bg-yellow-200"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleFavoriteClick(deck);
+          }}
+          aria-label="Favorite Deck"
+        >
+          {deck.starred ? (
+            <Star className="text-[var(--accent3)]" />
+          ) : (
+            <StarOff className="text-[var(--accent2)]" />
+          )}
+        </Button>
+      </div>
+
+      {/* Label at bottom left: Local Deck or Owner Name */}
+      <div className="absolute bottom-2 left-2 z-10">
+        {deck.local ? (
+          <p className="text-sm text-[var(--accent2)]">Local Deck</p>
+        ) : (
+          <p className="text-sm text-[var(--accent3)]">{deck.ownerName}</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function MainPage() {
   const [leftOpen, setLeftOpen] = React.useState(false);
   const [isMobile, setIsMobile] = React.useState(false);
@@ -77,7 +155,8 @@ export default function MainPage() {
           credentials: "include",
         });
 
-        if (!response.ok) throw new Error("Failed to fetch study decks from API");
+        if (!response.ok)
+          throw new Error("Failed to fetch study decks from API");
         const data: { studyDeckList: any[] } = await response.json();
 
         const mappedDecks: StudyDeck[] = data.studyDeckList.map((deck) => ({
@@ -135,13 +214,16 @@ export default function MainPage() {
     } else {
       const updateStarredAndLastOpened = async () => {
         try {
-          await fetch(`https://quizclone.com/api/deckProgress/favorite/${deck.deckID}`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-          });
+          await fetch(
+            `https://quizclone.com/api/deckProgress/favorite/${deck.deckID}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: "include",
+            }
+          );
           loadDecks();
           const updatedDecks = decks.map((d) =>
             d.deckID === deck.deckID
@@ -169,12 +251,9 @@ export default function MainPage() {
       try {
         const response = await fetch(`https://quizclone.com/api/deck/${deckID}`, {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           credentials: "include",
         });
-
         if (!response.ok) {
           throw new Error("Failed to delete the deck");
         }
@@ -192,11 +271,12 @@ export default function MainPage() {
       <SidebarProvider defaultOpen={!isMobile} open={leftOpen} onOpenChange={setLeftOpen}>
         {isMobile ? (
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
-            <SheetContent side="left" className="w-[280px] h-full p-0">
-              <Sidebar style={{ "--sidebar-width": "280px" } as React.CSSProperties}>
+            <SheetContent
+              side="left"
+              className="w-[80vw] min-w-[200px] max-w-[280px] h-full p-0 overflow-auto"
+            >
+              <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
                 <LeftSidebar />
-                {/* Debugging content */}
-                <p className="text-center text-red-500">Sidebar Content</p>
               </Sidebar>
             </SheetContent>
           </Sheet>
@@ -206,7 +286,7 @@ export default function MainPage() {
           </Sidebar>
         )}
 
-        <SidebarInset className="flex-1 h-full">
+        <SidebarInset className="flex-1 h-full overflow-hidden">
           <div className="flex w-full h-full">
             <main className="flex-1 h-full">
               <header className="flex h-20 items-center justify-between px-4">
@@ -214,49 +294,28 @@ export default function MainPage() {
                   <Menu className="h-6 w-6 scale-175 text-[var(--accent2)]" />
                   <span className="sr-only">Toggle left sidebar</span>
                 </Button>
-                <h1 className="mb-4 text-2xl font-bold justify-center text-[var(--accent)]">QuizClone</h1>
+                <h1 className="mb-4 text-2xl font-bold text-[var(--accent)]">QuizClone</h1>
               </header>
 
               <div className="p-4 pl-5 pr-5">
                 {loading ? (
                   <p>Loading decks...</p>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div
+                    className="grid gap-[10px] justify-start items-start"
+                    style={{ gridTemplateColumns: "repeat(auto-fit, 250px)" }}
+                  >
                     {decks.map((deck) => (
-                      <div key={deck.deckID} className="relative">
-                        <button
-                          className="group rounded-lg bg-muted p-4 text-left transition hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] w-full"
-                          onClick={() => handleDeckClick(deck)}
-                        >
-                          <h2 className="mb-2 text-lg font-semibold">{deck.deckName}</h2>
-                          {deck.local ? <p className="text-sm text-[var(--accent2)]">Local Deck</p> : <p className="text-sm text-[var(--accent3)]"> {deck.ownerName}</p>}
-                        </button>
-
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute top-2 right-2"
-                          onClick={() => handleFavoriteClick(deck)}
-                        >
-                          {deck.starred ? (
-                            <Star className="text-[var(--accent3)]" />
-                          ) : (
-                            <StarOff className="text-[var(--accent2)]" />
-                          )}
-                        </Button>
-
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute bottom-2 right-2"
-                          onClick={() => handleDeleteDeck(deck.deckID, deck.local)}
-                        >
-                          <Trash className="text-[var(--accent2)]" />
-                        </Button>
-                      </div>
+                      <DeckCard
+                        key={deck.deckID}
+                        deck={deck}
+                        handleDeckClick={handleDeckClick}
+                        handleDeleteDeck={handleDeleteDeck}
+                        handleFavoriteClick={handleFavoriteClick}
+                      />
                     ))}
                     <button
-                      className="group flex flex-col items-center justify-center rounded-lg bg-[var(--accent2)] text-left transition hover:bg-[var(--accent)] w-full shadow-md h-23"
+                      className="group flex flex-col items-center justify-center rounded-lg bg-[var(--accent2)] text-left transition hover:bg-[var(--accent)] shadow-md w-[250px] h-[220px]"
                       onClick={() => navigate("/create-deck")}
                     >
                       <Plus className="h-8 w-8 mb-2" />

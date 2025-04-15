@@ -26,7 +26,7 @@ export function LeftSidebar() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem("theme") === "dark"); 
+  const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem("theme") === "dark");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -212,7 +212,7 @@ export function LeftSidebar() {
         <DialogContent>
           <DialogTitle>Are you sure you want to sign out?</DialogTitle>
           <DialogDescription>
-            You will be only able access your local decks.
+            You will only be able to access your local decks.
           </DialogDescription>
           <div className="flex justify-end gap-2">
             <DialogFooter>

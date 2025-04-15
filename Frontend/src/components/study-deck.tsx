@@ -187,19 +187,7 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
         >
           <h2 className="font-semibold">Edit</h2>
         </Button>
-        <Button
-          className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer"
-          variant="destructive"
-          onClick={() => {
-            if (window.confirm("Are you sure you want to delete this deck?")) {
-              // Add delete logic here
-              alert("Deck deleted!");
-              navigate("/");
-            }
-          }}
-        >
-          <h2 className="font-semibold">Delete Deck</h2>
-        </Button>
+
       </div>
 
       <div className="flex flex-col gap-4">
