@@ -26,7 +26,7 @@ interface StudyDeck {
   local: boolean;
 }
 
-// A separate component for each deck card
+// A separate component for each deck card.
 function DeckCard({
   deck,
   handleDeckClick,
@@ -40,7 +40,7 @@ function DeckCard({
 }) {
   return (
     <div className="relative rounded-lg bg-muted p-4 shadow-md transition hover:brightness-95 w-[250px] h-[220px]">
-      {/* Invisible button for full-card click */}
+      {/* Invisible full-card button for navigation */}
       <button
         onClick={() => handleDeckClick(deck)}
         className="absolute inset-0 z-0"
@@ -106,12 +106,11 @@ function DeckCard({
 
 export default function MainPage() {
   const [leftOpen, setLeftOpen] = React.useState(false);
-  // You may remove the isMobile state if you want the sidebar to be hidden on all screen sizes.
   const [decks, setDecks] = React.useState<StudyDeck[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const navigate = useNavigate();
 
-  // Sort decks by starred flag, then by lastOpened time.
+  // Sort decks by starred flag and then by lastOpened date descending.
   const sortDecks = (unsorted: StudyDeck[]) => {
     return [...unsorted].sort((a, b) => {
       if ((b.starred ? 1 : 0) !== (a.starred ? 1 : 0)) {
@@ -122,13 +121,6 @@ export default function MainPage() {
       return bTime - aTime;
     });
   };
-
-  React.useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   React.useEffect(() => {
     loadDecks();
@@ -154,7 +146,6 @@ export default function MainPage() {
           },
           credentials: "include",
         });
-
         if (!response.ok) throw new Error("Failed to fetch study decks from API");
         const data: { studyDeckList: any[] } = await response.json();
         const mappedDecks: StudyDeck[] = data.studyDeckList.map((deck) => ({
@@ -173,7 +164,6 @@ export default function MainPage() {
         allDecks = [...allDecks, ...mappedDecks];
       }
 
-      console.log(allDecks);
       setDecks(sortDecks(allDecks));
     } catch (error) {
       console.error("Error loading decks:", error);
@@ -190,7 +180,6 @@ export default function MainPage() {
       d.deckID === deck.deckID ? { ...d, lastOpened: now } : d
     );
     setDecks(sortDecks(updatedDecks));
-
     if (deck.local) {
       navigate(`/deck/l/${deck.deckID}`);
     } else {
@@ -200,7 +189,6 @@ export default function MainPage() {
 
   const handleFavoriteClick = (deck: StudyDeck) => {
     const now = new Date().toISOString();
-
     if (deck.local) {
       const updatedDecks = decks.map((d) =>
         d.deckID === deck.deckID
@@ -209,40 +197,27 @@ export default function MainPage() {
       );
       setDecks(sortDecks(updatedDecks));
     } else {
-      const updateStarredAndLastOpened = async () => {
+      (async () => {
         try {
-          await fetch(
-            `https://quizclone.com/api/deckProgress/favorite/${deck.deckID}`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              credentials: "include",
-            }
-          );
+          await fetch(`https://quizclone.com/api/deckProgress/favorite/${deck.deckID}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+          });
           loadDecks();
-          const updatedDecks = decks.map((d) =>
-            d.deckID === deck.deckID
-              ? { ...d, starred: !d.starred, lastOpened: now }
-              : d
-          );
-          setDecks(sortDecks(updatedDecks));
         } catch (error) {
           console.error("Error updating starred or lastOpened:", error);
         }
-      };
-
-      updateStarredAndLastOpened();
+      })();
     }
   };
 
   const handleDeleteDeck = async (deckID: string, local: boolean) => {
     if (local) {
-      const existingDecks = JSON.parse(localStorage.getItem("studyDecks") || "[]");
-      const updatedDecks = existingDecks.filter((deck: any) => deck.deckID !== deckID);
-      localStorage.setItem("studyDecks", JSON.stringify(updatedDecks));
-      setDecks((prevDecks) => prevDecks.filter((deck) => deck.deckID !== deckID));
+      const existing = JSON.parse(localStorage.getItem("studyDecks") || "[]");
+      const updated = existing.filter((deck: any) => deck.deckID !== deckID);
+      localStorage.setItem("studyDecks", JSON.stringify(updated));
+      setDecks((prev) => prev.filter((deck) => deck.deckID !== deckID));
       alert("Local deck deleted successfully!");
     } else {
       try {
@@ -251,10 +226,8 @@ export default function MainPage() {
           headers: { "Content-Type": "application/json" },
           credentials: "include",
         });
-        if (!response.ok) {
-          throw new Error("Failed to delete the deck");
-        }
-        setDecks((prevDecks) => prevDecks.filter((deck) => deck.deckID !== deckID));
+        if (!response.ok) throw new Error("Failed to delete the deck");
+        setDecks((prev) => prev.filter((deck) => deck.deckID !== deckID));
         alert("Deck deleted successfully!");
       } catch (error) {
         console.error("Error deleting deck:", error);
@@ -266,10 +239,13 @@ export default function MainPage() {
   return (
     <div className="flex h-max-content flex-col">
       <SidebarProvider defaultOpen={false} open={leftOpen} onOpenChange={setLeftOpen}>
-        {/* Render the sidebar only when the user toggles it */}
+        {/* Render the sidebar only when toggled */}
         {leftOpen && (
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
-            <SheetContent side="left" className="w-[280px] min-w-[200px] h-full p-0 overflow-auto">
+            <SheetContent
+              side="left"
+              className="w-[280px] min-w-[200px] h-full p-0 overflow-auto"
+            >
               <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
                 <LeftSidebar />
               </Sidebar>
@@ -285,9 +261,8 @@ export default function MainPage() {
                   <Menu className="h-6 w-6 scale-175 text-[var(--accent2)]" />
                   <span className="sr-only">Toggle sidebar</span>
                 </Button>
-                <h1 className="mb-4 text-2xl font-bold text-[var(--accent)]">QuizClone</h1>
+                <h1 className="text-2xl font-bold text-[var(--accent)]">QuizClone</h1>
               </header>
-
               <div className="p-4 pl-5 pr-5">
                 {loading ? (
                   <p>Loading decks...</p>
@@ -305,7 +280,6 @@ export default function MainPage() {
                         handleFavoriteClick={handleFavoriteClick}
                       />
                     ))}
-
                     <button
                       className="group flex flex-col items-center justify-center rounded-lg bg-[var(--accent2)] text-left transition hover:bg-[var(--accent)] shadow-md w-[250px] h-[220px]"
                       onClick={() => navigate("/create-deck")}
