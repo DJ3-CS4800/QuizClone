@@ -26,8 +26,11 @@ const EditDeckPage = () => {
   const [leftOpen, setLeftOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isDarkMode] = useState(localStorage.getItem("theme") === "dark");
+  
 
   useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDarkMode);
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
     checkMobile();
     window.addEventListener("resize", checkMobile);

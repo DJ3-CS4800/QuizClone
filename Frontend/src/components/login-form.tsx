@@ -6,14 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom" 
+import { useNavigate } from "react-router-dom"
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate() 
+  const navigate = useNavigate()
 
   const handleClose = () => {
     navigate("/");
@@ -44,7 +44,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
       const data = await response.json();
       console.log("Login successful:", data);
       localStorage.setItem("username", username);
-      navigate("/"); 
+      navigate("/");
 
     } catch (error) {
       console.error("Login error:", error);
@@ -103,16 +103,19 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
               {error && <p className="text-red-500 text-center text-sm ">{error}</p>}
               <Button
                 type="submit"
-                className="w-full bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent-hover)]"
+                className="w-full  sm:text-base cursor-pointer border border-border bg-[var(--accent2)] hover:bg-[var(--accent)]  transition-colors text-black"
                 disabled={loading}
               >
                 {loading ? "Logging in..." : "Login"}
               </Button>
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <a href="/register" className="underline underline-offset-4 text-[var(--accent)]">
+                <span
+                  onClick={() => navigate("/register")}
+                  className="cursor-pointer underline underline-offset-4 text-[var(--accent)] hover:text-[var(--accent3)] transition-colors"
+                >
                   Sign up
-                </a>
+                </span>
               </div>
             </div>
           </form>

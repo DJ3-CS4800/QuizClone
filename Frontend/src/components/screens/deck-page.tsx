@@ -13,8 +13,11 @@ const DeckPage = () => {
   const navigate = useNavigate();
   const [leftOpen, setLeftOpen] = React.useState(false);
   const [isMobile, setIsMobile] = React.useState(false);
+  const [isDarkMode] = React.useState(localStorage.getItem("theme") === "dark");
+  
 
   React.useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDarkMode);
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
     checkMobile();
     window.addEventListener("resize", checkMobile);
@@ -34,19 +37,19 @@ const DeckPage = () => {
 
   return (
     <div className="flex h-screen flex-col">
-      <SidebarProvider defaultOpen={!isMobile} open={leftOpen} onOpenChange={setLeftOpen}>
-        {isMobile ? (
+      <SidebarProvider defaultOpen={false} open={leftOpen} onOpenChange={setLeftOpen}>
+        {/* Render the sidebar only when toggled */}
+        {leftOpen && (
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
-            <SheetContent side="left" className="w-full p-0">
-              <Sidebar style={{ "--sidebar-width": "280px" } as React.CSSProperties}>
+            <SheetContent
+              side="left"
+              className="w-[280px] min-w-[200px] h-full p-0 overflow-auto"
+            >
+              <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
                 <LeftSidebar />
               </Sidebar>
             </SheetContent>
           </Sheet>
-        ) : (
-          <Sidebar variant="inset" className="border-r h-full w-[280px]">
-            <LeftSidebar />
-          </Sidebar>
         )}
 
         <SidebarInset className="flex-1 h-full overflow-auto">

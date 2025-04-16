@@ -112,6 +112,7 @@ export default function MainPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [aboutToDelete, setAboutToDelete] = useState({ deckID: "", local: false });
+  const [isDarkMode] = useState(localStorage.getItem("theme") === "dark");
   const navigate = useNavigate();
 
   // Sort decks by starred flag and then by lastOpened date descending.
@@ -127,6 +128,7 @@ export default function MainPage() {
   };
 
   useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDarkMode);
     loadDecks();
   }, []);
 
