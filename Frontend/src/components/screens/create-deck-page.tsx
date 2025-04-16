@@ -16,8 +16,11 @@ const CreateDeckPage = () => {
   const [isPublic, setIsPublic] = useState(true);
   const [saveLocal, setSaveLocal] = useState(false);
   const [checkingLogin, setCheckingLogin] = useState(true);
+  const [isDarkMode] = useState(localStorage.getItem("theme") === "dark");
+
 
   useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDarkMode);
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
     checkMobile();
     window.addEventListener("resize", checkMobile);
@@ -176,19 +179,19 @@ const CreateDeckPage = () => {
 
   return (
     <div className="flex h-max-content flex-col">
-      <SidebarProvider defaultOpen={!isMobile} open={leftOpen} onOpenChange={setLeftOpen}>
-        {isMobile ? (
+      <SidebarProvider defaultOpen={false} open={leftOpen} onOpenChange={setLeftOpen}>
+        {/* Render the sidebar only when toggled */}
+        {leftOpen && (
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
-            <SheetContent side="left" className="w-[280px] p-0">
-              <Sidebar style={{ "--sidebar-width": "280px" } as React.CSSProperties}>
+            <SheetContent
+              side="left"
+              className="w-[280px] min-w-[200px] h-full p-0 overflow-auto"
+            >
+              <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
                 <LeftSidebar />
               </Sidebar>
             </SheetContent>
           </Sheet>
-        ) : (
-          <Sidebar variant="inset" className="border-r h-full">
-            <LeftSidebar />
-          </Sidebar>
         )}
 
         <SidebarInset className="flex-1 h-max-content">
@@ -267,9 +270,8 @@ const CreateDeckPage = () => {
                     </div>
 
                     <Button
-                      variant="outline"
                       onClick={() => deleteCard(card.id)}
-                      className="self-end text-[var(--accent)]"
+                      className=" max-h-[50px] min-w-[50px] max-w-[100px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors self-end"
                     >
                       Delete
                     </Button>
@@ -281,7 +283,7 @@ const CreateDeckPage = () => {
 
                 {/* Add card button centered and below all cards */}
                 <div className="flex justify-center pt-2">
-                  <Button variant="outline" onClick={addCard}>
+                  <Button className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors" onClick={addCard}>
                     Add Card
                   </Button>
                 </div>
@@ -291,10 +293,9 @@ const CreateDeckPage = () => {
             {/* Save Deck button at bottom right */}
             <div className="flex justify-end p-4 border-t">
               <Button
-                variant="outline"
                 onClick={saveDeck}
                 disabled={checkingLogin}
-                className="w-fit bg-[var(--accent2)] text-[var(--accent-foreground)] hover:bg-[var(--accent)]"
+                className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border bg-[var(--accent2)] hover:bg-[var(--accent)]  transition-colors text-black"
               >
                 {checkingLogin ? "Checking..." : "Save Deck"}
               </Button>

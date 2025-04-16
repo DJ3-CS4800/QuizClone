@@ -113,16 +113,19 @@ export function RegistrationForm({ className, ...props }: React.ComponentProps<"
               {error && <p className="text-red-500 text-center text-sm">{error}</p>}
               <Button
                 type="submit"
-                className="w-full bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent-hover)]"
+                className="w-full  sm:text-base cursor-pointer border border-border bg-[var(--accent2)] hover:bg-[var(--accent)]  transition-colors text-black"
                 disabled={loading}
               >
                 {loading ? "Registering..." : "Sign Up"}
               </Button>
               <div className="text-center text-sm">
                 Already have an account?{" "}
-                <a href="/login" className="underline underline-offset-4 text-[var(--accent)]">
-                  Log in
-                </a>
+                <span
+                  onClick={() => navigate("/login")}
+                  className="cursor-pointer underline underline-offset-4 text-[var(--accent)] hover:text-[var(--accent3)] transition-colors"
+                >
+                  Login
+                </span>
               </div>
             </div>
           </form>

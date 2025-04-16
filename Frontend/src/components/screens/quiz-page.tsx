@@ -42,6 +42,7 @@ const QuizPage = () => {
   const [quizFinished, setQuizFinished] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [isDarkMode] = useState(localStorage.getItem("theme") === "dark");
 
   const cards = deck?.deckWithProgress.contentWithProgress ?? [];
 
@@ -51,6 +52,7 @@ const QuizPage = () => {
     return <div className="text-center text-red-500">Invalid link</div>;
 
   useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDarkMode);
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
     checkMobile();
     window.addEventListener("resize", checkMobile);
@@ -211,33 +213,41 @@ const QuizPage = () => {
 
   const renderQuestion = () => (
     <div className="flex-1 p-6">
-      <p className="mb-4 text-sm text-gray-600">
+      {/* Question Progress */}
+      <p className="mb-4 text-sm text-muted-foreground">
         Question {currentQuestionIndex + 1} of {cards.length}
       </p>
-      <div className="mb-6 p-4 bg-gray-100 rounded-md shadow-sm">
-        <h2 className="text-lg font-semibold">{currentCard.question}</h2>
+  
+      {/* Question */}
+      <div className="mb-6 p-4 bg-muted rounded-md shadow-sm border border-border">
+        <h2 className="text-lg font-semibold text-foreground">{currentCard.question}</h2>
       </div>
+  
+      {/* Options */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {options.map((option, index) => {
-          let buttonStyle = "border p-3 rounded-lg transition-colors duration-150";
-
+          let base =
+            "border p-3 rounded-lg bg-muted transition-colors duration-150 text-sm sm:text-base";
+  
+          let feedback = "";
+  
           if (showFeedback) {
             if (option === currentCard.answer) {
-              buttonStyle += " bg-green-100 border-green-400 font-semibold";
+              feedback = "bg-green-100 border-green-400 text-green-700 font-semibold";
             } else if (option === selectedAnswer) {
-              buttonStyle += " bg-red-100 border-red-400";
+              feedback = "bg-red-100 border-red-400 text-red-700";
             } else {
-              buttonStyle += " opacity-60";
+              feedback = "opacity-60";
             }
           } else {
-            buttonStyle += " hover:bg-blue-100";
+            feedback = "hover:bg-[var(--accent2)] hover:text-[var(--accent-foreground)]";
           }
-
+  
           return (
             <button
               key={index}
               onClick={() => handleAnswer(option)}
-              className={buttonStyle}
+              className={`${base} ${feedback}`}
               disabled={showFeedback}
             >
               {option}
@@ -245,13 +255,23 @@ const QuizPage = () => {
           );
         })}
       </div>
-
+  
+      {/* Feedback & Next */}
       {showFeedback && (
         <div className="mt-6 text-center">
-          <p className={`mb-4 text-lg font-medium ${selectedAnswer === currentCard.answer ? "text-green-600" : "text-red-600"}`}>
-            {selectedAnswer === currentCard.answer ? "Correct!" : `Incorrect. The correct answer was: ${currentCard.answer}`}
+          <p
+            className={`mb-4 text-lg font-medium ${
+              selectedAnswer === currentCard.answer ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {selectedAnswer === currentCard.answer
+              ? "Correct!"
+              : `Incorrect. The correct answer was: ${currentCard.answer}`}
           </p>
-          <Button onClick={handleNextQuestion} className="px-6 py-2">
+          <Button
+            onClick={handleNextQuestion}
+            className="px-6 py-2 text-sm sm:text-base font-semibold bg-[var(--accent)] text-[var(--accent-foreground)] hover:brightness-95 transition-colors"
+          >
             Next
           </Button>
         </div>
@@ -261,19 +281,19 @@ const QuizPage = () => {
 
   return (
     <div className="flex h-max-content flex-col">
-      <SidebarProvider defaultOpen={!isMobile} open={leftOpen} onOpenChange={setLeftOpen}>
-        {isMobile ? (
+      <SidebarProvider defaultOpen={false} open={leftOpen} onOpenChange={setLeftOpen}>
+        {/* Render the sidebar only when toggled */}
+        {leftOpen && (
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
-            <SheetContent side="left" className="w-[280px] p-0">
-              <Sidebar style={{ "--sidebar-width": "280px" } as React.CSSProperties}>
+            <SheetContent
+              side="left"
+              className="w-[280px] min-w-[200px] h-full p-0 overflow-auto"
+            >
+              <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
                 <LeftSidebar />
               </Sidebar>
             </SheetContent>
           </Sheet>
-        ) : (
-          <Sidebar variant="inset" className="border-r h-full">
-            <LeftSidebar />
-          </Sidebar>
         )}
         <SidebarInset className="flex-1 h-max-content">
           <div className="flex flex-col w-full h-max-content relative">
