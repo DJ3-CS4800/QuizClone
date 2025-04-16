@@ -32,7 +32,6 @@ const QuizPage = () => {
   const navigate = useNavigate();
   const { deckID } = useParams<{ deckID: string }>();
   const { deckType } = useParams<{ deckType: string }>();
-  const [isMobile, setIsMobile] = useState(false);
   const [leftOpen, setLeftOpen] = useState(false);
   const [deck, setDeck] = useState<DeckData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -53,10 +52,6 @@ const QuizPage = () => {
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDarkMode);
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const toggleLeft = () => setLeftOpen((prev) => !prev);

@@ -22,19 +22,13 @@ const EditDeckPage = () => {
   const [cards, setCards] = useState<Card[]>([]);
   const [originalCards, setOriginalCards] = useState<Card[]>([]);
   const [cardCounter, setCardCounter] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
   const [leftOpen, setLeftOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isDarkMode] = useState(localStorage.getItem("theme") === "dark");
   
-
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDarkMode);
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   useEffect(() => {
@@ -176,19 +170,19 @@ const EditDeckPage = () => {
 
   return (
     <div className="flex h-max-content flex-col">
-      <SidebarProvider defaultOpen={!isMobile} open={leftOpen} onOpenChange={setLeftOpen}>
-        {isMobile ? (
+      <SidebarProvider defaultOpen={false} open={leftOpen} onOpenChange={setLeftOpen}>
+        {/* Render the sidebar only when toggled */}
+        {leftOpen && (
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
-            <SheetContent side="left" className="w-[280px] p-0">
-              <Sidebar style={{ "--sidebar-width": "280px" } as React.CSSProperties}>
+            <SheetContent
+              side="left"
+              className="w-[280px] min-w-[200px] h-full p-0 overflow-auto"
+            >
+              <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
                 <LeftSidebar />
               </Sidebar>
             </SheetContent>
           </Sheet>
-        ) : (
-          <Sidebar variant="inset" className="border-r h-full">
-            <LeftSidebar />
-          </Sidebar>
         )}
 
         <SidebarInset className="flex-1 h-max-content">

@@ -10,7 +10,6 @@ const CreateDeckPage = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState<string | null>(null);
   const [leftOpen, setLeftOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [cards, setCards] = useState<{ id: number; front: string; back: string }[]>([]);
   const [deckName, setDeckName] = useState("");
   const [isPublic, setIsPublic] = useState(true);
@@ -21,10 +20,6 @@ const CreateDeckPage = () => {
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDarkMode);
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const toggleLeft = () => setLeftOpen((prev) => !prev);

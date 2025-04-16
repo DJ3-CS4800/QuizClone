@@ -12,16 +12,11 @@ const DeckPage = () => {
   const { deckType } = useParams<{ deckType: string }>();
   const navigate = useNavigate();
   const [leftOpen, setLeftOpen] = React.useState(false);
-  const [isMobile, setIsMobile] = React.useState(false);
   const [isDarkMode] = React.useState(localStorage.getItem("theme") === "dark");
   
 
   React.useEffect(() => {
     document.documentElement.classList.toggle("dark", isDarkMode);
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   if (!deckID) return <div className="text-center text-red-500">Invalid deck ID</div>;
