@@ -20,6 +20,7 @@
     --accent: hsl(270, 100%, 85%); 
     --accent2: hsl(270, 100%, 90%); 
     --accent3: hsl(270, 100%, 65%); 
+    --accent4: hsl(270, 99%, 71%); 
     --accent-foreground: hsl(265.755, 4.2%, 20.8%);
     --destructive: hsl(27.325, 24.5%, 57.7%);
     --border: hsl(285.4, 4.3%, 80.7%);
@@ -57,6 +58,7 @@
     --accent: hsl(270, 100%, 80%);
     --accent2: hsl(270, 100%, 85%);
     --accent3: hsl(270, 100%, 65%);
+    --accent4: hsl(270, 99%, 71%); 
     --accent-foreground: hsl(0, 0%, 100%);
     --destructive: hsl(12, 50%, 60%);
     --border: hsl(264, 10%, 30%);

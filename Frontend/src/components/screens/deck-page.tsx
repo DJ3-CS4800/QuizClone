@@ -33,7 +33,6 @@ const DeckPage = () => {
   return (
     <div className="flex h-screen flex-col">
       <SidebarProvider defaultOpen={false} open={leftOpen} onOpenChange={setLeftOpen}>
-        {/* Render the sidebar only when toggled */}
         {leftOpen && (
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
             <SheetContent
@@ -55,7 +54,7 @@ const DeckPage = () => {
                   <Menu className="h-6 w-6 scale-175 text-[var(--accent2)]" />
                   <span className="sr-only">Toggle left sidebar</span>
                 </Button>
-                <span className="text-2xl font-bold text-[var(--accent)]">Study</span>
+                <span className="text-2xl font-bold text-[var(--accent)]">Deck</span>
                 <Button variant="ghost" onClick={goToMain}>
                   <X className="h-6 w-6 scale-175 text-[var(--accent2)]" />
                 </Button>

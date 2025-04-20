@@ -10,6 +10,8 @@ interface Card {
   cardID: number;
   question: string;
   answer: string;
+  totalAttempts: number;
+  totalCorrect: number;
 }
 
 interface DeckData {
@@ -28,7 +30,7 @@ interface DeckData {
   isOwner: boolean;
 }
 
-const QuizPage = () => {
+const StudyPage = () => {
   const navigate = useNavigate();
   const { deckID } = useParams<{ deckID: string }>();
   const { deckType } = useParams<{ deckType: string }>();
@@ -37,11 +39,12 @@ const QuizPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [options, setOptions] = useState<string[]>([]);
-  const [score, setScore] = useState({ correct: 0, incorrect: 0 });
-  const [quizFinished, setQuizFinished] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isDarkMode] = useState(localStorage.getItem("theme") === "dark");
+  const [username] = useState(localStorage.getItem("username") || "");
+  const [currentCardCount, setCurrentCardCount] = useState(0);
+  const [progressSaved, setProgressSaved] = useState(false);
 
   const cards = deck?.deckWithProgress.contentWithProgress ?? [];
 
@@ -58,7 +61,7 @@ const QuizPage = () => {
 
   const goToDeck = () => {
     navigate("/deck/" + deckType + "/" + deckID);
-  }
+  };
 
   useEffect(() => {
     const fetchDeck = async () => {
@@ -84,6 +87,8 @@ const QuizPage = () => {
                 cardID: card.cardID ?? index,
                 question: card.question,
                 answer: card.answer,
+                totalAttempts: card.totalAttempts || 0,
+                totalCorrect: card.totalCorrect || 0,
               })),
               progressID: -1,
               deckID: foundDeck.deckID,
@@ -114,13 +119,59 @@ const QuizPage = () => {
       }
     };
     fetchDeck();
-  }, [deckID]);
+  }, [deckID, deckType]);
 
   useEffect(() => {
     if (cards.length > 0 && currentQuestionIndex < cards.length) {
       generateQuestion();
     }
   }, [cards, currentQuestionIndex]);
+
+  const updateProgress = async () => {
+
+    if (!deck) return;
+    if (username === "" && deckType === "r") return;
+
+    if (deckType === "l") {
+      const localData = localStorage.getItem("studyDecks");
+      if (!localData) return;
+      const localDecks = JSON.parse(localData);
+      const updatedDecks = localDecks.map((d: any) => {
+        if (d.deckID === deckID) {
+          return {
+            ...d,
+            content: deck.deckWithProgress.contentWithProgress.map((card: any) => ({
+              ...card,
+              totalAttempts: card.totalAttempts,
+              totalCorrect: card.totalCorrect,
+            })),
+          };
+        }
+        return d;
+      });
+      localStorage.setItem("studyDecks", JSON.stringify(updatedDecks));
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://quizclone.com/api/deckProgress/update/${deckID}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          contentWithProgress: deck.deckWithProgress.contentWithProgress,
+        }),
+      });
+      if (!response.ok) throw new Error("Failed to update deck progress");
+
+      setProgressSaved(true);
+      setTimeout(() => setProgressSaved(false), 2000);
+    } catch (err) {
+      console.error("Failed to update deck progress:", err);
+    }
+  };
 
   const generateQuestion = () => {
     const currentCard = cards[currentQuestionIndex];
@@ -143,18 +194,27 @@ const QuizPage = () => {
 
     setSelectedAnswer(selected);
     setShowFeedback(true);
+    setCurrentCardCount((prev) => prev + 1);
 
-    setScore((prev) => ({
-      correct: prev.correct + (isCorrect ? 1 : 0),
-      incorrect: prev.incorrect + (!isCorrect ? 1 : 0),
-    }));
+    if (deck) {
+      deck.deckWithProgress.contentWithProgress[currentQuestionIndex].totalAttempts += 1;
+      if (isCorrect) {
+        deck.deckWithProgress.contentWithProgress[currentQuestionIndex].totalCorrect += 1;
+      }
+      setDeck(deck);
+    }
+
+    if (currentCardCount + 1 === 5) {
+      setCurrentCardCount(0);
+      updateProgress();
+    }
   };
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < cards.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
     } else {
-      setQuizFinished(true);
+      setCurrentQuestionIndex(0);
     }
   };
 
@@ -174,36 +234,6 @@ const QuizPage = () => {
     );
   }
 
-  if (quizFinished) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="p-6 rounded shadow-md bg-white text-center space-y-4">
-          <h1 className="text-3xl font-bold">🎉 Quiz Finished!</h1>
-          <p className="text-green-600 font-medium">✅ Correct: {score.correct}</p>
-          <p className="text-red-600 font-medium">❌ Incorrect: {score.incorrect}</p>
-
-          <div className="flex justify-center gap-4 mt-4">
-            <Button variant="outline" className="w-35" onClick={goToDeck}>
-              Back to Deck
-            </Button>
-            <Button
-              variant="default"
-              className="w-35"
-              onClick={() => {
-                setQuizFinished(false);
-                setCurrentQuestionIndex(0);
-                setScore({ correct: 0, incorrect: 0 });
-                generateQuestion();
-              }}
-            >
-              Try Again
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   const currentCard = cards[currentQuestionIndex];
 
   const renderQuestion = () => (
@@ -212,20 +242,19 @@ const QuizPage = () => {
       <p className="mb-4 text-sm text-muted-foreground">
         Question {currentQuestionIndex + 1} of {cards.length}
       </p>
-  
+
       {/* Question */}
       <div className="mb-6 p-4 bg-muted rounded-md shadow-sm border border-border">
         <h2 className="text-lg font-semibold text-foreground">{currentCard.question}</h2>
       </div>
-  
+
       {/* Options */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {options.map((option, index) => {
           let base =
             "border p-3 rounded-lg bg-muted transition-colors duration-150 text-sm sm:text-base";
-  
           let feedback = "";
-  
+
           if (showFeedback) {
             if (option === currentCard.answer) {
               feedback = "bg-green-100 border-green-400 text-green-700 font-semibold";
@@ -237,7 +266,7 @@ const QuizPage = () => {
           } else {
             feedback = "hover:bg-[var(--accent2)] hover:text-[var(--accent-foreground)]";
           }
-  
+
           return (
             <button
               key={index}
@@ -250,19 +279,10 @@ const QuizPage = () => {
           );
         })}
       </div>
-  
-      {/* Feedback & Next */}
+
+      {/* Next Button */}
       {showFeedback && (
         <div className="mt-6 text-center">
-          <p
-            className={`mb-4 text-lg font-medium ${
-              selectedAnswer === currentCard.answer ? "text-green-600" : "text-red-600"
-            }`}
-          >
-            {selectedAnswer === currentCard.answer
-              ? "Correct!"
-              : `Incorrect. The correct answer was: ${currentCard.answer}`}
-          </p>
           <Button
             onClick={handleNextQuestion}
             className="px-6 py-2 text-sm sm:text-base font-semibold bg-[var(--accent)] text-[var(--accent-foreground)] hover:brightness-95 transition-colors"
@@ -299,17 +319,25 @@ const QuizPage = () => {
                   <span className="sr-only">Toggle left sidebar</span>
                 </Button>
               </div>
-              <span className="mb-4 text-2xl font-bold justify-center text-[var(--accent)]">{deck.deckName}</span>
+              <span className="mb-4 text-2xl font-bold justify-center text-[var(--accent)]">
+                Study
+              </span>
               <Button variant="ghost" onClick={goToDeck}>
                 <X className="h-6 w-6 scale-175 text-[var(--accent2)]" />
               </Button>
             </header>
           </div>
           <main className="flex-1 p-4 space-y-4">{renderQuestion()}</main>
+          {/* Progress Saved Notification at the bottom */}
+          {progressSaved && (
+            <div className="text-center text-sm text-green-600 mb-4">
+              Progress Saved
+            </div>
+          )}
         </SidebarInset>
       </SidebarProvider>
     </div>
   );
 };
 
-export default QuizPage;
+export default StudyPage;

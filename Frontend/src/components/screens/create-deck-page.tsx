@@ -105,6 +105,8 @@ const CreateDeckPage = () => {
           cardID: index,
           question: card.front,
           answer: card.back,
+          totalAttempts: 0,
+          totalCorrect: 0,
         })),
         public: false,
         starred: false,
