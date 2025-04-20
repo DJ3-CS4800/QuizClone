@@ -3,6 +3,8 @@ package com.CS4800_DJ3.StudyDeckBackend.Repo;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -77,23 +79,29 @@ public interface StudyDeckRepo extends JpaRepository<StudyDeck, Long> {
     List<StudyDeckWithProgressDTO> findDecksWithProgress(UUID userId);
 
     /**
-     * Finds all public StudyDecks with deck names that contain the given search query (ignoring case).
-     *
-     * @param deckName the search query string to match within deck names.
-     * @return a list of matching public StudyDecks.
+     * Find public StudyDecks by deck name (case-insensitive) with pagination,
+     * excluding decks owned by the provided user.
+     * 
+     * @param ownerID  the user UUID whose decks will be excluded.
+     * @param deckName the search query string.
+     * @param pageable the pagination information.
+     * @return a Page of matching StudyDecks not owned by the specified user.
      */
-    @Query(value = "SELECT * FROM study_deck WHERE is_public = true AND deck_name ILIKE '%' || ?1 || '%'", nativeQuery = true)
-    List<StudyDeck> searchPublicDecksNotLoggedIn(String deckName);
+    @Query(value = "SELECT * FROM study_deck WHERE is_public = true AND owner_id <> ?1 AND deck_name ILIKE '%' || ?2 || '%'",
+           countQuery = "SELECT count(*) FROM study_deck WHERE is_public = true AND owner_id <> ?1 AND deck_name ILIKE '%' || ?2 || '%'",
+           nativeQuery = true)
+    Page<StudyDeck> searchPublicDecksLoggedIn(UUID ownerID, String deckName, Pageable pageable);
 
     /**
-     * Finds all public StudyDecks with deck names that contain the given search query (ignoring case)
-     * while excluding decks owned by the provided userID.
-     *
-     * @param ownerID  the UUID of the user whose decks should be excluded.
-     * @param deckName the search query string to match within deck names.
-     * @return a list of matching public StudyDecks not owned by the specified user.
+     * Find public StudyDecks by deck name (case-insensitive) with pagination.
+     * 
+     * @param deckName the search query string.
+     * @param pageable the pagination information.
+     * @return a Page of matching StudyDecks.
      */
-    @Query(value = "SELECT * FROM study_deck WHERE is_public = true AND owner_id <> ?1 AND deck_name ILIKE '%' || ?2 || '%'", nativeQuery = true)
-    List<StudyDeck> searchPublicDecksLoggedIn(UUID ownerID, String deckName);
+    @Query(value = "SELECT * FROM study_deck WHERE is_public = true AND deck_name ILIKE '%' || ?1 || '%'",
+           countQuery = "SELECT count(*) FROM study_deck WHERE is_public = true AND deck_name ILIKE '%' || ?1 || '%'",
+           nativeQuery = true)
+    Page<StudyDeck> searchPublicDecksNotLoggedIn(String deckName, Pageable pageable);
 
 }

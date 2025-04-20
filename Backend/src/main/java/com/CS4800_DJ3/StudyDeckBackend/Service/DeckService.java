@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -217,23 +220,31 @@ public class DeckService {
         return ResponseUtil.messsage(HttpStatus.OK, "Deck deleted successfully.");
     }
 
-    public ResponseEntity<?> searchDecks(String searchQuery, HttpSession session) {
+    public ResponseEntity<?> searchDecks(String searchQuery, int page, int size, HttpSession session) {
         UUID userID = (UUID) session.getAttribute("userID");
-        List<StudyDeck> results;
-
-        String deckNameQuery = searchQuery != null ? searchQuery.trim() : "";
-
+        String deckNameQuery = (searchQuery != null) ? searchQuery.trim() : "";
+        
         if (deckNameQuery.isEmpty()) {
             return ResponseUtil.messsage(HttpStatus.BAD_REQUEST, "Search query cannot be empty.");
         }
-
+        
+        // Create a pageable object (for example, sorting by created date descending)
+        PageRequest pageable = PageRequest.of(page, size, Sort.by("created_at").descending());
+        Page<StudyDeck> resultPage;
+        
         if (userID != null) {
-            results = studyDeckRepo.searchPublicDecksLoggedIn(userID, deckNameQuery);
+            // Exclude decks owned by the logged-in user.
+            resultPage = studyDeckRepo.searchPublicDecksLoggedIn(userID, deckNameQuery, pageable);
         } else {
-            results = studyDeckRepo.searchPublicDecksNotLoggedIn(deckNameQuery);
+            resultPage = studyDeckRepo.searchPublicDecksNotLoggedIn(deckNameQuery, pageable);
         }
-
-        return ResponseEntity.ok(Map.of("results", results));
+        
+        return ResponseEntity.ok(Map.of(
+            "results", resultPage.getContent(),
+            "page", resultPage.getNumber(),
+            "totalPages", resultPage.getTotalPages(),
+            "totalElements", resultPage.getTotalElements()
+        ));
     }
 
 }

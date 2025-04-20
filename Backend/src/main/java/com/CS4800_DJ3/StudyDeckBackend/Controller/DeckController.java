@@ -96,8 +96,11 @@ public class DeckController {
             @ApiResponse(responseCode = "200", description = "Decks retrieved successfully"),
     })
     @RequestMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> searchDecks(@RequestParam(name = "query", required = false) String query,
+    public ResponseEntity<?> searchDecks(
+            @RequestParam(name = "query", required = false) String query,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size,
             HttpSession session) {
-        return deckService.searchDecks(query, session);
+        return deckService.searchDecks(query, page, size, session);
     }
 }
