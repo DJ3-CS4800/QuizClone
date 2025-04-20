@@ -76,4 +76,24 @@ public interface StudyDeckRepo extends JpaRepository<StudyDeck, Long> {
             "ORDER BY dp.last_opened DESC", nativeQuery = true)
     List<StudyDeckWithProgressDTO> findDecksWithProgress(UUID userId);
 
+    /**
+     * Finds all public StudyDecks with deck names that contain the given search query (ignoring case).
+     *
+     * @param deckName the search query string to match within deck names.
+     * @return a list of matching public StudyDecks.
+     */
+    @Query(value = "SELECT * FROM study_deck WHERE is_public = true AND deck_name ILIKE '%' || ?1 || '%'", nativeQuery = true)
+    List<StudyDeck> searchPublicDecksNotLoggedIn(String deckName);
+
+    /**
+     * Finds all public StudyDecks with deck names that contain the given search query (ignoring case)
+     * while excluding decks owned by the provided userID.
+     *
+     * @param ownerID  the UUID of the user whose decks should be excluded.
+     * @param deckName the search query string to match within deck names.
+     * @return a list of matching public StudyDecks not owned by the specified user.
+     */
+    @Query(value = "SELECT * FROM study_deck WHERE is_public = true AND owner_id <> ?1 AND deck_name ILIKE '%' || ?2 || '%'", nativeQuery = true)
+    List<StudyDeck> searchPublicDecksLoggedIn(UUID ownerID, String deckName);
+
 }

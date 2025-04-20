@@ -217,4 +217,23 @@ public class DeckService {
         return ResponseUtil.messsage(HttpStatus.OK, "Deck deleted successfully.");
     }
 
+    public ResponseEntity<?> searchDecks(String searchQuery, HttpSession session) {
+        UUID userID = (UUID) session.getAttribute("userID");
+        List<StudyDeck> results;
+
+        String deckNameQuery = searchQuery != null ? searchQuery.trim() : "";
+
+        if (deckNameQuery.isEmpty()) {
+            return ResponseUtil.messsage(HttpStatus.BAD_REQUEST, "Search query cannot be empty.");
+        }
+
+        if (userID != null) {
+            results = studyDeckRepo.searchPublicDecksLoggedIn(userID, deckNameQuery);
+        } else {
+            results = studyDeckRepo.searchPublicDecksNotLoggedIn(deckNameQuery);
+        }
+
+        return ResponseEntity.ok(Map.of("results", results));
+    }
+
 }
