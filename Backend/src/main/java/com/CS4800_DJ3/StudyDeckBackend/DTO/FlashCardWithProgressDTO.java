@@ -4,15 +4,17 @@ public class FlashCardWithProgressDTO {
     private long cardID;
     private String question;
     private String answer;
-    private double understandingLevel;
+    private int totalAttempts;
+    private int totalCorrect;
 
     public FlashCardWithProgressDTO() {}
 
-    public FlashCardWithProgressDTO(long cardID, String question, String answer, double understandingLevel) {
+    public FlashCardWithProgressDTO(long cardID, String question, String answer, int totalAttempts, int totalCorrect) {
         this.cardID = cardID;
         this.question = question;
         this.answer = answer;
-        this.understandingLevel = understandingLevel;
+        this.totalAttempts = totalAttempts;
+        this.totalCorrect = totalCorrect;
     }
 
     public long getCardID() { 
@@ -39,11 +41,19 @@ public class FlashCardWithProgressDTO {
         this.answer = answer; 
     }
 
-    public double getUnderstandingLevel() { 
-        return understandingLevel; 
+    public int getTotalAttempts() { 
+        return totalAttempts; 
     }
 
-    public void setUnderstandingLevel(double understandingLevel) { 
-        this.understandingLevel = understandingLevel; 
+    public void setTotalAttempts(int totalAttempts) { 
+        this.totalAttempts = totalAttempts; 
+    }
+
+    public int getTotalCorrect() { 
+        return totalCorrect; 
+    }
+
+    public void setTotalCorrect(int totalCorrect) { 
+        this.totalCorrect = totalCorrect; 
     }
 }

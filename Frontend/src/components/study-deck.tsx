@@ -7,6 +7,8 @@ interface Card {
     cardID: number;
     question: string;
     answer: string;
+    totalAttempts: number;
+    totalCorrect: number;
 }
 
 interface DeckData {

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.CS4800_DJ3.StudyDeckBackend.DTO.DeckProgressUnderstandingLevelEditRequestDTO;
 import com.CS4800_DJ3.StudyDeckBackend.DTO.StudyDeckProgressEditRequestDTO;
 import com.CS4800_DJ3.StudyDeckBackend.Service.DeckProgressService;
 
@@ -44,6 +43,8 @@ public class DeckProgressController {
     }
 
     
+    // Deprecated: use updateDeckProgress instead
+    /*     
     @PutMapping("/understanding/{deckID}")
     @Operation(
         description = "Updates the understanding level of a study deck for the current user."
@@ -59,7 +60,7 @@ public class DeckProgressController {
             HttpSession session) {
         return deckProgressService.updateDeckProgressUnderstandingLevel(
             deckProgressUnderstandingLevelEditRequestDTO, deckID, session);
-    }
+    } */
 
 
     @PutMapping("/favorite/{deckID}")

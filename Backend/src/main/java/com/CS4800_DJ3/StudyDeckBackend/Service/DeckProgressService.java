@@ -1,7 +1,6 @@
 package com.CS4800_DJ3.StudyDeckBackend.Service;
 
 import com.CS4800_DJ3.StudyDeckBackend.DTO.ApiResponseDTO;
-import com.CS4800_DJ3.StudyDeckBackend.DTO.DeckProgressUnderstandingLevelEditRequestDTO;
 import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCardDTO;
 import com.CS4800_DJ3.StudyDeckBackend.DTO.FlashCardWithProgressDTO;
 import com.CS4800_DJ3.StudyDeckBackend.DTO.StudyDeckProgressEditRequestDTO;
@@ -29,8 +28,8 @@ public class DeckProgressService {
     @Autowired
     private DeckProgressRepo deckProgressRepo;
 
-    
     // update the progress of a deckProgress
+    @Transactional
     public ResponseEntity<ApiResponseDTO> updateDeckProgress(
             StudyDeckProgressEditRequestDTO studyDeckProgressEditRequest,
             UUID deckID,
@@ -53,7 +52,8 @@ public class DeckProgressService {
                         flashCardWithProgress.getCardID(),
                         flashCardWithProgress.getQuestion(),
                         flashCardWithProgress.getAnswer(),
-                        flashCardWithProgress.getUnderstandingLevel()))
+                        flashCardWithProgress.getTotalAttempts(),
+                        flashCardWithProgress.getTotalCorrect()))
                 .collect(Collectors.toList());
 
         deckProgress.setContentWithProgress(flashCardsWithProgress);
@@ -62,48 +62,54 @@ public class DeckProgressService {
         return ResponseUtil.messsage(HttpStatus.OK, "Deck progress updated successfully.");
     }
 
-
-    // update the understanding level of a deckProgress
-    @Transactional
-    public ResponseEntity<ApiResponseDTO> updateDeckProgressUnderstandingLevel(
-            DeckProgressUnderstandingLevelEditRequestDTO updateReqest,
-            UUID deckID,
-            HttpSession session) {
-
-        UUID userID = (UUID) session.getAttribute("userID");
-        if (userID == null)
-            return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
-
-        DeckProgress deckProgress = deckProgressRepo.findByUserIDAndDeckID(userID, deckID);
-        if (deckProgress == null)
-            return ResponseUtil.messsage(HttpStatus.NOT_FOUND, "Deck progress not found.");
-
-        List<FlashCardWithProgressDTO> flashCardsWithProgress = deckProgress.getContentWithProgress();
-        for (FlashCardWithProgressDTO card : flashCardsWithProgress) {
-            if (card.getCardID() == updateReqest.getFlashCardId()) {
-                card.setUnderstandingLevel(updateReqest.getUnderstandingLevel());
-                break;
-            }
-        }
-
-        deckProgress.setContentWithProgress(flashCardsWithProgress);
-        deckProgressRepo.save(deckProgress);
-
-        return ResponseUtil.messsage(HttpStatus.OK, "Deck progress understanding level updated successfully.");
-    }
-
+    /*
+     * // Deprecated: use updateDeckProgress instead
+     * // update the understanding level of a deckProgress
+     * 
+     * @Transactional
+     * public ResponseEntity<ApiResponseDTO> updateDeckProgressUnderstandingLevel(
+     * DeckProgressUnderstandingLevelEditRequestDTO updateReqest,
+     * UUID deckID,
+     * HttpSession session) {
+     * 
+     * UUID userID = (UUID) session.getAttribute("userID");
+     * if (userID == null)
+     * return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
+     * 
+     * DeckProgress deckProgress = deckProgressRepo.findByUserIDAndDeckID(userID,
+     * deckID);
+     * if (deckProgress == null)
+     * return ResponseUtil.messsage(HttpStatus.NOT_FOUND,
+     * "Deck progress not found.");
+     * 
+     * List<FlashCardWithProgressDTO> flashCardsWithProgress =
+     * deckProgress.getContentWithProgress();
+     * for (FlashCardWithProgressDTO card : flashCardsWithProgress) {
+     * if (card.getCardID() == updateReqest.getFlashCardId()) {
+     * card.setUnderstandingLevel(updateReqest.getUnderstandingLevel());
+     * break;
+     * }
+     * }
+     * 
+     * deckProgress.setContentWithProgress(flashCardsWithProgress);
+     * deckProgressRepo.save(deckProgress);
+     * 
+     * return ResponseUtil.messsage(HttpStatus.OK,
+     * "Deck progress understanding level updated successfully.");
+     * }
+     */
 
     // update favorite status of a deckProgress
     @Transactional
     public ResponseEntity<ApiResponseDTO> updateDeckProgressFavoriteStatus(UUID deckID, HttpSession session) {
         UUID userID = (UUID) session.getAttribute("userID");
 
-        if (userID == null) 
+        if (userID == null)
             return ResponseUtil.messsage(HttpStatus.UNAUTHORIZED, "User not logged in.");
 
         DeckProgress deckProgress = deckProgressRepo.findByUserIDAndDeckID(userID, deckID);
 
-        if (deckProgress == null) 
+        if (deckProgress == null)
             return ResponseUtil.messsage(HttpStatus.NOT_FOUND, "Deck progress not found.");
 
         if (deckProgress != null) {
@@ -112,83 +118,6 @@ public class DeckProgressService {
         }
         return ResponseUtil.messsage(HttpStatus.OK, "Deck progress favorite status updated successfully.");
     }
-
-
-    // Copy a study deck to a new deck progress object 
-    public DeckProgress studyDeckToProgress(UUID deckID, UUID userID, StudyDeck studyDeck) {
-        List<FlashCardWithProgressDTO> flashCardsWithProgress = studyDeck.getContent().stream()
-                .map(flashCard -> new FlashCardWithProgressDTO(
-                        flashCard.getCardID(),
-                        flashCard.getQuestion(),
-                        flashCard.getAnswer(),
-                        0.0))
-                .collect(Collectors.toList());
-
-        DeckProgress deckProgress = new DeckProgress();
-        deckProgress.setDeckID(deckID);
-        deckProgress.setUserID(userID);
-        deckProgress.setIsFavorite(false);
-        deckProgress.setLastOpened(new java.sql.Timestamp(System.currentTimeMillis()));
-        deckProgress.setContentWithProgress(flashCardsWithProgress);
-
-        if (userID != null){
-            deckProgress.setUserID(userID);
-            deckProgressRepo.save(deckProgress);
-        }
-
-        return deckProgress;
-    }
-
-
-    // Update the content in deckProgress with changes to content in studyDeck,
-    // transfer progress
-    public DeckProgress updateStudyDeckToProgress(StudyDeck studyDeck, DeckProgress deckProgress) {
-        List<FlashCardWithProgressDTO> flashCardsWithProgress = new ArrayList<>();
-        int i = 0, j = 0;
-    
-        List<FlashCardDTO> deckContent = studyDeck.getContent();
-        List<FlashCardWithProgressDTO> progressContent = deckProgress.getContentWithProgress();
-    
-        while (i < deckContent.size() && j < progressContent.size()) {
-            FlashCardDTO flashCard = deckContent.get(i);
-            FlashCardWithProgressDTO flashCardWithProgress = progressContent.get(j);
-    
-            if (flashCard.getCardID() == flashCardWithProgress.getCardID()) {
-                flashCardsWithProgress.add(new FlashCardWithProgressDTO(
-                    flashCard.getCardID(),
-                    flashCard.getQuestion(),
-                    flashCard.getAnswer(),
-                    flashCardWithProgress.getUnderstandingLevel()));
-                i++;
-                j++;
-            } else if (flashCard.getCardID() < flashCardWithProgress.getCardID()) {
-                flashCardsWithProgress.add(new FlashCardWithProgressDTO(
-                    flashCard.getCardID(),
-                    flashCard.getQuestion(),
-                    flashCard.getAnswer(),
-                    0.0));
-                i++;
-            } else {
-                j++;
-            }
-        }
-    
-        // Add remaining new cards
-        while (i < deckContent.size()) {
-            FlashCardDTO flashCard = deckContent.get(i);
-            flashCardsWithProgress.add(new FlashCardWithProgressDTO(
-                flashCard.getCardID(),
-                flashCard.getQuestion(),
-                flashCard.getAnswer(),
-                0.0));
-            i++;
-        }
-    
-        deckProgress.setContentWithProgress(flashCardsWithProgress);
-        return deckProgress;
-    }
-    
-
 
     // update all deckProgress related to a studyDeck
     @Transactional
@@ -204,9 +133,9 @@ public class DeckProgressService {
     @Transactional
     public void removeDeckProgressFromUser(UUID deckID, UUID userID) {
         DeckProgress progress = deckProgressRepo.findByUserIDAndDeckID(userID, deckID);
-        if (progress != null)  deckProgressRepo.delete(progress);
+        if (progress != null)
+            deckProgressRepo.delete(progress);
     }
-
 
     // remove all deckProgress related to a studyDeck
     @Transactional
@@ -217,5 +146,79 @@ public class DeckProgressService {
         }
     }
 
+    // Copy a study deck to a new deck progress object
+    public DeckProgress studyDeckToProgress(UUID deckID, UUID userID, StudyDeck studyDeck) {
+        List<FlashCardWithProgressDTO> flashCardsWithProgress = studyDeck.getContent().stream()
+                .map(flashCard -> new FlashCardWithProgressDTO(
+                        flashCard.getCardID(),
+                        flashCard.getQuestion(),
+                        flashCard.getAnswer(),
+                        0,
+                        0))
+                .collect(Collectors.toList());
 
+        DeckProgress deckProgress = new DeckProgress();
+        deckProgress.setDeckID(deckID);
+        deckProgress.setUserID(userID);
+        deckProgress.setIsFavorite(false);
+        deckProgress.setLastOpened(new java.sql.Timestamp(System.currentTimeMillis()));
+        deckProgress.setContentWithProgress(flashCardsWithProgress);
+
+        if (userID != null) {
+            deckProgress.setUserID(userID);
+            deckProgressRepo.save(deckProgress);
+        }
+
+        return deckProgress;
+    }
+
+    // Update the content in deckProgress with changes to content in studyDeck,
+    // transfer progress
+    public DeckProgress updateStudyDeckToProgress(StudyDeck studyDeck, DeckProgress deckProgress) {
+        List<FlashCardWithProgressDTO> flashCardsWithProgress = new ArrayList<>();
+        int i = 0, j = 0;
+
+        List<FlashCardDTO> deckContent = studyDeck.getContent();
+        List<FlashCardWithProgressDTO> progressContent = deckProgress.getContentWithProgress();
+
+        while (i < deckContent.size() && j < progressContent.size()) {
+            FlashCardDTO flashCard = deckContent.get(i);
+            FlashCardWithProgressDTO flashCardWithProgress = progressContent.get(j);
+
+            if (flashCard.getCardID() == flashCardWithProgress.getCardID()) {
+                flashCardsWithProgress.add(new FlashCardWithProgressDTO(
+                        flashCard.getCardID(),
+                        flashCard.getQuestion(),
+                        flashCard.getAnswer(),
+                        flashCardWithProgress.getTotalAttempts(),
+                        flashCardWithProgress.getTotalCorrect()));
+                i++;
+                j++;
+            } else if (flashCard.getCardID() < flashCardWithProgress.getCardID()) {
+                flashCardsWithProgress.add(new FlashCardWithProgressDTO(
+                        flashCard.getCardID(),
+                        flashCard.getQuestion(),
+                        flashCard.getAnswer(),
+                        0,
+                        0));
+                i++;
+            } else {
+                j++;
+            }
+        }
+
+        while (i < deckContent.size()) {
+            FlashCardDTO flashCard = deckContent.get(i);
+            flashCardsWithProgress.add(new FlashCardWithProgressDTO(
+                    flashCard.getCardID(),
+                    flashCard.getQuestion(),
+                    flashCard.getAnswer(),
+                    0,
+                    0));
+            i++;
+        }
+
+        deckProgress.setContentWithProgress(flashCardsWithProgress);
+        return deckProgress;
+    }
 }

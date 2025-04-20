@@ -47,8 +47,8 @@ public class DeckProgressServiceTest {
 
         // Create sample deck progress
         List<FlashCardWithProgressDTO> progressList = new ArrayList<>();
-        progressList.add(new FlashCardWithProgressDTO(1, "Q1", "A1", 0.5));
-        progressList.add(new FlashCardWithProgressDTO(2, "Q2", "A2", 0.8));
+        progressList.add(new FlashCardWithProgressDTO(1, "Q1", "A1", 0, 0));
+        progressList.add(new FlashCardWithProgressDTO(2, "Q2", "A2", 0, 0));
 
         sampleDeckProgress = new DeckProgress();
         sampleDeckProgress.setDeckID(deckID);
@@ -63,8 +63,8 @@ public class DeckProgressServiceTest {
 
         StudyDeckProgressEditRequestDTO editRequest = new StudyDeckProgressEditRequestDTO();
         editRequest.setContentWithProgress(List.of(
-                new FlashCardWithProgressDTO(1, "Q1", "A1", 1.0),
-                new FlashCardWithProgressDTO(2, "Q2", "A2", 0.9)));
+                new FlashCardWithProgressDTO(1, "Q1", "A1", 1, 0),
+                new FlashCardWithProgressDTO(2, "Q2", "A2", 1, 1)));
 
         ResponseEntity<ApiResponseDTO> response = deckProgressService.updateDeckProgress(editRequest, deckID, session);
 
