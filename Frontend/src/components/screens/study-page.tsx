@@ -60,6 +60,7 @@ const StudyPage = () => {
   const toggleLeft = () => setLeftOpen((prev) => !prev);
 
   const goToDeck = () => {
+    updateProgress();
     navigate("/deck/" + deckType + "/" + deckID);
   };
 
