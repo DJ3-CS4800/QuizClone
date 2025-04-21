@@ -8,15 +8,17 @@ import CreateDeckPage from "./components/screens/create-deck-page";
 import StudyPage from "./components/screens/study-page"; // Import the QuizPage component
 import EditDeckPage from "./components/screens/edit-deck-page"; // Import the EditDeckPage component
 import MatchingPage from "./components/screens/matching-page";
+import SearchPage from "./components/screens/search-page"; // Import the SearchPage component
 
 const App = () => {
   return (
     <Routes>
       <Route path="/" element={<MainPage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/deck/:deckType/:deckID" element={<DeckPage />} />
       <Route path="/register" element={<RegistrationPage />} />
       <Route path="/create-deck" element={<CreateDeckPage />} />
+      <Route path="/search" element={<SearchPage />} />
+      <Route path="/deck/:deckType/:deckID" element={<DeckPage />} />
       <Route path="/deck/:deckType/:deckID/study" element={< StudyPage />} />
       <Route path="/deck/:deckType/:deckID/match" element={< MatchingPage />} />
       <Route path="/deck/:deckType/:deckID/edit" element={< EditDeckPage/>} />

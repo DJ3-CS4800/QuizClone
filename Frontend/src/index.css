@@ -126,3 +126,13 @@
   }
 }
 
+.custom-scroll-fade {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    mask-image: linear-gradient(to bottom, black 75%, transparent);
+  }
+  
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .custom-scroll-fade::-webkit-scrollbar {
+    display: none;
+  }

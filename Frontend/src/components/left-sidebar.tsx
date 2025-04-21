@@ -164,8 +164,8 @@ export function LeftSidebar() {
               </SidebarMenuItem>
 
               <SidebarMenuItem>
-                <SidebarMenuButton className="hover:bg-[var(--accent)]">
-                  <icons.Search className="mr-2 h-4 w-4 text-[var(--accent2)]" onClick={handleSearchClick} />
+                <SidebarMenuButton className="hover:bg-[var(--accent)]" onClick={handleSearchClick}>
+                  <icons.Search className="mr-2 h-4 w-4 text-[var(--accent2)]" />
                   Search
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -216,13 +216,13 @@ export function LeftSidebar() {
           </DialogDescription>
           <div className="flex justify-end gap-2">
             <DialogFooter>
-              <Button className="text-muted-foreground hover:text-[var(--accent3)]" variant="outline" onClick={handleCancelSignOut}>
+              <Button className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors" onClick={handleCancelSignOut}>
                 Cancel
               </Button>
             </DialogFooter>
             <DialogFooter>
               <Button
-                className="text-[var(--accent)] hover:text-[var(--accent3)]" variant="outline"
+                className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
                 onClick={handleConfirmSignOut}
               >
                 Sign Out

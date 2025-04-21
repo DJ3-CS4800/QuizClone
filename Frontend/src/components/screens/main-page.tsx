@@ -333,13 +333,13 @@ export default function MainPage() {
           </DialogDescription>
           <div className="flex justify-end gap-2">
             <DialogFooter>
-              <Button className="text-muted-foreground hover:text-[var(--accent3)]" variant="outline" onClick={handleCancelDeleteDeck}>
+              <Button className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors" onClick={handleCancelDeleteDeck}>
                 Cancel
               </Button>
             </DialogFooter>
             <DialogFooter>
               <Button
-                className="text-[var(--accent)] hover:text-[var(--accent3)]" variant="outline"
+                className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-red-600 bg-transparent hover:bg-[var(--accent)] hover:text-red-700 transition-colors"
                 onClick={() => handleConfirmDeleteDeck(aboutToDelete.deckID, aboutToDelete.local)}
               >
                 Delete

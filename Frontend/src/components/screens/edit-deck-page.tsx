@@ -253,7 +253,7 @@ const EditDeckPage = () => {
                   <p className="text-center text-[var(--muted-foreground)]">No cards added yet.</p>
                 )}
                 <div className="flex justify-center pt-2">
-                  <Button variant="outline" onClick={addCard}>
+                  <Button className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors" onClick={addCard}>
                     Add Card
                   </Button>
                 </div>
@@ -262,10 +262,9 @@ const EditDeckPage = () => {
 
             <div className="flex justify-end p-4 border-t">
               <Button
-                variant="outline"
                 onClick={saveDeck}
                 disabled={!hasChanges()}
-                className="w-fit bg-[var(--accent2)] text-[var(--accent-foreground)] hover:bg-[var(--accent)]"
+                className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
               >
                 Save Deck
               </Button>

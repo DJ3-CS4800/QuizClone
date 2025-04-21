@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { SidebarProvider, Sidebar, SidebarInset } from "@/components/ui/sidebar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { LeftSidebar } from "@/components/left-sidebar";
@@ -39,7 +39,7 @@ interface GameCard {
   highlight: "none" | "correct" | "wrong";
 }
 
-const MAX_PAIRS = 18;
+const MAX_PAIRS = 8;
 
 export default function MatchingPage() {
   const navigate = useNavigate();
@@ -49,21 +49,21 @@ export default function MatchingPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [gameCards, setGameCards] = useState<GameCard[]>([]);
-  // Holds indices of currently selected cards (awaiting match check)
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
   const [attemptCount, setAttemptCount] = useState(0);
   const [correctMatchCount, setCorrectMatchCount] = useState(0);
   const [leftOpen, setLeftOpen] = useState(false);
   const [isDarkMode] = useState(localStorage.getItem("theme") === "dark");
-  // New state to disable clicking during cooldown when two wrong cards are selected.
   const [disableClick, setDisableClick] = useState(false);
+  // New state for the game start time (in ms)
+  const [startTime, setStartTime] = useState<number>(0);
 
-  // Toggle dark mode like in QuizPage.
+  // Toggle dark mode
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDarkMode);
   }, [isDarkMode]);
 
-  // Load deck from local storage or a remote API.
+  // Load deck from local storage or remote API.
   useEffect(() => {
     async function loadDeck() {
       try {
@@ -120,11 +120,9 @@ export default function MatchingPage() {
   const initializeGameCards = useCallback(() => {
     if (!deck) return;
     let flashcards = deck.deckWithProgress.contentWithProgress;
-    // If there are too many pairs, pick a random subset.
     if (flashcards.length > MAX_PAIRS) {
       flashcards = [...flashcards].sort(() => Math.random() - 0.5).slice(0, MAX_PAIRS);
     }
-    // For each flashcard, create two game cards.
     const cards: GameCard[] = flashcards.flatMap((card) => {
       const questionCard: GameCard = {
         id: Math.random(),
@@ -144,7 +142,6 @@ export default function MatchingPage() {
       };
       return [questionCard, answerCard];
     });
-    // Shuffle the cards.
     for (let i = cards.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [cards[i], cards[j]] = [cards[j], cards[i]];
@@ -153,6 +150,8 @@ export default function MatchingPage() {
     setSelectedIndices([]);
     setAttemptCount(0);
     setCorrectMatchCount(0);
+    // Record start time when game is initialized
+    setStartTime(Date.now());
   }, [deck]);
 
   // Reinitialize game when deck changes.
@@ -212,13 +211,7 @@ export default function MatchingPage() {
   if (error) return <div className="text-center text-red-500">{error}</div>;
   if (!deck) return <div className="text-center text-red-500">Deck not found</div>;
 
-  // Dynamically compute the number of grid columns.
-  // This calculates the ceiling of the square root of the total cards,
-  // then clamps the value between 2 and 6.
-  const gridCols = Math.max(
-    2,
-    Math.min(6, Math.ceil(Math.sqrt(gameCards.length)))
-  );
+  const gridCols = Math.max(2, Math.min(4, Math.ceil(Math.sqrt(gameCards.length))));
 
   const renderGameCards = () =>
     gameCards.map((card, index) => {
@@ -240,30 +233,36 @@ export default function MatchingPage() {
           className={`${baseClasses} ${stateClasses}`}
           onClick={() => handleCardClick(index)}
         >
-          <span className="text-center text-sm font-medium">
-            {card.content}
-          </span>
+          <div className="w-full h-full overflow-y-auto flex items-center justify-center pt-12 pb-10 px-10 custom-scroll-fade">
+            <span className="text-center text-sm font-medium break-all">
+              {card.content}
+            </span>
+          </div>
         </div>
       );
     });
+
+  // Compute elapsed time in seconds when game is complete.
+  const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
 
   if (gameComplete) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="p-6 rounded-3xl shadow-md bg-muted text-center space-y-4">
-          <h1 className="text-3xl font-bold">🎉 Matching Finished!</h1>
+          <h1 className="text-3xl font-bold text-[var(--accent)]">🎉 Matching Finished!</h1>
           <p className="mb-2">Total Attempts: {attemptCount}</p>
-          <p className="mb-4">Correct Matches: {correctMatchCount}</p>
+          <p className="mb-2">Correct Matches: {correctMatchCount}</p>
+          <p className="mb-4">Time Taken: {elapsedSeconds} second{elapsedSeconds !== 1 ? "s" : ""}</p>
           <div className="flex gap-4 justify-center">
             <Button
               onClick={initializeGameCards}
-              className="w-[200px] bg-[var(--accent2)] hover:bg-[var(--accent)] text-black"
+              className="flex-1 min-w-[200px] max-w-[250px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
             >
               Try Again
             </Button>
             <Button
               onClick={handleNavigation}
-              className="w-[200px] bg-[var(--accent2)] hover:bg-[var(--accent)] text-black"
+              className="flex-1 min-w-[200px] max-w-[250px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
             >
               Back to Deck
             </Button>
@@ -278,16 +277,8 @@ export default function MatchingPage() {
       <SidebarProvider defaultOpen={false} open={leftOpen} onOpenChange={setLeftOpen}>
         {leftOpen && (
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
-            <SheetContent
-              side="left"
-              className="w-[280px] min-w-[200px] h-full p-0 overflow-auto"
-            >
-              <Sidebar
-                style={{
-                  "--sidebar-width": "280px",
-                  height: "100%",
-                } as React.CSSProperties}
-              >
+            <SheetContent side="left" className="w-[280px] min-w-[200px] h-full p-0 overflow-auto">
+              <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
                 <LeftSidebar />
               </Sidebar>
             </SheetContent>
@@ -302,9 +293,7 @@ export default function MatchingPage() {
                   <span className="sr-only">Toggle left sidebar</span>
                 </Button>
               </div>
-              <span className="mb-4 text-2xl font-bold text-[var(--accent)]">
-                Matching
-              </span>
+              <span className="mb-4 text-2xl font-bold text-[var(--accent)]">Matching</span>
               <Button variant="ghost" onClick={handleNavigation}>
                 <X className="h-6 w-6 scale-175 text-[var(--accent2)]" />
               </Button>
@@ -314,12 +303,9 @@ export default function MatchingPage() {
             <p className="mb-4 text-sm text-muted-foreground">
               Select two cards to match the question with its answer.
             </p>
-            {/* Use a dynamic grid template based on computed gridCols */}
             <div
               className="grid gap-4"
-              style={{
-                gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))`,
-              }}
+              style={{ gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` }}
             >
               {renderGameCards()}
             </div>

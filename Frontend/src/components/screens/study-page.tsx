@@ -147,6 +147,8 @@ const StudyPage = () => {
             })),
           };
         }
+        setProgressSaved(true);
+        setTimeout(() => setProgressSaved(false), 2000);
         return d;
       });
       localStorage.setItem("studyDecks", JSON.stringify(updatedDecks));
@@ -285,7 +287,7 @@ const StudyPage = () => {
         <div className="mt-6 text-center">
           <Button
             onClick={handleNextQuestion}
-            className="px-6 py-2 text-sm sm:text-base font-semibold bg-[var(--accent)] text-[var(--accent-foreground)] hover:brightness-95 transition-colors"
+            className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
           >
             Next
           </Button>
