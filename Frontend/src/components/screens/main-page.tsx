@@ -291,8 +291,9 @@ export default function MainPage() {
                   <Menu className="h-6 w-6 scale-175 text-[var(--accent2)]" />
                   <span className="sr-only">Toggle sidebar</span>
                 </Button>
-                <h1 className="text-2xl font-bold text-[var(--accent)]">QuizClone</h1>
-              </header>
+                <span className="mb-4 text-2xl font-bold justify-center text-[var(--accent)]">QuizClone</span>
+                <div></div>
+                </header>
               <div className="p-4 pl-5 pr-5">
                 {loading ? (
                   <p>Loading decks...</p>
