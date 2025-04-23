@@ -164,9 +164,9 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
       <div className="flex items-center justify-center gap-4 mb-6">
         <button
           onClick={handlePrev}
-          className="w-10 h-10 flex items-center justify-center rounded-full border border-border text-purple-700 dark:text-purple-300 hover:bg-purple-700 hover:text-white dark:hover:bg-purple-300 dark:hover:text-black transition-colors"
+          className="w-16 h-16 flex items-center justify-center rounded-full border border-border text-purple-700 dark:text-purple-300 hover:bg-purple-700 hover:text-white dark:hover:bg-purple-300 dark:hover:text-black transition-colors"
         >
-          <ChevronLeft className="w-6 h-6" />
+          <ChevronLeft className="w-8 h-8" />
         </button>
 
         <span className="text-lg font-semibold text-purple-700 dark:text-purple-300">
@@ -175,27 +175,28 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
 
         <button
           onClick={handleNext}
-          className="w-10 h-10 flex items-center justify-center rounded-full border border-border text-purple-700 dark:text-purple-300 hover:bg-purple-700 hover:text-white dark:hover:bg-purple-300 dark:hover:text-black transition-colors"
+          className="w-16 h-16 flex items-center justify-center rounded-full border border-border text-purple-700 dark:text-purple-300 hover:bg-purple-700 hover:text-white dark:hover:bg-purple-300 dark:hover:text-black transition-colors"
         >
-          <ChevronRight className="w-6 h-6" />
+          <ChevronRight className="w-8 h-8" />
         </button>
       </div>
+
       <div className="flex flex-wrap justify-center gap-4 mb-6">
         <Button
-          className="flex-1 min-w-[100px] max-w-[150px] h-[60px] py-2 text-sm sm:text-base cursor-pointer border border-border text-purple-700 dark:text-purple-300 bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
+          className="flex-1 min-w-[100px] max-w-[150px] h-[60px] py-2 text-sm sm:text-base cursor-pointer border border-border text-purple-700 dark:text-purple-300 bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] dark:hover:bg-purple-700 transition-colors"
           onClick={() => handleClickNavigation("study")}
         >
           <h2 className="font-semibold">Study</h2>
         </Button>
         <Button
-          className="flex-1 min-w-[100px] max-w-[150px] h-[60px] py-2 text-sm sm:text-base cursor-pointer border border-border text-purple-700 dark:text-purple-300 bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
+          className="flex-1 min-w-[100px] max-w-[150px] h-[60px] py-2 text-sm sm:text-base cursor-pointer border border-border text-purple-700 dark:text-purple-300 bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] dark:hover:bg-purple-700 transition-colors"
           onClick={() => handleClickNavigation("match")}
         >
           <h2 className="font-semibold">Matching</h2>
         </Button>
         {deck.isOwner && (
           <Button
-            className="flex-1 min-w-[100px] max-w-[150px] h-[60px] py-2 text-sm sm:text-base cursor-pointer border border-border text-purple-700 dark:text-purple-300 bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
+            className="flex-1 min-w-[100px] max-w-[150px] h-[60px] py-2 text-sm sm:text-base cursor-pointer border border-border text-purple-700 dark:text-purple-300 bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] dark:hover:bg-purple-700 transition-colors"
             onClick={() => handleClickNavigation("edit")}
           >
             <h2 className="font-semibold">Edit</h2>
