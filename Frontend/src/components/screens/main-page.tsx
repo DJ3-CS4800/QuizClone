@@ -310,9 +310,6 @@ export default function MainPage() {
               {/* Favorited Decks Section */}
               <div className="p-6 pl-8 pr-5">
                 <div className="mb-6">
-                  <h2 className="text-lg font-semibold text-purple-800 dark:text-purple-300 mb-2">
-                    Favorited Decks
-                  </h2>
                   <div
                     className="grid gap-[10px] justify-start items-start"
                     style={{ gridTemplateColumns: "repeat(auto-fit, 250px)" }}
