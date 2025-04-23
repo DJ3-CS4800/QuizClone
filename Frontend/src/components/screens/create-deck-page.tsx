@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { SidebarProvider, Sidebar, SidebarInset } from "@/components/ui/sidebar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { LeftSidebar } from "@/components/left-sidebar";
+import qclogo2 from "../../assets/qclogo2.png";
 
 const CreateDeckPage = () => {
   const navigate = useNavigate();
@@ -193,16 +194,25 @@ const CreateDeckPage = () => {
 
         <SidebarInset className="flex-1 h-max-content">
           <div className="flex flex-col w-full h-max-content relative">
-            <header className="flex h-20 items-center justify-between px-4">
-              <div className="flex items-center gap-2">
+            <header className="sticky top-0 z-10 bg-[var(--background)] flex h-20 items-center justify-between px-6 border-b border-border">
+              <div className="flex items-center gap-3">
+                {/* Sidebar Button */}
                 <Button variant="ghost" size="icon" onClick={toggleLeft}>
-                  <Menu className="h-6 w-6 scale-175 text-[var(--accent2)]" />
+                  <Menu className="h-10 w-10 scale-175 text-purple-800 dark:text-purple-400" />
                   <span className="sr-only">Toggle left sidebar</span>
                 </Button>
+                {/* Logo Image */}
+                <img
+                  src={qclogo2}
+                  alt="Logo"
+                  className="h-10 w-10 object-contain"
+                />
               </div>
-              <span className="mb-4 text-2xl font-bold justify-center text-[var(--accent)]">Create Deck</span>
+              <span className="mb-4 text-3xl font-bold justify-center text-purple-400 dark:text-purple-400">
+                Create Deck
+              </span>
               <Button variant="ghost" onClick={goToMain}>
-                <X className="h-6 w-6 scale-175 text-[var(--accent2)]" />
+                <X className="h-10 w-10 scale-175 text-purple-800 dark:text-purple-400" />
               </Button>
             </header>
 
@@ -268,7 +278,7 @@ const CreateDeckPage = () => {
 
                     <Button
                       onClick={() => deleteCard(card.id)}
-                      className=" max-h-[50px] min-w-[50px] max-w-[100px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors self-end"
+                      className=" max-h-[50px] min-w-[50px] max-w-[100px] py-2 text-sm sm:text-base cursor-pointer border border-border text-purple-700 dark:text-purple-300 bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] dark:hover:bg-purple-700 transition-colors self-end"
                     >
                       Delete
                     </Button>
@@ -280,7 +290,7 @@ const CreateDeckPage = () => {
 
                 {/* Add card button centered and below all cards */}
                 <div className="flex justify-center pt-2">
-                  <Button className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors" onClick={addCard}>
+                  <Button className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-purple-700 dark:text-purple-300 bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] dark:hover:bg-purple-700 transition-colors" onClick={addCard}>
                     Add Card
                   </Button>
                 </div>
@@ -292,7 +302,7 @@ const CreateDeckPage = () => {
               <Button
                 onClick={saveDeck}
                 disabled={checkingLogin}
-                className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border bg-[var(--accent2)] hover:bg-[var(--accent)]  transition-colors text-black"
+                className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border bg-[var(--accent2)] hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] dark:hover:bg-purple-700  transition-colors text-black"
               >
                 {checkingLogin ? "Checking..." : "Save Deck"}
               </Button>

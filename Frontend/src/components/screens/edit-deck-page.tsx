@@ -189,7 +189,7 @@ const EditDeckPage = () => {
 
         <SidebarInset className="flex-1 h-max-content">
           <div className="flex flex-col w-full h-max-content relative">
-            <header className="flex h-20 items-center justify-between px-6">
+            <header className="sticky top-0 z-10 bg-[var(--background)] flex h-20 items-center justify-between px-6">
               <div className="flex items-center gap-3">
                 {/* Sidebar Button */}
                 <Button variant="ghost" size="icon" onClick={toggleLeft}>
@@ -275,7 +275,7 @@ const EditDeckPage = () => {
               <Button
                 onClick={saveDeck}
                 disabled={!hasChanges()}
-                className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-purple-700 dark:text-purple-300 bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] dark:hover:bg-purple-700 transition-colors"
+                className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border bg-[var(--accent2)] hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] dark:hover:bg-purple-700  transition-colors text-black"
               >
                 Save Deck
               </Button>

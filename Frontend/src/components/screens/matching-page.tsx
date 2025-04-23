@@ -287,7 +287,7 @@ export default function MatchingPage() {
         )}
         <SidebarInset className="flex-1">
           <div className="flex flex-col w-full h-max-content relative">
-            <header className="flex h-20 items-center justify-between px-6">
+            <header className="sticky top-0 z-10 bg-[var(--background)] flex h-20 items-center justify-between px-6">
               <div className="flex items-center gap-3">
                 {/* Sidebar Button */}
                 <Button variant="ghost" size="icon" onClick={toggleLeft}>
