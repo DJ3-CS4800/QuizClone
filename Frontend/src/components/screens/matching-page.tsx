@@ -314,7 +314,7 @@ export default function MatchingPage() {
               Select two cards to match the question with its answer.
             </p>
             <div
-              className="grid gap-4"
+              className="grid gap-2"
               style={{
                 gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))`,
               }}
