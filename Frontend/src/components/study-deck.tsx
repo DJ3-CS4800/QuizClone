@@ -148,16 +148,9 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
         </p>
       </div>
 
-      <div className="flex items-center justify-center gap-6 mb-6 pt-10 pb-5">
-        <button
-          onClick={handlePrev}
-          className="w-16 h-100 opacity-50 hover:opacity-100 transition-opacity cursor-pointer transition-transform transform hover:scale-125"
-        >
-          <ChevronLeft className="w-12 h-12 text-[var(--accent)]" />
-        </button>
-
+      <div className="flex items-center justify-center mb-6 pt-10 pb-5">
         <div
-          className="w-[800px] h-[400px] flex items-center justify-center bg-card select-none text-card-foreground rounded-lg shadow-lg border border-border cursor-pointer p-6 transition-transform transform hover:scale-101 overflow-hidden"
+          className="w-full max-w-[800px] h-[50vw] max-h-[400px] flex items-center justify-center bg-card select-none text-card-foreground rounded-lg shadow-lg border border-border cursor-pointer p-6 transition-transform transform hover:scale-101 overflow-hidden"
           onClick={handleFlip}
         >
           {isFlipped ? (
@@ -166,12 +159,25 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
             <p className="text-lg font-semibold break-words overflow-hidden">{currentCard.question}</p>
           )}
         </div>
+      </div>
+
+      <div className="flex items-center justify-center gap-4 mb-6">
+        <button
+          onClick={handlePrev}
+          className="w-12 h-12 flex-shrink-0 opacity-50 hover:opacity-100 transition-opacity cursor-pointer transition-transform transform hover:scale-125"
+        >
+          <ChevronLeft className="w-8 h-8 text-[var(--accent)]" />
+        </button>
+
+        <span className="text-lg font-semibold text-muted-foreground">
+          {currentCardIndex + 1}/{cards.length}
+        </span>
 
         <button
           onClick={handleNext}
-          className="w-16 h-100 opacity-50 hover:opacity-100 transition-opacity cursor-pointer transition-transform transform hover:scale-125 text-[var(--accent)]"
+          className="w-12 h-12 flex-shrink-0 opacity-50 hover:opacity-100 transition-opacity cursor-pointer transition-transform transform hover:scale-125 text-[var(--accent)]"
         >
-          <ChevronRight className="w-12 h-12" />
+          <ChevronRight className="w-8 h-8" />
         </button>
       </div>
 
@@ -231,8 +237,8 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
                       percentage >= 80
                         ? "text-green-600"
                         : percentage >= 50
-                        ? "text-yellow-600"
-                        : "text-red-600";
+                          ? "text-yellow-600"
+                          : "text-red-600";
                     return (
                       <span className={understandingColor}>
                         {`${card.totalCorrect}/${card.totalAttempts} (${percentage.toFixed(0)}%)`}

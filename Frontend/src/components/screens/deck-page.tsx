@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { SidebarProvider, Sidebar, SidebarInset } from "@/components/ui/sidebar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { LeftSidebar } from "@/components/left-sidebar";
+import qclogo2 from "../../assets/qclogo2.png";
 
 const DeckPage = () => {
   const { deckID } = useParams<{ deckID: string }>();
@@ -13,7 +14,7 @@ const DeckPage = () => {
   const navigate = useNavigate();
   const [leftOpen, setLeftOpen] = React.useState(false);
   const [isDarkMode] = React.useState(localStorage.getItem("theme") === "dark");
-  
+
 
   React.useEffect(() => {
     document.documentElement.classList.toggle("dark", isDarkMode);
@@ -49,14 +50,25 @@ const DeckPage = () => {
         <SidebarInset className="flex-1 h-full overflow-auto">
           <div className="flex flex-col w-full h-full">
             <main className="flex-1 h-full overflow-auto">
-              <header className="flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
-                <Button variant="ghost" size="icon" onClick={toggleLeft}>
-                  <Menu className="h-6 w-6 scale-175 text-[var(--accent2)]" />
-                  <span className="sr-only">Toggle left sidebar</span>
-                </Button>
-                <span className="text-2xl font-bold text-[var(--accent)]">Deck</span>
+              <header className="flex h-20 items-center justify-between px-8">
+                <div className="flex items-center gap-3">
+                  {/* Sidebar Button */}
+                  <Button variant="ghost" size="icon" onClick={toggleLeft}>
+                    <Menu className="h-10 w-10 scale-175 text-purple-800 dark:text-purple-400" />
+                    <span className="sr-only">Toggle sidebar</span>
+                  </Button>
+                  {/* Logo Image */}
+                  <img
+                    src={qclogo2}
+                    alt="Logo"
+                    className="h-10 w-10 object-contain"
+                  />
+                </div>
+                <span className="mb-4 text-3xl font-bold justify-center text-purple-400 dark:text-purple-400">
+                  Deck
+                </span>
                 <Button variant="ghost" onClick={goToMain}>
-                  <X className="h-6 w-6 scale-175 text-[var(--accent2)]" />
+                  <X className="h-10 w-10 scale-175 text-purple-400 dark:text-purple-400" />
                 </Button>
               </header>
               <div className="p-4 sm:p-6 lg:p-8 max-w-full overflow-auto">
