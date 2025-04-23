@@ -6,6 +6,7 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { SidebarInset, SidebarProvider, Sidebar } from "@/components/ui/sidebar";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import qclogo from "../../assets/qclogo2.png";
 
 
 interface Flashcard {
@@ -41,7 +42,7 @@ function DeckCard({
   handleFavoriteClick: (deck: StudyDeck) => void;
 }) {
   return (
-    <div className="relative rounded-lg bg-muted p-4 shadow-md transition hover:brightness-95 w-[250px] h-[220px]">
+    <div className="relative rounded-lg bg-purple-100 dark:bg-muted p-4 shadow-md transition hover:brightness-95 w-[250px] h-[220px]">
       {/* Invisible full-card button for navigation */}
       <button
         onClick={() => handleDeckClick(deck)}
@@ -68,7 +69,7 @@ function DeckCard({
           }}
           aria-label="Delete Deck"
         >
-          <Trash className="text-[var(--accent2)]" />
+          <Trash className="h-5 w-5 text-red-800 dark:text-red-400" />
         </Button>
       </div>
 
@@ -85,9 +86,9 @@ function DeckCard({
           aria-label="Favorite Deck"
         >
           {deck.starred ? (
-            <Star className="text-[var(--accent3)]" />
+            <Star className="h-10 w-10 text-yellow-600 dark:text-yellow-400 fill-current" />
           ) : (
-            <StarOff className="text-[var(--accent2)]" />
+            <StarOff className="h-10 w-10 text-gray-600 dark:text-gray-300" />
           )}
         </Button>
       </div>
@@ -95,9 +96,9 @@ function DeckCard({
       {/* Label at bottom left: Local Deck or Owner Name */}
       <div className="absolute bottom-2 left-2 z-10">
         {deck.local ? (
-          <p className="text-sm text-[var(--accent2)]">Local Deck</p>
+          <p className="text-sm text-purple-800 dark:text-purple-300">Local Deck</p>
         ) : (
-          <p className="text-sm text-[var(--accent3)]">{deck.ownerName}</p>
+          <p className="text-sm text-purple-800 dark:text-purple-300">{deck.ownerName}</p>
         )}
       </div>
     </div>
@@ -286,15 +287,24 @@ export default function MainPage() {
         <SidebarInset className="flex-1 h-full overflow-hidden">
           <div className="flex w-full h-full">
             <main className="flex-1 h-full">
-              <header className="flex h-20 items-center justify-between px-4">
-                <Button variant="ghost" size="icon" onClick={toggleLeft}>
-                  <Menu className="h-6 w-6 scale-175 text-[var(--accent2)]" />
-                  <span className="sr-only">Toggle sidebar</span>
-                </Button>
-                <span className="mb-4 text-2xl font-bold justify-center text-[var(--accent)]">QuizClone</span>
+              <header className="flex h-20 items-center justify-between px-8">
+                <div className="flex items-center gap-3">
+                  {/* Sidebar Button */}
+                  <Button variant="ghost" size="icon" onClick={toggleLeft}>
+                    <Menu className="h-10 w-10 scale-175 text-purple-800 dark:text-purple-400" /> {/* Increased size */}
+                    <span className="sr-only">Toggle sidebar</span>
+                  </Button>
+                  {/* Logo Image */}
+                  <img
+                    src={qclogo}
+                    alt="Logo"
+                    className="h-10 w-10 object-contain"
+                  />
+                </div>
+                <span className="mb-4 text-3xl font-bold justify-center text-purple-400 dark:text-purple-400">QuizClone</span>
                 <div></div>
-                </header>
-              <div className="p-4 pl-5 pr-5">
+              </header>
+              <div className="p-6 pl-8 pr-5">
                 {loading ? (
                   <p>Loading decks...</p>
                 ) : (
@@ -312,7 +322,7 @@ export default function MainPage() {
                       />
                     ))}
                     <button
-                      className="group flex flex-col items-center justify-center rounded-lg bg-[var(--accent2)] text-left transition hover:bg-[var(--accent)] shadow-md w-[250px] h-[220px]"
+                      className="group flex flex-col items-center justify-center rounded-lg bg-purple-300 dark:bg-purple-800 text-left transition hover:bg-purple-300 dark:hover:bg-purple-700 shadow-md w-[250px] h-[220px]"
                       onClick={() => navigate("/create-deck")}
                     >
                       <Plus className="h-8 w-8 mb-2" />
