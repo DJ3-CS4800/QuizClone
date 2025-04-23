@@ -316,7 +316,7 @@ export default function MatchingPage() {
             <div
               className="grid gap-4"
               style={{
-                gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))`,
+                gridTemplateColumns: window.innerWidth < 1024 ? "repeat(3, minmax(0, 1fr))" : "repeat(4, minmax(0, 1fr))",
               }}
             >
               {renderGameCards()}
