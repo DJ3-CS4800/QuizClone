@@ -326,8 +326,13 @@ export default function MainPage() {
                         />
                       ))}
                   </div>
-                  <div className="border-t border-purple-400 mt-6"></div>
+
+                  {/* Show divider only if there are favorited decks */}
+                  {decks.some((deck) => deck.starred) && (
+                    <div className="border-t border-purple-400 mt-6"></div>
+                  )}
                 </div>
+
 
                 {/* Main Decks Section */}
                 {loading ? (
