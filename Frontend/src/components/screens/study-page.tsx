@@ -255,7 +255,7 @@ const StudyPage = () => {
       </div>
 
       {/* Options */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl mx-auto">
         {options.map((option, index) => {
           let base =
             "border p-3 rounded-lg bg-muted transition-colors duration-150 text-sm sm:text-base break-words whitespace-normal overflow-hidden";
