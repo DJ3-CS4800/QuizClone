@@ -287,12 +287,12 @@ export default function MainPage() {
         <SidebarInset className="flex-1 h-full overflow-hidden">
           <div className="flex w-full h-full">
             <main className="flex-1 h-full">
-              <header className="flex h-20 items-center justify-between px-8">
+              <header className="flex h-20 items-center justify-between px-6">
                 <div className="flex items-center gap-3">
                   {/* Sidebar Button */}
                   <Button variant="ghost" size="icon" onClick={toggleLeft}>
                     <Menu className="h-10 w-10 scale-175 text-purple-800 dark:text-purple-400" /> {/* Increased size */}
-                    <span className="sr-only">Toggle sidebar</span>
+                    <span className="sr-only">Toggle left sidebar</span>
                   </Button>
                   {/* Logo Image */}
                   <img

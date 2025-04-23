@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { SidebarProvider, Sidebar, SidebarInset } from "@/components/ui/sidebar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { LeftSidebar } from "@/components/left-sidebar";
+import qclogo2 from "../../assets/qclogo2.png";
 
 interface Card {
   cardID: number;
@@ -247,15 +248,17 @@ const StudyPage = () => {
       </p>
 
       {/* Question */}
-      <div className="mb-6 p-4 bg-muted rounded-md shadow-sm border border-border">
-        <h2 className="text-lg font-semibold text-foreground">{currentCard.question}</h2>
+      <div className="mb-6 p-6 bg-purple-100 dark:bg-purple-800 rounded-lg shadow-lg border-2 border-purple-400 dark:border-purple-600 max-w-5xl mx-auto">
+        <h2 className="text-xl font-bold text-purple-800 dark:text-purple-200 text-center break-words whitespace-normal">
+          {currentCard.question}
+        </h2>
       </div>
 
       {/* Options */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
         {options.map((option, index) => {
           let base =
-            "border p-3 rounded-lg bg-muted transition-colors duration-150 text-sm sm:text-base";
+            "border p-3 rounded-lg bg-muted transition-colors duration-150 text-sm sm:text-base break-words whitespace-normal overflow-hidden";
           let feedback = "";
 
           if (showFeedback) {
@@ -267,14 +270,14 @@ const StudyPage = () => {
               feedback = "opacity-60";
             }
           } else {
-            feedback = "hover:bg-[var(--accent2)] hover:text-[var(--accent-foreground)]";
+            feedback = "hover:bg-[var(--accent2)] hover:text-[var(--accent-foreground)] dark:hover:bg-purple-700";
           }
 
           return (
             <button
               key={index}
               onClick={() => handleAnswer(option)}
-              className={`${base} ${feedback}`}
+              className={`${base} ${feedback} max-w-full`}
               disabled={showFeedback}
             >
               {option}
@@ -315,14 +318,20 @@ const StudyPage = () => {
         )}
         <SidebarInset className="flex-1 h-max-content">
           <div className="flex flex-col w-full h-max-content relative">
-            <header className="flex h-20 items-center justify-between px-4">
+            <header className="flex h-20 items-center justify-between px-6">
               <div className="flex items-center gap-2">
                 <Button variant="ghost" size="icon" onClick={toggleLeft}>
-                  <Menu className="h-6 w-6 scale-175 text-[var(--accent2)]" />
+                  <Menu className="h-10 w-10 scale-175 text-purple-800 dark:text-purple-400" />
                   <span className="sr-only">Toggle left sidebar</span>
                 </Button>
+                {/* Logo Image */}
+                <img
+                  src={qclogo2}
+                  alt="Logo"
+                  className="h-10 w-10 object-contain"
+                />
               </div>
-              <span className="mb-4 text-2xl font-bold justify-center text-[var(--accent)]">
+              <span className="mb-4 text-3xl font-bold justify-center text-purple-400 dark:text-purple-400">
                 Study
               </span>
               <Button variant="ghost" onClick={goToDeck}>
