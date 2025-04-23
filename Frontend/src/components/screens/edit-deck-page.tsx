@@ -5,6 +5,8 @@ import { Menu, X } from "lucide-react";
 import { SidebarProvider, Sidebar, SidebarInset } from "@/components/ui/sidebar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { LeftSidebar } from "@/components/left-sidebar";
+import qclogo2 from "../../assets/qclogo2.png";
+
 
 interface Card {
   id: number;
@@ -26,7 +28,7 @@ const EditDeckPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isDarkMode] = useState(localStorage.getItem("theme") === "dark");
-  
+
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDarkMode);
   }, []);
@@ -187,16 +189,25 @@ const EditDeckPage = () => {
 
         <SidebarInset className="flex-1 h-max-content">
           <div className="flex flex-col w-full h-max-content relative">
-            <header className="flex h-20 items-center justify-between px-4">
-              <div className="flex items-center gap-2">
+            <header className="flex h-20 items-center justify-between px-6">
+              <div className="flex items-center gap-3">
+                {/* Sidebar Button */}
                 <Button variant="ghost" size="icon" onClick={toggleLeft}>
-                  <Menu className="h-6 w-6 scale-175 text-[var(--accent2)]" />
+                  <Menu className="h-10 w-10 scale-175 text-purple-800 dark:text-purple-400" />
                   <span className="sr-only">Toggle left sidebar</span>
                 </Button>
+                {/* Logo Image */}
+                <img
+                  src={qclogo2}
+                  alt="Logo"
+                  className="h-10 w-10 object-contain"
+                />
               </div>
-              <span className="mb-4 text-2xl font-bold justify-center text-[var(--accent)]">Edit Deck</span>
+              <span className="mb-4 text-3xl font-bold justify-center text-purple-400 dark:text-purple-400">
+                Edit Deck
+              </span>
               <Button variant="ghost" onClick={handleBackclick}>
-                <X className="h-6 w-6 scale-175 text-[var(--accent2)]" />
+                <X className="h-10 w-10 scale-175 text-purple-800 dark:text-purple-400" />
               </Button>
             </header>
 
@@ -243,7 +254,7 @@ const EditDeckPage = () => {
                     <Button
                       variant="outline"
                       onClick={() => deleteCard(card.id)}
-                      className="self-end text-[var(--accent)]"
+                      className="self-end text-purple-700 dark:text-purple-300 hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] dark:hover:bg-purple-700"
                     >
                       Delete
                     </Button>
@@ -253,7 +264,7 @@ const EditDeckPage = () => {
                   <p className="text-center text-[var(--muted-foreground)]">No cards added yet.</p>
                 )}
                 <div className="flex justify-center pt-2">
-                  <Button className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors" onClick={addCard}>
+                  <Button className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-purple-700 dark:text-purple-300 bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] dark:hover:bg-purple-700 transition-colors" onClick={addCard}>
                     Add Card
                   </Button>
                 </div>
@@ -264,7 +275,7 @@ const EditDeckPage = () => {
               <Button
                 onClick={saveDeck}
                 disabled={!hasChanges()}
-                className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
+                className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-purple-700 dark:text-purple-300 bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] dark:hover:bg-purple-700 transition-colors"
               >
                 Save Deck
               </Button>
