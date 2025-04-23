@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X} from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { SidebarProvider, Sidebar, SidebarInset } from "@/components/ui/sidebar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { LeftSidebar } from "@/components/left-sidebar";
+import qclogo2 from "../../assets/qclogo2.png";
 
 interface Card {
   cardID: number;
@@ -225,7 +226,7 @@ export default function MatchingPage() {
       } else if (selectedIndices.includes(index) && card.highlight === "none") {
         stateClasses = "bg-[var(--accent2)] border-[var(--accent)] text-[var(--accent3)]";
       } else {
-        stateClasses = "bg-muted text-muted-foreground border-border";
+        stateClasses = "bg-muted text-black dark:text-white border-border hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] dark:hover:bg-purple-700";
       }
       return (
         <div
@@ -233,7 +234,7 @@ export default function MatchingPage() {
           className={`${baseClasses} ${stateClasses}`}
           onClick={() => handleCardClick(index)}
         >
-          <div className="w-full h-full overflow-y-auto flex items-center justify-center pt-12 pb-10 px-10 custom-scroll-fade">
+          <div className="w-full h-full overflow-y-auto flex items-center justify-center pt-6 pb-4 px-6 custom-scroll-fade">
             <span className="text-center text-sm font-medium break-all">
               {card.content}
             </span>
@@ -286,16 +287,25 @@ export default function MatchingPage() {
         )}
         <SidebarInset className="flex-1">
           <div className="flex flex-col w-full h-max-content relative">
-            <header className="flex h-20 items-center justify-between px-4">
-              <div className="flex items-center gap-2">
+            <header className="flex h-20 items-center justify-between px-6">
+              <div className="flex items-center gap-3">
+                {/* Sidebar Button */}
                 <Button variant="ghost" size="icon" onClick={toggleLeft}>
-                  <Menu className="h-6 w-6 scale-175 text-[var(--accent2)]" />
+                  <Menu className="h-10 w-10 scale-175 text-purple-800 dark:text-purple-400" />
                   <span className="sr-only">Toggle left sidebar</span>
                 </Button>
+                {/* Logo Image */}
+                <img
+                  src={qclogo2}
+                  alt="Logo"
+                  className="h-10 w-10 object-contain"
+                />
               </div>
-              <span className="mb-4 text-2xl font-bold text-[var(--accent)]">Matching</span>
+              <span className="mb-4 text-3xl font-bold justify-center text-purple-400 dark:text-purple-400">
+                Matching
+              </span>
               <Button variant="ghost" onClick={handleNavigation}>
-                <X className="h-6 w-6 scale-175 text-[var(--accent2)]" />
+                <X className="h-10 w-10 scale-175 text-purple-800 dark:text-purple-400" />
               </Button>
             </header>
           </div>
@@ -305,7 +315,7 @@ export default function MatchingPage() {
             </p>
             <div
               className="grid gap-4"
-              style={{ gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` }}
+              style={{ gridTemplateColumns: `repeat(${gridCols, 3}, minmax(0, 1fr))` }}
             >
               {renderGameCards()}
             </div>
