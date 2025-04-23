@@ -164,39 +164,38 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
       <div className="flex items-center justify-center gap-4 mb-6">
         <button
           onClick={handlePrev}
-          className="w-12 h-12 flex-shrink-0 opacity-50 hover:opacity-100 transition-opacity cursor-pointer transition-transform transform hover:scale-125"
+          className="w-10 h-10 flex items-center justify-center rounded-full border border-border text-purple-700 dark:text-purple-300 hover:bg-purple-700 hover:text-white dark:hover:bg-purple-300 dark:hover:text-black transition-colors"
         >
-          <ChevronLeft className="w-8 h-8 text-[var(--accent)]" />
+          <ChevronLeft className="w-6 h-6" />
         </button>
 
-        <span className="text-lg font-semibold text-muted-foreground">
+        <span className="text-lg font-semibold text-purple-700 dark:text-purple-300">
           {currentCardIndex + 1}/{cards.length}
         </span>
 
         <button
           onClick={handleNext}
-          className="w-12 h-12 flex-shrink-0 opacity-50 hover:opacity-100 transition-opacity cursor-pointer transition-transform transform hover:scale-125 text-[var(--accent)]"
+          className="w-10 h-10 flex items-center justify-center rounded-full border border-border text-purple-700 dark:text-purple-300 hover:bg-purple-700 hover:text-white dark:hover:bg-purple-300 dark:hover:text-black transition-colors"
         >
-          <ChevronRight className="w-8 h-8" />
+          <ChevronRight className="w-6 h-6" />
         </button>
       </div>
-
       <div className="flex flex-wrap justify-center gap-4 mb-6">
         <Button
-          className="flex-1 min-w-[100px] max-w-[150px] h-[60px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
+          className="flex-1 min-w-[100px] max-w-[150px] h-[60px] py-2 text-sm sm:text-base cursor-pointer border border-border text-purple-700 dark:text-purple-300 bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
           onClick={() => handleClickNavigation("study")}
         >
           <h2 className="font-semibold">Study</h2>
         </Button>
         <Button
-          className="flex-1 min-w-[100px] max-w-[150px] h-[60px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
+          className="flex-1 min-w-[100px] max-w-[150px] h-[60px] py-2 text-sm sm:text-base cursor-pointer border border-border text-purple-700 dark:text-purple-300 bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
           onClick={() => handleClickNavigation("match")}
         >
           <h2 className="font-semibold">Matching</h2>
         </Button>
         {deck.isOwner && (
           <Button
-            className="flex-1 min-w-[100px] max-w-[150px] h-[60px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
+            className="flex-1 min-w-[100px] max-w-[150px] h-[60px] py-2 text-sm sm:text-base cursor-pointer border border-border text-purple-700 dark:text-purple-300 bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
             onClick={() => handleClickNavigation("edit")}
           >
             <h2 className="font-semibold">Edit</h2>
