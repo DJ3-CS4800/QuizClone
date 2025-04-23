@@ -313,7 +313,7 @@ export default function MatchingPage() {
             <p className="mb-4 text-sm text-muted-foreground">
               Select two cards to match the question with its answer.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {renderGameCards()}
             </div>
           </main>
