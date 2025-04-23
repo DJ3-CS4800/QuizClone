@@ -313,12 +313,7 @@ export default function MatchingPage() {
             <p className="mb-4 text-sm text-muted-foreground">
               Select two cards to match the question with its answer.
             </p>
-            <div
-              className="grid gap-4"
-              style={{
-                gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))`,
-              }}
-            >
+            <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {renderGameCards()}
             </div>
           </main>
