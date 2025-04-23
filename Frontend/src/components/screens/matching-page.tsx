@@ -234,7 +234,7 @@ export default function MatchingPage() {
           className={`${baseClasses} ${stateClasses}`}
           onClick={() => handleCardClick(index)}
         >
-          <div className="w-full h-full overflow-y-auto flex items-center justify-center pt-6 pb-4 px-6 custom-scroll-fade">
+          <div className="w-full h-full overflow-y-auto flex items-center justify-center pt-2 pb-2 px-3 custom-scroll-fade">
             <span className="text-center text-sm font-medium break-all">
               {card.content}
             </span>
