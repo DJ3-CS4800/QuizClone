@@ -212,7 +212,6 @@ export default function MatchingPage() {
   if (error) return <div className="text-center text-red-500">{error}</div>;
   if (!deck) return <div className="text-center text-red-500">Deck not found</div>;
 
-  const gridCols = Math.max(3, Math.min(4, Math.ceil(Math.sqrt(gameCards.length))));
 
   const renderGameCards = () =>
     gameCards.map((card, index) => {
@@ -313,12 +312,7 @@ export default function MatchingPage() {
             <p className="mb-4 text-sm text-muted-foreground">
               Select two cards to match the question with its answer.
             </p>
-            <div
-              className="grid gap-2"
-              style={{
-                gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))`,
-              }}
-            >
+            <div className="grid gap-2 grid-cols-3 lg:grid-cols-4">
               {renderGameCards()}
             </div>
           </main>
