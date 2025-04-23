@@ -291,7 +291,7 @@ export default function MainPage() {
                 <div className="flex items-center gap-3">
                   {/* Sidebar Button */}
                   <Button variant="ghost" size="icon" onClick={toggleLeft}>
-                    <Menu className="h-10 w-10 scale-175 text-purple-800 dark:text-purple-400" /> {/* Increased size */}
+                    <Menu className="h-10 w-10 scale-175 text-purple-800 dark:text-purple-400" />
                     <span className="sr-only">Toggle left sidebar</span>
                   </Button>
                   {/* Logo Image */}
@@ -301,10 +301,38 @@ export default function MainPage() {
                     className="h-10 w-10 object-contain"
                   />
                 </div>
-                <span className="mb-4 text-3xl font-bold justify-center text-purple-400 dark:text-purple-400">QuizClone</span>
+                <span className="mb-4 text-3xl font-bold justify-center text-purple-400 dark:text-purple-400">
+                  QuizClone
+                </span>
                 <div></div>
               </header>
+
+              {/* Favorited Decks Section */}
               <div className="p-6 pl-8 pr-5">
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold text-purple-800 dark:text-purple-300 mb-2">
+                    Favorited Decks
+                  </h2>
+                  <div
+                    className="grid gap-[10px] justify-start items-start"
+                    style={{ gridTemplateColumns: "repeat(auto-fit, 250px)" }}
+                  >
+                    {decks
+                      .filter((deck) => deck.starred)
+                      .map((deck) => (
+                        <DeckCard
+                          key={deck.deckID}
+                          deck={deck}
+                          handleDeckClick={handleDeckClick}
+                          handleDeleteDeck={() => handleDeleteClick(deck.deckID, deck.local)}
+                          handleFavoriteClick={handleFavoriteClick}
+                        />
+                      ))}
+                  </div>
+                  <div className="border-t border-purple-400 mt-6"></div>
+                </div>
+
+                {/* Main Decks Section */}
                 {loading ? (
                   <p>Loading decks...</p>
                 ) : (
@@ -312,15 +340,17 @@ export default function MainPage() {
                     className="grid gap-[10px] justify-start items-start"
                     style={{ gridTemplateColumns: "repeat(auto-fit, 250px)" }}
                   >
-                    {decks.map((deck) => (
-                      <DeckCard
-                        key={deck.deckID}
-                        deck={deck}
-                        handleDeckClick={handleDeckClick}
-                        handleDeleteDeck={() => handleDeleteClick(deck.deckID, deck.local)}
-                        handleFavoriteClick={handleFavoriteClick}
-                      />
-                    ))}
+                    {decks
+                      .filter((deck) => !deck.starred)
+                      .map((deck) => (
+                        <DeckCard
+                          key={deck.deckID}
+                          deck={deck}
+                          handleDeckClick={handleDeckClick}
+                          handleDeleteDeck={() => handleDeleteClick(deck.deckID, deck.local)}
+                          handleFavoriteClick={handleFavoriteClick}
+                        />
+                      ))}
                     <button
                       className="group flex flex-col items-center justify-center rounded-lg bg-purple-300 dark:bg-purple-800 text-left transition hover:bg-purple-300 dark:hover:bg-purple-700 shadow-md w-[250px] h-[220px]"
                       onClick={() => navigate("/create-deck")}
