@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { User, icons, Moon, Sun } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-
 import {
   SidebarContent,
   SidebarGroup,
@@ -28,14 +27,15 @@ export function LeftSidebar() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem("theme") === "dark");
   const navigate = useNavigate();
+  const isMobile = window.innerWidth <= 768;
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDarkMode);
     localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+
     const storedUser = localStorage.getItem("username");
     if (storedUser) {
       setLoading(true);
-
       const fetchUserData = async () => {
         try {
           const response = await fetch("https://quizclone.com/api/auth/verify", {
@@ -45,11 +45,7 @@ export function LeftSidebar() {
             },
             credentials: "include",
           });
-
-          if (!response.ok) {
-            throw new Error("Verification failed");
-          }
-
+          if (!response.ok) throw new Error("Verification failed");
           const data = await response.json();
           setUser({ name: data.username, email: data.email, avatar: data.avatar });
         } catch (error) {
@@ -60,21 +56,15 @@ export function LeftSidebar() {
           setLoading(false);
         }
       };
-
       fetchUserData();
     }
   }, [isDarkMode]);
 
-  const handleHomeClick = () => {
-    navigate("/");
-  };
-
-  const handleSearchClick = () => {
-    navigate("/search");
-  }
-
-  const handleCreateDeckClick = () => {
-    navigate("/create-deck");
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    if (isMobile) {
+      setTimeout(() => window.location.reload(), 100); // force close sidebar cleanly on mobile
+    }
   };
 
   const handleSignOutClick = () => {
@@ -85,22 +75,17 @@ export function LeftSidebar() {
     try {
       const response = await fetch("https://quizclone.com/api/auth/logout", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
-
-      if (!response.ok) {
-        throw new Error("Logout failed");
-      }
+      if (!response.ok) throw new Error("Logout failed");
 
       localStorage.removeItem("username");
+      sessionStorage.clear();
       setUser(null);
       setIsDialogOpen(false);
       navigate("/");
       window.location.reload();
-      sessionStorage.clear();
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -115,14 +100,16 @@ export function LeftSidebar() {
   };
 
   return (
-    <>
-      <SidebarHeader className="h-16">
+    <div className="flex flex-col h-full">
+      <SidebarHeader className={`h-16 ${isMobile ? "pt-12" : ""}`}>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
               className="h-16 hover:bg-[var(--accent)]"
-              onClick={() => !user && navigate("/login")}
+              onClick={() => {
+                if (!user) handleNavigation("/login");
+              }}
             >
               <Avatar className="h-8 w-8">
                 {user ? (
@@ -151,27 +138,26 @@ export function LeftSidebar() {
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent>
+      {/* SidebarContent with mobile margin-top */}
+      <SidebarContent className={`flex-1 overflow-y-auto ${isMobile ? "mt-10" : ""}`}>
         <SidebarGroup>
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton className="hover:bg-[var(--accent)]" onClick={handleHomeClick}>
+                <SidebarMenuButton className="hover:bg-[var(--accent)]" onClick={() => handleNavigation("/")}>
                   <icons.House className="mr-2 h-4 w-4 text-[var(--accent2)]" />
                   Home
                 </SidebarMenuButton>
               </SidebarMenuItem>
-
               <SidebarMenuItem>
-                <SidebarMenuButton className="hover:bg-[var(--accent)]" onClick={handleSearchClick}>
+                <SidebarMenuButton className="hover:bg-[var(--accent)]" onClick={() => handleNavigation("/search")}>
                   <icons.Search className="mr-2 h-4 w-4 text-[var(--accent2)]" />
                   Search
                 </SidebarMenuButton>
               </SidebarMenuItem>
-
               <SidebarMenuItem>
-                <SidebarMenuButton className="hover:bg-[var(--accent)]" onClick={handleCreateDeckClick}>
+                <SidebarMenuButton className="hover:bg-[var(--accent)]" onClick={() => handleNavigation("/create-deck")}>
                   <icons.Plus className="mr-2 h-4 w-4 text-[var(--accent2)]" />
                   Create Deck
                 </SidebarMenuButton>
@@ -187,9 +173,9 @@ export function LeftSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton className="hover:bg-[var(--accent)]" onClick={toggleDarkMode}>
                   {isDarkMode ? (
-                    <Sun className="mr-2 h-4 w-4  text-[var(--accent2)]" />
+                    <Sun className="mr-2 h-4 w-4 text-[var(--accent2)]" />
                   ) : (
-                    <Moon className="mr-2 h-4 w-4  text-[var(--accent2)]" />
+                    <Moon className="mr-2 h-4 w-4 text-[var(--accent2)]" />
                   )}
                   {isDarkMode ? "Light Mode" : "Dark Mode"}
                 </SidebarMenuButton>
@@ -208,21 +194,25 @@ export function LeftSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
+      {/* Sign Out Confirmation Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogTitle>Are you sure you want to sign out?</DialogTitle>
           <DialogDescription>
-            You will be only able access your local decks.
+            You will be able to access only your local decks after signing out.
           </DialogDescription>
           <div className="flex justify-end gap-2">
             <DialogFooter>
-              <Button className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors" onClick={handleCancelSignOut}>
+              <Button
+                className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
+                onClick={handleCancelSignOut}
+              >
                 Cancel
               </Button>
             </DialogFooter>
             <DialogFooter>
               <Button
-                className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base cursor-pointer border border-border text-[var(--accent)] bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors"
+                className="flex-1 min-w-[100px] max-w-[150px] py-2 text-sm sm:text-base border border-border text-red-600 bg-transparent hover:bg-[var(--accent)] hover:text-red-700 transition-colors"
                 onClick={handleConfirmSignOut}
               >
                 Sign Out
@@ -231,6 +221,6 @@ export function LeftSidebar() {
           </div>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }

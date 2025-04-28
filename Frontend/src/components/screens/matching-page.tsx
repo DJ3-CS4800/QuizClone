@@ -56,8 +56,8 @@ export default function MatchingPage() {
   const [leftOpen, setLeftOpen] = useState(false);
   const [isDarkMode] = useState(localStorage.getItem("theme") === "dark");
   const [disableClick, setDisableClick] = useState(false);
-  // New state for the game start time (in ms)
   const [startTime, setStartTime] = useState<number>(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   // Toggle dark mode
   useEffect(() => {
@@ -114,8 +114,20 @@ export default function MatchingPage() {
         setLoading(false);
       }
     }
+
     loadDeck();
   }, [deckID, deckType]);
+
+  // Handle window resize for mobile view.
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
 
   // Initialize or reset the game.
   const initializeGameCards = useCallback(() => {
@@ -277,10 +289,24 @@ export default function MatchingPage() {
       <SidebarProvider defaultOpen={false} open={leftOpen} onOpenChange={setLeftOpen}>
         {leftOpen && (
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
-            <SheetContent side="left" className="w-[280px] min-w-[200px] h-full p-0 overflow-auto">
-              <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
-                <LeftSidebar />
-              </Sidebar>
+            <SheetContent
+              side="left"
+              className="h-full overflow-auto p-0"
+              style={{
+                width: isMobile ? '100%' : '280px',
+                minWidth: isMobile ? '100%' : '200px',
+                height: "100%",
+              }}
+            >
+              {isMobile ? (
+                <div className="flex flex-col w-full h-full overflow-y-auto">
+                  <LeftSidebar />
+                </div>
+              ) : (
+                <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
+                  <LeftSidebar />
+                </Sidebar>
+              )}
             </SheetContent>
           </Sheet>
         )}

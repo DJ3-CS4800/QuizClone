@@ -1,6 +1,6 @@
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import StudyDeck from "../study-deck"; // Import the study deck component
-import React from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider, Sidebar, SidebarInset } from "@/components/ui/sidebar";
@@ -12,13 +12,24 @@ const DeckPage = () => {
   const { deckID } = useParams<{ deckID: string }>();
   const { deckType } = useParams<{ deckType: string }>();
   const navigate = useNavigate();
-  const [leftOpen, setLeftOpen] = React.useState(false);
-  const [isDarkMode] = React.useState(localStorage.getItem("theme") === "dark");
+  const [leftOpen, setLeftOpen] = useState(false);
+  const [isDarkMode] = useState(localStorage.getItem("theme") === "dark");
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-
-  React.useEffect(() => {
+  useEffect(() => {
     document.documentElement.classList.toggle("dark", isDarkMode);
   }, []);
+
+  // Handle window resize for mobile view.
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
 
   if (!deckID) return <div className="text-center text-red-500">Invalid deck ID</div>;
 
@@ -32,17 +43,28 @@ const DeckPage = () => {
   };
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex h-max-content flex-col">
       <SidebarProvider defaultOpen={false} open={leftOpen} onOpenChange={setLeftOpen}>
         {leftOpen && (
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
             <SheetContent
               side="left"
-              className="w-[280px] min-w-[200px] h-full p-0 overflow-auto"
+              className="h-full overflow-auto p-0"
+              style={{
+                width: isMobile ? '100%' : '280px',
+                minWidth: isMobile ? '100%' : '200px',
+                height: "100%",
+              }}
             >
-              <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
-                <LeftSidebar />
-              </Sidebar>
+              {isMobile ? (
+                <div className="flex flex-col w-full h-full overflow-y-auto">
+                  <LeftSidebar />
+                </div>
+              ) : (
+                <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
+                  <LeftSidebar />
+                </Sidebar>
+              )}
             </SheetContent>
           </Sheet>
         )}

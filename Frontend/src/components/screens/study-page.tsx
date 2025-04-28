@@ -46,6 +46,7 @@ const StudyPage = () => {
   const [username] = useState(localStorage.getItem("username") || "");
   const [currentCardCount, setCurrentCardCount] = useState(0);
   const [progressSaved, setProgressSaved] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const cards = deck?.deckWithProgress.contentWithProgress ?? [];
 
@@ -128,6 +129,15 @@ const StudyPage = () => {
       generateQuestion();
     }
   }, [cards, currentQuestionIndex]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const updateProgress = async () => {
 
@@ -303,16 +313,26 @@ const StudyPage = () => {
   return (
     <div className="flex h-max-content flex-col">
       <SidebarProvider defaultOpen={false} open={leftOpen} onOpenChange={setLeftOpen}>
-        {/* Render the sidebar only when toggled */}
         {leftOpen && (
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
             <SheetContent
               side="left"
-              className="w-[280px] min-w-[200px] h-full p-0 overflow-auto"
+              className="h-full overflow-auto p-0"
+              style={{
+                width: isMobile ? '100%' : '280px',
+                minWidth: isMobile ? '100%' : '200px',
+                height: "100%",
+              }}
             >
-              <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
-                <LeftSidebar />
-              </Sidebar>
+              {isMobile ? (
+                <div className="flex flex-col w-full h-full overflow-y-auto">
+                  <LeftSidebar />
+                </div>
+              ) : (
+                <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
+                  <LeftSidebar />
+                </Sidebar>
+              )}
             </SheetContent>
           </Sheet>
         )}

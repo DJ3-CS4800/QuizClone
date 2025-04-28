@@ -68,7 +68,8 @@ export default function SearchPage() {
   const [page, setPage] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
   const navigate = useNavigate();
-  const pageSize = 10; // Adjust page size as needed
+  const pageSize = 10;
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   // Toggle left sidebar
   const toggleLeft = () => setLeftOpen((prev) => !prev);
@@ -128,6 +129,16 @@ export default function SearchPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
+  // Handle window resize for mobile view.
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const handleSearchSubmit = (e: FormEvent<HTMLFormElement> | React.MouseEvent) => {
     e.preventDefault();
     setPage(0);
@@ -156,18 +167,26 @@ export default function SearchPage() {
   return (
     <div className="flex h-max-content flex-col">
       <SidebarProvider defaultOpen={false} open={leftOpen} onOpenChange={setLeftOpen}>
-        {/* Left sidebar */}
         {leftOpen && (
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
             <SheetContent
               side="left"
-              className="w-[280px] min-w-[200px] h-full p-0 overflow-auto"
+              className="h-full overflow-auto p-0"
+              style={{
+                width: isMobile ? '100%' : '280px',
+                minWidth: isMobile ? '100%' : '200px',
+                height: "100%",
+              }}
             >
-              <Sidebar
-                style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}
-              >
-                <LeftSidebar />
-              </Sidebar>
+              {isMobile ? (
+                <div className="flex flex-col w-full h-full overflow-y-auto">
+                  <LeftSidebar />
+                </div>
+              ) : (
+                <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
+                  <LeftSidebar />
+                </Sidebar>
+              )}
             </SheetContent>
           </Sheet>
         )}

@@ -114,6 +114,7 @@ export default function MainPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [aboutToDelete, setAboutToDelete] = useState({ deckID: "", local: false });
   const [isDarkMode] = useState(localStorage.getItem("theme") === "dark");
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const navigate = useNavigate();
 
   // Sort decks by starred flag and then by lastOpened date descending.
@@ -132,6 +133,17 @@ export default function MainPage() {
     document.documentElement.classList.toggle("dark", isDarkMode);
     loadDecks();
   }, []);
+
+  // Handle window resize for mobile view.
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
 
   const loadDecks = async () => {
     setLoading(true);
@@ -270,16 +282,26 @@ export default function MainPage() {
   return (
     <div className="flex h-max-content flex-col">
       <SidebarProvider defaultOpen={false} open={leftOpen} onOpenChange={setLeftOpen}>
-        {/* Render the sidebar only when toggled */}
         {leftOpen && (
           <Sheet open={leftOpen} onOpenChange={setLeftOpen}>
             <SheetContent
               side="left"
-              className="w-[280px] min-w-[200px] h-full p-0 overflow-auto"
+              className="h-full overflow-auto p-0"
+              style={{
+                width: isMobile ? '100%' : '280px',
+                minWidth: isMobile ? '100%' : '200px',
+                height: "100%",
+              }}
             >
-              <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
-                <LeftSidebar />
-              </Sidebar>
+              {isMobile ? (
+                <div className="flex flex-col w-full h-full overflow-y-auto">
+                  <LeftSidebar />
+                </div>
+              ) : (
+                <Sidebar style={{ "--sidebar-width": "280px", height: "100%" } as React.CSSProperties}>
+                  <LeftSidebar />
+                </Sidebar>
+              )}
             </SheetContent>
           </Sheet>
         )}
