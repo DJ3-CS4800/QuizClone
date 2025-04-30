@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react"; // Import arrow icons
 import { useNavigate } from "react-router-dom";
+import { jsPDF } from "jspdf";
+import { Download } from "lucide-react";
 
 interface Card {
   cardID: number;
@@ -124,6 +126,71 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
     navigate(`/deck/${deckType}/${deckId}/${location}`);
   };
 
+    // New function to generate and download the PDF
+const handleDownloadSet = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 10;
+    let y = margin;
+    const lineHeight = 6; // line height for text
+
+    // Header centered on the page
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(20);
+    doc.text(deck.deckName, pageWidth / 2, y, { align: "center" });
+    y += 12;
+    doc.setFontSize(12);
+
+    // For each card, create a dynamic card block with border, vertical divider,
+    // and two columns (Question & Answer) that adjust based on text size.
+    cards.forEach((card) => {
+        const colDivider = pageWidth / 2;
+        const questionX = margin + 5;
+        const answerX = colDivider + 5;
+
+        // Increase right padding by reducing available width for text
+        const availableWidth = colDivider - 20; // previously was colDivider - 10
+
+        // Split text to fit column width
+        doc.setFont("Helvetica", "normal");
+        const questionLines = doc.splitTextToSize(card.question, availableWidth);
+        const answerLines = doc.splitTextToSize(card.answer, availableWidth);
+
+        // Calculate the necessary height: add room for the label lines and extra padding
+        const textBlockHeight = Math.max(questionLines.length, answerLines.length) * lineHeight;
+        const cardHeight = textBlockHeight + 10; // extra padding for the labels
+
+        // Draw a rectangle border around the card block
+        doc.setLineWidth(0.5);
+        doc.rect(margin, y, pageWidth - 2 * margin, cardHeight);
+
+        // Draw a physical vertical divider line between the columns
+        doc.line(colDivider, y, colDivider, y + cardHeight);
+
+        // Write the Question label and text in the left column
+        let textY = y + lineHeight; // starting Y position for the labels
+        doc.setFont("Helvetica", "bold");
+        doc.setFont("Helvetica", "normal");
+        doc.text(questionLines, questionX, textY + lineHeight);
+
+        // Write the Answer label and text in the right column
+        doc.setFont("Helvetica", "bold");
+        doc.setFont("Helvetica", "normal");
+        doc.text(answerLines, answerX, textY + lineHeight);
+
+        // Increase y for the next card
+        y += cardHeight + 5;
+        // If not enough space remains on current page, add a new one
+        if (y + cardHeight > pageHeight - margin) {
+            doc.addPage();
+            y = margin;
+        }
+    });
+
+    doc.save(`${deck.deckName}.pdf`);
+};
+
   return (
     <div className="max-w-6xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4">{deck.deckName}</h1>
@@ -146,6 +213,15 @@ export default function StudyDeck({ deckId, deckType }: StudyDeckProps) {
           <strong className="text-[var(--accent)]">Updated At:</strong>{" "}
           {new Date(deck.updatedAt).toLocaleDateString()}
         </p>
+        {/* New Download Set Button below the "Updated At" line */}
+        <div className="mt-2">
+          <Button
+            className="cursor-pointer border border-border text-purple-700 dark:text-purple-300 bg-transparent hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] dark:hover:bg-purple-700 transition-colors"
+            onClick={handleDownloadSet}
+          >
+            <Download className="w-5 h-5" />
+          </Button>
+        </div>
       </div>
 
       <div className="flex items-center justify-center mb-6 pt-10 pb-5">
