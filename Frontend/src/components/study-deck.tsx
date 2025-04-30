@@ -135,65 +135,52 @@ const handleDownloadSet = () => {
     let y = margin;
     const lineHeight = 6; // line height for text
 
-    // Header centered on the page
+    // Wrap deck title if it's too long
     doc.setFont("Helvetica", "bold");
     doc.setFontSize(20);
-    doc.text(deck.deckName, pageWidth / 2, y, { align: "center" });
-    y += 12;
+    const headerLines = doc.splitTextToSize(deck.deckName, pageWidth - 2 * margin);
+    // Output multi-line header centered on the page
+    headerLines.forEach((line: string, index: number) => {
+      doc.text(line, pageWidth / 2, y + index * lineHeight, { align: "center" });
+    });
+    y += headerLines.length * lineHeight + 6; // add extra spacing after header
     doc.setFontSize(12);
 
-    // For each card, create a dynamic card block with border, vertical divider,
-    // and two columns (Question & Answer) that adjust based on text size.
+    // ... rest of your PDF generation code follows ...
     cards.forEach((card) => {
         const colDivider = pageWidth / 2;
         const questionX = margin + 5;
         const answerX = colDivider + 5;
-
-        // Increase right padding by reducing available width for text
-        const availableWidth = colDivider - 20; // previously was colDivider - 10
-
-        // Split text to fit column width
+        const availableWidth = colDivider - 20;
         doc.setFont("Helvetica", "normal");
         const questionLines = doc.splitTextToSize(card.question, availableWidth);
         const answerLines = doc.splitTextToSize(card.answer, availableWidth);
-
-        // Calculate the necessary height: add room for the label lines and extra padding
         const textBlockHeight = Math.max(questionLines.length, answerLines.length) * lineHeight;
-        const cardHeight = textBlockHeight + 10; // extra padding for the labels
-
-        // Draw a rectangle border around the card block
+        const cardHeight = textBlockHeight + 10;
         doc.setLineWidth(0.5);
         doc.rect(margin, y, pageWidth - 2 * margin, cardHeight);
-
-        // Draw a physical vertical divider line between the columns
         doc.line(colDivider, y, colDivider, y + cardHeight);
-
-        // Write the Question label and text in the left column
-        let textY = y + lineHeight; // starting Y position for the labels
+        let textY = y + lineHeight;
         doc.setFont("Helvetica", "bold");
+        // Write Question label is omitted for brevity or can be added similarly
         doc.setFont("Helvetica", "normal");
         doc.text(questionLines, questionX, textY + lineHeight);
-
-        // Write the Answer label and text in the right column
         doc.setFont("Helvetica", "bold");
+        // Write Answer label is omitted for brevity or can be added similarly
         doc.setFont("Helvetica", "normal");
         doc.text(answerLines, answerX, textY + lineHeight);
-
-        // Increase y for the next card
         y += cardHeight + 5;
-        // If not enough space remains on current page, add a new one
         if (y + cardHeight > pageHeight - margin) {
             doc.addPage();
             y = margin;
         }
     });
-
     doc.save(`${deck.deckName}.pdf`);
 };
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-4">{deck.deckName}</h1>
+      <h1 className="text-3xl font-bold mb-4 break-words">{deck.deckName}</h1>
 
       <div className="text-sm text-muted-foreground mb-4">
         {deckType === "l" ? (
