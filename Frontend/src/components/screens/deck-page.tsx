@@ -83,6 +83,7 @@ const DeckPage = () => {
                   <img
                     src={qclogo2}
                     alt="Logo"
+                    onClick={() => navigate("/")}
                     className="h-10 w-10 object-contain"
                   />
                 </div>

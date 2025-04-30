@@ -52,9 +52,9 @@ function DeckCard({
 
       {/* Centered deck name with wrapping */}
       <div className="flex items-center justify-center h-full z-10">
-        <h2 className="text-center break-words text-lg font-semibold">
-          {deck.deckName}
-        </h2>
+<h2 className="text-center text-lg font-semibold line-clamp-3">
+  {deck.deckName}
+</h2>
       </div>
 
       {/* Delete button at top left with hover effect and confirmation */}
